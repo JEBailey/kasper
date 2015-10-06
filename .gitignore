@@ -2,8 +2,11 @@
 target
 bin
 \.classpath
+.classpath
 \.project
+.project
 \.settings
+.settings
 
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/

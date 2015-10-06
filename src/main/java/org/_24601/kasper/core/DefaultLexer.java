@@ -77,4 +77,9 @@ public class DefaultLexer implements Lexer {
 		return !tokens.isEmpty();
 	}
 
+	@Override
+	public void remove() {
+		throw new UnsupportedOperationException();
+	}
+
 }
