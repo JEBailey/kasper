@@ -18,6 +18,7 @@ import org._24601.kasper.annotations.Primitive;
 import org._24601.kasper.api.Lexeme;
 import org._24601.kasper.api.Parser;
 import org._24601.kasper.lang.KasperLangImpl;
+import org._24601.kasper.lex.ClosingElement;
 import org._24601.kasper.lex.Comments;
 import org._24601.kasper.lex.DoubleQuoteString;
 import org._24601.kasper.lex.Eol;
@@ -33,9 +34,9 @@ public class KasperContext implements ScriptContext {
 
 	private Parser parser;
 
-	private static String globalScopeId = "_GLOBAL_SCOPE";
+	public static String globalScopeId = "_GLOBAL_SCOPE";
 
-	private static String engineScopeID = "_ENGING_SCOPE";
+	public static String engineScopeID = "_ENGING_SCOPE";
 
 	private KasperBindings bindings;
 
@@ -101,6 +102,7 @@ public class KasperContext implements ScriptContext {
 				add(new Special());
 				add(new StatementList());
 				add(new StatementBlock());
+				add(new ClosingElement());
 			}
 		};
 	}

@@ -2,11 +2,14 @@ package org._24601.kasper.lex;
 
 import java.util.List;
 import java.util.Stack;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org._24601.kasper.api.Collector;
 import org._24601.kasper.api.Lexeme;
 import org._24601.kasper.api.Token;
 import org._24601.kasper.core.BasicToken;
+import org._24601.kasper.type.ExternalResolver;
 import org._24601.kasper.type.Statement;
 
 /**
@@ -22,18 +25,21 @@ import org._24601.kasper.type.Statement;
  */
 public class StatementExpr implements Lexeme {
 
-	private char open = '[';
+	private char close = '}';
 
-	private char close = ']';
+	Pattern pattern = Pattern.compile("\\$\\{");
 
 	@Override
 	public int consume(List<Token> tokens, CharSequence ps, int offset) {
-		char item = ps.charAt(offset);
-		if (item == open || item == close) {
-			tokens.add(new Inner(Character.toString(item), offset, offset + 1));
-			return 1;
+		int totalCaptured = 0;
+		Matcher matcher = pattern.matcher(ps);
+		matcher.region(offset, ps.length());
+		if (matcher.lookingAt()) {
+			String s = matcher.group();
+			tokens.add(new Inner(s, offset, matcher.end()));
+			totalCaptured = s.length();
 		}
-		return 0;
+		return totalCaptured;
 	}
 
 	private class Inner extends BasicToken {
@@ -49,22 +55,9 @@ public class StatementExpr implements Lexeme {
 
 		@Override
 		public Collector consume(Collector collector, Stack<Collector> collectors, Stack<Character> charStack) {
-			if (charValue == open) {
-				charStack.push(close);
-				collectors.push(collector);
-				collector = new Statement(startPos, collector.getLineNumber());
-			} else {
-				if (!charStack.empty() && charStack.pop() == close) {
-					Object temp = collector;
-					collector = collectors.pop();
-					collector.add(temp);
-				} else {
-					// throw new
-					// PoslException(lineNumber,"could not match square
-					// bracket");
-				}
-			}
-			return collector;
+			charStack.push(close);
+			collectors.push(collector);
+			return new ExternalResolver();
 		}
 
 	}

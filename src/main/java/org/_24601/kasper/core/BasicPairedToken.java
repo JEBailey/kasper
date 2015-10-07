@@ -10,21 +10,13 @@ public abstract class BasicPairedToken implements Token {
 	protected int startPos;
 	protected int endPos;
 	
-	protected String value;
+	protected char value;
 	protected Object meta;
 	
-	protected char open;
-	protected char close;
-	
-	public BasicPairedToken(){
-	}
-	
-	public BasicPairedToken(String value, int start, int end, char open, char close) {
+	public BasicPairedToken(char value, int start, int end) {
 		this.value = value;
 		this.startPos = start;
 		this.endPos = end;
-		this.open = open;
-		this.close = close;
 	}
 
 	@Override
@@ -32,7 +24,7 @@ public abstract class BasicPairedToken implements Token {
 	
 	
 	public String toString(){
-		return value.toString();
+		return String.valueOf(value);
 	}
 
 }
