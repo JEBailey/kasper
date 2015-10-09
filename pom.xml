@@ -10,14 +10,13 @@
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
 				<extensions>true</extensions>
-				<version>3.0.0</version>
+				<version>2.5.0</version>
 				<configuration>
 					<instructions>
 						<Export-Package>org._24601.kasper.*</Export-Package>
 						<Bundle-SymbolicName>${pom.groupId}.${pom.artifactId}</Bundle-SymbolicName>
 						<Bundle-Name>${pom.name}</Bundle-Name>
 						<Bundle-Vendor>Jason Bailey</Bundle-Vendor>
-						<Embed-Dependency>fxc;scope=compile</Embed-Dependency>
 					</instructions>
 				</configuration>
 				<executions>
@@ -45,10 +44,30 @@
 					<source>1.7</source>
 					<target>1.7</target>
 				</configuration>
+				<executions>
+					<execution>
+						<id>default-compile</id>
+						<configuration>
+							<compilerArgument>-proc:none</compilerArgument>
+						</configuration>
+					</execution>
+					<execution>
+						<id>compile-everything-else</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>compile</goal>
+						</goals>
+					</execution>
+				</executions>
 			</plugin>
 		</plugins>
 	</build>
 	<dependencies>
+		<dependency>
+			<groupId>biz.aQute</groupId>
+			<artifactId>bndlib</artifactId>
+			<version>1.50.0</version>
+		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
