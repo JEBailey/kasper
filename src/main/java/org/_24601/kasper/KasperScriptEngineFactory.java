@@ -47,12 +47,12 @@ public class KasperScriptEngineFactory implements ScriptEngineFactory {
 
 	@Override
 	public String getLanguageName() {
-		return (String) getParameter(ScriptEngine.LANGUAGE);
+		return "Kasper";
 	}
 
 	@Override
 	public String getLanguageVersion() {
-		return (String) getParameter(ScriptEngine.LANGUAGE_VERSION);
+		return "0.5";
 	}
 
 	@Override
