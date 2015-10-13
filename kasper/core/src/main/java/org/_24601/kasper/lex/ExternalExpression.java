@@ -10,24 +10,16 @@ import org._24601.kasper.api.Lexeme;
 import org._24601.kasper.api.Token;
 import org._24601.kasper.core.BasicToken;
 import org._24601.kasper.type.ExternalResolver;
-import org._24601.kasper.type.Statement;
 
 /**
- * Represents the physical structure components of a basic Posl implementation.
- * The following represent built in types of structures
- * <p>
- * `{` and `}` surround a block of tokens which can be on multiple lines `[` and
- * `]` surround a single expression `(` and `)` represent a list of tokens
- * </p>
  * 
  * @author je bailey
  * 
  */
-public class StatementExpr implements Lexeme {
+public class ExternalExpression implements Lexeme {
 
-	private char close = '}';
-
-	Pattern pattern = Pattern.compile("\\${\\s*([\\w()\\[\\]\\.]+)\\s*}");
+ 	                     
+	public static Pattern pattern = Pattern.compile("\\$\\{\\s*([\\w()\\[\\].]+)\\s*}");
 
 	@Override
 	public int consume(List<Token> tokens, CharSequence ps, int offset) {

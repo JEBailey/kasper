@@ -4,33 +4,6 @@
 	<groupId>org.24601</groupId>
 	<artifactId>kasper</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.3</version>
-				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
-				</configuration>
-				<executions>
-					<execution>
-						<id>default-compile</id>
-						<configuration>
-							<compilerArgument>-proc:none</compilerArgument>
-						</configuration>
-					</execution>
-					<execution>
-						<id>compile-everything-else</id>
-						<phase>compile</phase>
-						<goals>
-							<goal>compile</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
 	<packaging>pom</packaging>
 	<licenses>
 		<license>
@@ -42,7 +15,4 @@
 		<module>core</module>
 		<module>test</module>
 	</modules>
-	<properties>
-    <project.sourceEncoding>UTF-8</project.sourceEncoding>
-  </properties>
 </project>

@@ -26,7 +26,7 @@ import org._24601.kasper.lex.Identifier;
 import org._24601.kasper.lex.SingleQuoteStrings;
 import org._24601.kasper.lex.Special;
 import org._24601.kasper.lex.StatementBlock;
-import org._24601.kasper.lex.StatementExpr;
+import org._24601.kasper.lex.ExternalExpression;
 import org._24601.kasper.lex.StatementList;
 import org._24601.kasper.lex.WhiteSpace;
 
@@ -97,7 +97,7 @@ public class KasperContext implements ScriptContext {
 				add(new Identifier());
 				add(new DoubleQuoteString());
 				add(new SingleQuoteStrings());
-				add(new StatementExpr());
+				add(new ExternalExpression());
 				add(new Eol());
 				add(new Special());
 				add(new StatementList());

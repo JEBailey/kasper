@@ -1,9 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>org.24601</groupId>
 	<artifactId>kasper.lang</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
 	<build>
 		<plugins>
 			<plugin>
@@ -74,9 +72,9 @@
 			<version>0.8.0</version>
 		</dependency>
 		<dependency>
-			<groupId>commons-beanutils</groupId>
-			<artifactId>commons-beanutils</artifactId>
-			<version>1.9.2</version>
+			<groupId>ognl</groupId>
+			<artifactId>ognl</artifactId>
+			<version>3.1</version>
 		</dependency>
 	</dependencies>
 	<packaging>bundle</packaging>
@@ -86,4 +84,9 @@
 			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
 		</license>
 	</licenses>
+	<parent>
+		<groupId>org.24601</groupId>
+		<artifactId>kasper</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</parent>
 </project>

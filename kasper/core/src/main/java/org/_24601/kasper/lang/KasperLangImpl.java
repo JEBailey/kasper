@@ -3,17 +3,21 @@ package org._24601.kasper.lang;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
+import java.util.regex.Matcher;
 
+import org._24601.kasper.Interpreter;
 import org._24601.kasper.annotations.Command;
 import org._24601.kasper.annotations.Optional;
 import org._24601.kasper.annotations.Primitive;
 import org._24601.kasper.annotations.parameter.CommandName;
+import org._24601.kasper.core.KasperBindings;
+import org._24601.kasper.core.KasperContext;
 import org._24601.kasper.error.KasperException;
 import org._24601.kasper.fxc.elements.Comment;
 import org._24601.kasper.fxc.elements.DocType;
 import org._24601.kasper.fxc.elements.VoidElement;
+import org._24601.kasper.lex.ExternalExpression;
 import org._24601.kasper.type.Atom;
-import org._24601.kasper.type.MultiLineStatement;
 import org._24601.kasper.type.Reference;
 
 import fxc.Element;
@@ -27,23 +31,9 @@ public class KasperLangImpl {
 	}
 
 	/**
-	 * 
-	 * 
-	 * 
-	 * 
-	 * @param tag
-	 *            the invoking command name
-	 * @param arg1
-	 *            Either a list of attributes, a multi line list of child
-	 *            arguments or a single string
-	 * @param arg2
-	 * @return
-	 * @throws IOException
-	 * @throws UnsupportedOperationException
-	 * @throws KasperException
 	 */
 	@Command("_default")
-	public Object defaultCommand(@CommandName String tag, @Optional List<Object> arg1, @Optional Reference arg2)
+	public Object defaultCommand(KasperBindings bindings, @CommandName String tag, @Optional List<Object> arg1, @Optional Reference arg2)
 			throws IOException, UnsupportedOperationException, KasperException {
 		Element element = new Element(tag);
 		// force closing tag
@@ -58,7 +48,7 @@ public class KasperLangImpl {
 	}
 
 	@Command({ "area", "base", "br", "col", "command", "embed", "hr", "img", "input", "keygen", "link","meta","param","source","track","wbr" })
-	public Object defaultVoid(@CommandName String tag, @Optional List<Object> arg1)
+	public Object defaultVoid(KasperBindings bindings, @CommandName String tag, @Optional List<Object> arg1)
 			throws IOException, UnsupportedOperationException, KasperException {
 		Element element = new VoidElement(tag);
 		if (arg1 != null) {
@@ -74,6 +64,7 @@ public class KasperLangImpl {
 	private void listToAttributes(Element element, List<Object> argList) throws KasperException {
 		state stateMachine = state.lookingForVar;
 		Object key = null;
+		String value = null;
 		for (Object object : argList) {
 			switch (stateMachine) {
 			case lookingForVar:
@@ -115,14 +106,23 @@ public class KasperLangImpl {
 			element.setAttribute(key.toString());
 		}
 	}
+	
+	private String evalString(KasperContext context, String toParse) throws KasperException{
+		Matcher matcher = ExternalExpression.pattern.matcher(toParse);
+		if (matcher.find()) {
+			String s = matcher.group(0);
+			Object replacement = Interpreter.process(context, s);
+		}
+		return null;
+	}
 
 	@Command("var")
-	public Object run(@CommandName String functionName, @Optional List<Object> argList,
-			@Optional Reference functionBody) throws IOException, UnsupportedOperationException, KasperException {
-		Element element = new Element(functionName);
-		element.add((String) functionBody.evaluate());
-		// writer.write(element.toString());
-		return element.toString();
+	public Object run(KasperBindings bindings, Reference varName ,Atom assign, Reference value) throws IOException, UnsupportedOperationException, KasperException {
+		if (!assign.equals("=")){
+			throw new UnsupportedOperationException();
+		}
+		varName.updateValue(value.evaluate());
+		return "";
 	}
 
 	@Command("doctype")

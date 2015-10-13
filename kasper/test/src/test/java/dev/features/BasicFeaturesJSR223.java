@@ -62,11 +62,22 @@ public class BasicFeaturesJSR223 {
 		assertEquals(1, eval("${foo}"));
 	}
 	
+	@Test
+	public void testAccessorNonbean() throws KasperException {
+		assertEquals(14, eval("${bar.length()}"));
+	}
+	
+	@Test
+	public void testAccessorboolean() throws KasperException {
+		assertEquals(false, eval("${bar.empty}"));
+	}
+	
 	private Object eval(String expression) throws KasperException {
 		ScriptEngineManager manager = new ScriptEngineManager();
 		ScriptEngine engine = manager.getEngineByExtension("ksp");
 		Bindings bindings = engine.createBindings();
 		bindings.put("foo", 1);
+		bindings.put("bar", "this is sparta");
 		engine.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
         try {
 			return engine.eval(expression);

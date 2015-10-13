@@ -25,14 +25,10 @@ public class ParameterInfo {
 		NORMAL, OPTIONAL, CONTEXT_PROPERTY, COLLECTION, COMMANDNAME
 	};
 
-	public enum ParamType {
-		NORMAL, SCOPE, REFERENCE
-	}
-
 	private Type type;
 
 	private State state = State.NORMAL;
-	private ParamType pType = ParamType.NORMAL;
+	private Class<?> pType = null;
 
 	// represents the amount that we should update the command line index
 	private int increment = 1;
@@ -54,11 +50,11 @@ public class ParameterInfo {
 			}
 		}
 		if (param == KasperBindings.class) {
-			pType = pType.SCOPE;
+			pType = KasperBindings.class;
 			increment = 0;
 		}
 		if (param == Reference.class) {
-			pType = pType.REFERENCE; 
+			pType = Reference.class;
 		}
 	}
 
@@ -70,10 +66,10 @@ public class ParameterInfo {
 		return state == State.OPTIONAL;
 	}
 
-	public Object render(KasperBindings scope, Statement statement, int tokenIndex) throws KasperException {
+	public Object render(KasperBindings bindings, Statement statement, int tokenIndex) throws KasperException {
 		switch (state) {
 		case CONTEXT_PROPERTY:
-			return scope.get((String) parameter);
+			return bindings.get((String) parameter);
 		case COMMANDNAME:
 			return statement.get(0).toString();
 		case COLLECTION:
@@ -83,22 +79,20 @@ public class ParameterInfo {
 				Type generic = parameterizedType.getActualTypeArguments()[0];
 				Method add = Collection.class.getDeclaredMethod("add", Object.class);
 				for (int index = tokenIndex; index < statement.size(); ++index) {
-					add.invoke(list, scope.get(generic, statement.get(index)));
+					add.invoke(list, bindings.get(generic, statement.get(index)));
 				}
 			} catch (Exception e) {
 				throw new KasperException(statement.startPos(), "failed to get COLLECTION");
 			}
 
 		}
-
-		switch (pType) {
-		case SCOPE:
-			return scope;
-		case REFERENCE:
-			return new Reference(statement.get(tokenIndex), scope);
-		case NORMAL:
+		if (pType == KasperBindings.class) {
+			return bindings;
 		}
-		return scope.get(type, statement.get(tokenIndex));
+		if (pType == Reference.class) {
+			return new Reference(statement.get(tokenIndex), bindings);
+		}
+		return bindings.get(type, statement.get(tokenIndex));
 		
 	}
 
