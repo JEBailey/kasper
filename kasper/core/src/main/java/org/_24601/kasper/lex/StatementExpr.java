@@ -27,27 +27,24 @@ public class StatementExpr implements Lexeme {
 
 	private char close = '}';
 
-	Pattern pattern = Pattern.compile("\\$\\{");
+	Pattern pattern = Pattern.compile("\\${\\s*([\\w()\\[\\]\\.]+)\\s*}");
 
 	@Override
 	public int consume(List<Token> tokens, CharSequence ps, int offset) {
-		int totalCaptured = 0;
 		Matcher matcher = pattern.matcher(ps);
 		matcher.region(offset, ps.length());
 		if (matcher.lookingAt()) {
-			String s = matcher.group();
+			String s = matcher.group(1);
 			tokens.add(new Inner(s, offset, matcher.end()));
-			totalCaptured = s.length();
+			return matcher.end() - offset;
 		}
-		return totalCaptured;
+		return 0;
 	}
 
 	private class Inner extends BasicToken {
 
-		private char charValue;
 
 		public Inner(String value, int start, int end) {
-			this.charValue = value.charAt(0);
 			this.value = value;
 			this.startPos = start;
 			this.endPos = end;
@@ -55,9 +52,8 @@ public class StatementExpr implements Lexeme {
 
 		@Override
 		public Collector consume(Collector collector, Stack<Collector> collectors, Stack<Character> charStack) {
-			charStack.push(close);
-			collectors.push(collector);
-			return new ExternalResolver();
+			collector.add(new ExternalResolver((String)value));
+			return collector;
 		}
 
 	}

@@ -31,30 +31,6 @@
 			</plugin>
 		</plugins>
 	</build>
-	<dependencies>
-		<dependency>
-			<groupId>biz.aQute</groupId>
-			<artifactId>bndlib</artifactId>
-			<version>1.50.0</version>
-		</dependency>
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.12</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.kohsuke.metainf-services</groupId>
-			<artifactId>metainf-services</artifactId>
-			<version>1.6</version>
-			<optional>true</optional>
-		</dependency>
-		<dependency>
-			<groupId>org.24601</groupId>
-			<artifactId>fxc</artifactId>
-			<version>0.8.0</version>
-		</dependency>
-	</dependencies>
 	<packaging>pom</packaging>
 	<licenses>
 		<license>
@@ -66,4 +42,7 @@
 		<module>core</module>
 		<module>test</module>
 	</modules>
+	<properties>
+    <project.sourceEncoding>UTF-8</project.sourceEncoding>
+  </properties>
 </project>

@@ -14,8 +14,8 @@
 				<configuration>
 					<instructions>
 						<Export-Package>org._24601.kasper.*</Export-Package>
-						<Bundle-SymbolicName>${pom.groupId}.${pom.artifactId}</Bundle-SymbolicName>
-						<Bundle-Name>${pom.name}</Bundle-Name>
+						<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+						<Bundle-Name>${project.name}</Bundle-Name>
 						<Bundle-Vendor>Jason Bailey</Bundle-Vendor>
 						<Embed-Dependency>fxc;scope=compile</Embed-Dependency>
 						<Include-Resource>
@@ -72,6 +72,11 @@
 			<groupId>org.24601</groupId>
 			<artifactId>fxc</artifactId>
 			<version>0.8.0</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.9.2</version>
 		</dependency>
 	</dependencies>
 	<packaging>bundle</packaging>
