@@ -2,10 +2,29 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.24601</groupId>
-	<artifactId>kasper</artifactId>
+	<artifactId>kasper.lang</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<build>
 		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<version>3.0.0</version>
+				<configuration>
+					<instructions>
+						<Export-Package>org._24601.kasper.*</Export-Package>
+						<Bundle-SymbolicName>${pom.groupId}.${pom.artifactId}</Bundle-SymbolicName>
+						<Bundle-Name>${pom.name}</Bundle-Name>
+						<Bundle-Vendor>Jason Bailey</Bundle-Vendor>
+						<Embed-Dependency>fxc;scope=compile</Embed-Dependency>
+						<Include-Resource>
+							{maven-resources}, {maven-dependencies},
+							/META-INF/services/javax.script.ScriptEngineFactory=target/classes/META-INF/services/javax.script.ScriptEngineFactory
+						</Include-Resource>
+					</instructions>
+				</configuration>
+			</plugin>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.3</version>
@@ -55,15 +74,11 @@
 			<version>0.8.0</version>
 		</dependency>
 	</dependencies>
-	<packaging>pom</packaging>
+	<packaging>bundle</packaging>
 	<licenses>
 		<license>
 			<name>The Apache License, Version 2.0</name>
 			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
 		</license>
 	</licenses>
-	<modules>
-		<module>core</module>
-		<module>test</module>
-	</modules>
 </project>

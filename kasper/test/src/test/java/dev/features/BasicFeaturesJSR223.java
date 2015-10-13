@@ -2,6 +2,8 @@ package dev.features;
 
 import static org.junit.Assert.assertEquals;
 
+import javax.script.Bindings;
+import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
@@ -55,9 +57,17 @@ public class BasicFeaturesJSR223 {
 		assertEquals("<!--this is a child <br>this is another-->", eval("comment{\"this is a child \"\nbr\n\"this is another\"}"));
 	}
 	
+	@Test
+	public void testBindings() throws KasperException {
+		assertEquals(1, eval("${foo}"));
+	}
+	
 	private Object eval(String expression) throws KasperException {
 		ScriptEngineManager manager = new ScriptEngineManager();
 		ScriptEngine engine = manager.getEngineByExtension("ksp");
+		Bindings bindings = engine.createBindings();
+		bindings.put("foo", 1);
+		engine.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
         try {
 			return engine.eval(expression);
 		} catch (ScriptException e) {
