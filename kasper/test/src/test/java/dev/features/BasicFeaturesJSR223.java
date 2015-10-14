@@ -68,7 +68,7 @@ public class BasicFeaturesJSR223 {
 	}
 	
 	@Test
-	public void testAccessorboolean() throws KasperException {
+	public void testAccessorForBean() throws KasperException {
 		assertEquals(false, eval("${bar.empty}"));
 	}
 	

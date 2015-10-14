@@ -26,8 +26,7 @@ public class KasperLangImpl {
 
 	private Writer writer;
 
-	public KasperLangImpl(Writer writer) {
-		this.writer = writer;
+	public KasperLangImpl() {
 	}
 
 	/**
@@ -39,7 +38,7 @@ public class KasperLangImpl {
 		// force closing tag
 		element.add("");
 		if (arg1 != null) {
-			listToAttributes(element, arg1);
+			Utils.listToAttributes(element, arg1);
 		}
 		if (arg2 != null) {
 			element.add((String) arg2.evaluate());
@@ -52,7 +51,7 @@ public class KasperLangImpl {
 			throws IOException, UnsupportedOperationException, KasperException {
 		Element element = new VoidElement(tag);
 		if (arg1 != null) {
-			listToAttributes(element, arg1);
+			Utils.listToAttributes(element, arg1);
 		}
 		return element.toString();
 	}
@@ -61,51 +60,7 @@ public class KasperLangImpl {
 		lookingForVar, lookingForAssignment, lookingForValue, lookingForSeperator
 	};
 
-	private void listToAttributes(Element element, List<Object> argList) throws KasperException {
-		state stateMachine = state.lookingForVar;
-		Object key = null;
-		String value = null;
-		for (Object object : argList) {
-			switch (stateMachine) {
-			case lookingForVar:
-				if (object instanceof Atom) {
-					key = object;
-					stateMachine = state.lookingForAssignment;
-					break;
-				}
-				throw new KasperException(0, "attribute assignment incorrect");
-			case lookingForAssignment:
-				if (object.toString().equals("=")) {
-					stateMachine = state.lookingForValue;
-					break;
-				}
-				if (object.toString().equals(",")) {
-					stateMachine = state.lookingForVar;
-					element.setAttribute(key.toString());
-					key = null;
-					break;
-				}
-				throw new KasperException(0, "attribute assignment incorrect");
-			case lookingForValue:
-				if (object instanceof String) {
-					stateMachine = state.lookingForSeperator;
-					element.setAttribute(key.toString(), (String) object);
-					key = null;
-					break;
-				}
-				throw new KasperException(0, "attribute assignment incorrect");
-			case lookingForSeperator:
-				if (object.toString().equals(",")) {
-					stateMachine = state.lookingForVar;
-					break;
-				}
-				throw new KasperException(0, "attribute assignment incorrect");
-			}
-		}
-		if (key != null) {
-			element.setAttribute(key.toString());
-		}
-	}
+
 	
 	private String evalString(KasperContext context, String toParse) throws KasperException{
 		Matcher matcher = ExternalExpression.pattern.matcher(toParse);
@@ -130,7 +85,7 @@ public class KasperLangImpl {
 			throws IOException, UnsupportedOperationException, KasperException {
 		Element element = new DocType();
 		if (arg1 != null) {
-			listToAttributes(element, arg1);
+			Utils.listToAttributes(element, arg1);
 		}
 		return element.toString();
 	}
@@ -145,12 +100,25 @@ public class KasperLangImpl {
 	}
 	
 	@Command("if")
-	public Object condition(Reference condition, Reference commands) throws IOException, UnsupportedOperationException, KasperException {
-		Object foo = condition.evaluate();
-		if (Boolean.valueOf(condition.evaluate().toString())){
+	public Object condition(Reference predicate, Reference commands) throws IOException, UnsupportedOperationException, KasperException {
+		Object foo = predicate.evaluate();
+		if (Boolean.valueOf(predicate.evaluate().toString())){
 			return commands.evaluate();
 		}
 		return "";
+	}
+	
+	@Command("forEach")
+	public Object forEach(Reference items, Reference commands) throws IOException, UnsupportedOperationException, KasperException {
+		Object foo = items.evaluate();
+		Object[] arr = Utils.toArray(foo);
+		StringBuilder sb = new StringBuilder();
+		for(Object object:arr){
+			commands.createChildScope();
+			String str = (String)commands.evaluate();
+			sb.append(str);
+		}
+		return sb.toString();
 	}
 	
 	@Primitive("true")

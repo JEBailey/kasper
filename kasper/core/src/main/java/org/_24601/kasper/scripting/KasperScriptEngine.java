@@ -9,9 +9,8 @@ import javax.script.ScriptException;
 
 import org._24601.kasper.Interpreter;
 import org._24601.kasper.KasperScriptEngineFactory;
-import org._24601.kasper.core.KasperContext;
 import org._24601.kasper.core.KasperBindings;
-import org._24601.kasper.error.KasperException;
+import org._24601.kasper.core.KasperContext;
 
 public class KasperScriptEngine  implements ScriptEngine {
 

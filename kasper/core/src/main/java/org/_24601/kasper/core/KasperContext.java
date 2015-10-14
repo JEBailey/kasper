@@ -60,7 +60,7 @@ public class KasperContext implements ScriptContext {
 		this.parser = parser;
 		this.bindings = bindings;
 		this.lexemes = standardLexemes();
-		this.casper = new KasperLangImpl(new OutputStreamWriter(System.out));
+		this.casper = new KasperLangImpl();
 		this.load(casper);
 		bindings.put(output, System.out);
 	}
