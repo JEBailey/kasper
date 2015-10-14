@@ -72,12 +72,23 @@ public class BasicFeaturesJSR223 {
 		assertEquals(false, eval("${bar.empty}"));
 	}
 	
+	@Test
+	public void testAccessorForMultipleBeanLevels() throws KasperException {
+		assertEquals("false", eval("${bar.empty.toString()}"));
+	}
+	
+	@Test
+	public void testForEach() throws KasperException {
+		assertEquals("false", eval("forEach ${foobar} { a {item} }"));
+	}
+	
 	private Object eval(String expression) throws KasperException {
 		ScriptEngineManager manager = new ScriptEngineManager();
 		ScriptEngine engine = manager.getEngineByExtension("ksp");
 		Bindings bindings = engine.createBindings();
 		bindings.put("foo", 1);
 		bindings.put("bar", "this is sparta");
+		bindings.put("foobar", new String[]{"this", "is", "a", "test"});
 		engine.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
         try {
 			return engine.eval(expression);

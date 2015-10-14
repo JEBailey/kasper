@@ -1,5 +1,6 @@
 package org._24601.kasper.lang;
 
+import java.lang.reflect.Array;
 import java.util.List;
 
 import org._24601.kasper.error.KasperException;
@@ -61,6 +62,9 @@ public class Utils {
 	}
 
 	public static Object[] toArray(Object foo) {
+		if (foo.getClass().isArray()){
+			return (Object[])foo;
+		}
 		return null;
 	}
 
