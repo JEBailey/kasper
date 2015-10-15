@@ -68,4 +68,11 @@ public class Utils {
 		return null;
 	}
 
+	public static String toString(Object object) {
+		if (object instanceof String){
+			return (String)object;
+		}
+		return object.toString();
+	}
+
 }

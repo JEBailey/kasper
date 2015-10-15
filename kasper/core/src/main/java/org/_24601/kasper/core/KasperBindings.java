@@ -16,11 +16,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import javax.script.Bindings;
 
 import org._24601.kasper.Interpreter;
-import org._24601.kasper.api.Executable;
 import org._24601.kasper.api.StatementProvider;
 import org._24601.kasper.error.KasperException;
 import org._24601.kasper.type.Atom;
-import org._24601.kasper.type.ExternalResolver;
 import org._24601.kasper.type.Statement;
 import org._24601.kasper.type.Undefined;
 
@@ -113,6 +111,7 @@ public class KasperBindings implements Bindings {
 		if (response instanceof Statement) {
 			response = Interpreter.process(this, (StatementProvider) response);
 		}
+		
 		return response;
 	}
 	
@@ -166,11 +165,6 @@ public class KasperBindings implements Bindings {
 		if (object instanceof Statement) {
 			return get(requestedType,
 					Interpreter.process(this, (Statement) object));
-		}
-		
-		if (object instanceof ExternalResolver){
-			return get(requestedType,
-					Interpreter.process(this, new Statement((Executable)object)));
 		}
 
 		if (object instanceof Atom) {

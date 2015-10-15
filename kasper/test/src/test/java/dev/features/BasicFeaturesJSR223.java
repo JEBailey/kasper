@@ -79,7 +79,17 @@ public class BasicFeaturesJSR223 {
 	
 	@Test
 	public void testForEach() throws KasperException {
+		assertEquals("<a>this</a><a>is</a><a>a</a><a>test</a>", eval("forEach ${foobar} { a item }"));
+	}
+	
+	@Test
+	public void testForEachExtended() throws KasperException {
 		assertEquals("<a>this</a><a>is</a><a>a</a><a>test</a>", eval("forEach ${foobar} { a ${item} }"));
+	}
+	
+	@Test
+	public void testForEachExtendedOgnl() throws KasperException {
+		assertEquals("<a>4</a><a>2</a><a>1</a><a>4</a>", eval("forEach ${foobar} { a ${item.length()}}"));
 	}
 	
 	@Test

@@ -29,10 +29,10 @@ public class Statement implements Collector, StatementProvider {
 	
 	
 	public Statement(Collection<? extends Object> list) {
-		content = new LinkedList<Object>(list);
+		content.addAll(list);
 	}
 	
-	public Statement(Executable executable) {
+	public Statement(Object executable) {
 		content.add(executable);
 	}
 	

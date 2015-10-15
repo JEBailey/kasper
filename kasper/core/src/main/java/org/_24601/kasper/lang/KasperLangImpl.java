@@ -43,7 +43,7 @@ public class KasperLangImpl {
 			Utils.listToAttributes(element, arg1);
 		}
 		if (arg2 != null) {
-			element.add((String) arg2.evaluate());
+			element.add(Utils.toString(arg2.evaluate()));
 		}
 		return element.toString();
 	}
@@ -103,7 +103,6 @@ public class KasperLangImpl {
 	
 	@Command("if")
 	public Object condition(Reference predicate, Reference commands) throws IOException, UnsupportedOperationException, KasperException {
-		Object foo = predicate.evaluate();
 		if (Boolean.valueOf(predicate.evaluate().toString())){
 			return commands.evaluate();
 		}
@@ -113,9 +112,6 @@ public class KasperLangImpl {
 	@Command("forEach")
 	public Object forEach(Reference items, Reference commands) throws IOException, UnsupportedOperationException, KasperException {
 		Object foo = items.evaluate();
-		if (foo instanceof Executable){
-			foo = ((Executable)foo).execute((KasperBindings)items.getBindings(),(Statement)null);
-		}
 		Object[] arr = Utils.toArray(foo);
 		StringBuilder sb = new StringBuilder();
 		for(Object object:arr){

@@ -110,21 +110,6 @@ public class KasperContext implements ScriptContext {
 	public KasperBindings getScope() {
 		return bindings;
 	}
-	
-	public Bindings pushBindings(int scope){
-		KasperBindings bindings = (KasperBindings)getBindings(scope);
-		bindings = bindings.createChildScope();
-		setBindings(bindings,scope);
-		return bindings;
-	}
-	
-	public void popBindings(int scope){
-		KasperBindings bindings = (KasperBindings)getBindings(scope);
-		bindings = bindings.getParentScope();
-		if (bindings != null){
-			setBindings(bindings, scope);
-		}
-	}
 
 	/**
 	 * facade to add a key value pair to the underlying scope
