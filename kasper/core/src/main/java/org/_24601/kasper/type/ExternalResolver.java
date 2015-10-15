@@ -1,7 +1,5 @@
 package org._24601.kasper.type;
 
-import java.lang.reflect.InvocationTargetException;
-
 import org._24601.kasper.api.Executable;
 import org._24601.kasper.core.KasperBindings;
 import org._24601.kasper.core.KasperContext;
@@ -37,14 +35,11 @@ public class ExternalResolver implements Executable {
 
 	@Override
 	public Object execute(KasperBindings scope, Statement statement) throws KasperException {
-		if (statement.size() != 0){
-			//throw exception
-		}
 		KasperBindings bindings = (KasperBindings)scope.get(KasperContext.engineScopeID);
 		Object reply = bindings.get(value);
 		if (expression != null){
 			try {
-				reply = Ognl.getValue(expression,context, reply);
+				reply = Ognl.getValue(expression, context, reply);
 			} catch (OgnlException e) {
 				throw new KasperException(0,e.getMessage());
 			}

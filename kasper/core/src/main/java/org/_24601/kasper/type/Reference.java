@@ -1,5 +1,7 @@
 package org._24601.kasper.type;
 
+import javax.script.Bindings;
+
 import org._24601.kasper.Interpreter;
 import org._24601.kasper.api.StatementProvider;
 import org._24601.kasper.core.KasperBindings;
@@ -17,11 +19,11 @@ public class Reference {
 	
 	private Object key;
 
-	private KasperBindings scope;
+	private KasperBindings bindings;
 
 	public Reference(Object key, KasperBindings scope) {
 		this.key = key;
-		this.scope = scope;
+		this.bindings = scope;
 	}
 
 	public Object getKey() {
@@ -30,15 +32,15 @@ public class Reference {
 
 	@SuppressWarnings("unchecked")
 	public <R> R getValue(Class<R> klass) throws KasperException {
-		return (R) scope.get(klass, key);
+		return (R) bindings.get(klass, key);
 	}
 
 	public Object getValue() {
-		return scope.get(key.toString());
+		return bindings.get(key.toString());
 	}
 
 	public void setValue(Object value) {
-		this.scope.put(key.toString(), value);
+		this.bindings.put(key.toString(), value);
 	}
 			
 	/**
@@ -49,7 +51,7 @@ public class Reference {
 	 * @return inserted value
 	 */
 	public Object updateValue(Object value) {
-		return this.scope.update(key.toString(), value);
+		return this.bindings.update(key.toString(), value);
 	}
 
 	/**
@@ -62,19 +64,23 @@ public class Reference {
 	 * @return inserted value
 	 */
 	public Object put(Object value) {
-		return scope.put(key.toString(), value);
+		return bindings.put(key.toString(), value);
 	}
 
 	public void createChildScope() {
-		this.scope = this.scope.createChildScope();
+		this.bindings= this.bindings.createChildScope();
 	}
 
 	public Object evaluate() throws KasperException {
-		Object result = scope.getValue(key);
+		Object result = bindings.getValue(key);
 		if (result instanceof StatementProvider) {
-			return Interpreter.process(scope, (StatementProvider) result);
+			return Interpreter.process(bindings, (StatementProvider) result);
 		}
 		return result;
+	}
+	
+	public Bindings getBindings(){
+		return (Bindings)this.bindings;
 	}
 
 }

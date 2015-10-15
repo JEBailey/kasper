@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.LinkedList;
 
 import org._24601.kasper.api.Collector;
+import org._24601.kasper.api.Executable;
 import org._24601.kasper.api.StatementProvider;
 import org._24601.kasper.api.StatementProviderVisitor;
 import org._24601.kasper.error.KasperException;
@@ -29,6 +30,10 @@ public class Statement implements Collector, StatementProvider {
 	
 	public Statement(Collection<? extends Object> list) {
 		content = new LinkedList<Object>(list);
+	}
+	
+	public Statement(Executable executable) {
+		content.add(executable);
 	}
 	
 	public boolean notEmpty(){

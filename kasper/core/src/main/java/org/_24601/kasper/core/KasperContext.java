@@ -1,7 +1,6 @@
 package org._24601.kasper.core;
 
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.Reader;
 import java.io.Writer;
 import java.lang.reflect.Method;
@@ -22,11 +21,11 @@ import org._24601.kasper.lex.ClosingElement;
 import org._24601.kasper.lex.Comments;
 import org._24601.kasper.lex.DoubleQuoteString;
 import org._24601.kasper.lex.Eol;
+import org._24601.kasper.lex.ExternalExpression;
 import org._24601.kasper.lex.Identifier;
 import org._24601.kasper.lex.SingleQuoteStrings;
 import org._24601.kasper.lex.Special;
 import org._24601.kasper.lex.StatementBlock;
-import org._24601.kasper.lex.ExternalExpression;
 import org._24601.kasper.lex.StatementList;
 import org._24601.kasper.lex.WhiteSpace;
 
@@ -41,8 +40,6 @@ public class KasperContext implements ScriptContext {
 	private KasperBindings bindings;
 
 	private List<Lexeme> lexemes;
-
-	private KasperLangImpl casper;
 
 	private static final String output = "__outputstream";
 
@@ -60,8 +57,7 @@ public class KasperContext implements ScriptContext {
 		this.parser = parser;
 		this.bindings = bindings;
 		this.lexemes = standardLexemes();
-		this.casper = new KasperLangImpl();
-		this.load(casper);
+		this.load(new KasperLangImpl());
 		bindings.put(output, System.out);
 	}
 
@@ -113,6 +109,21 @@ public class KasperContext implements ScriptContext {
 
 	public KasperBindings getScope() {
 		return bindings;
+	}
+	
+	public Bindings pushBindings(int scope){
+		KasperBindings bindings = (KasperBindings)getBindings(scope);
+		bindings = bindings.createChildScope();
+		setBindings(bindings,scope);
+		return bindings;
+	}
+	
+	public void popBindings(int scope){
+		KasperBindings bindings = (KasperBindings)getBindings(scope);
+		bindings = bindings.getParentScope();
+		if (bindings != null){
+			setBindings(bindings, scope);
+		}
 	}
 
 	/**

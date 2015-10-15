@@ -10,6 +10,7 @@ import org._24601.kasper.annotations.Command;
 import org._24601.kasper.annotations.Optional;
 import org._24601.kasper.annotations.Primitive;
 import org._24601.kasper.annotations.parameter.CommandName;
+import org._24601.kasper.api.Executable;
 import org._24601.kasper.core.KasperBindings;
 import org._24601.kasper.core.KasperContext;
 import org._24601.kasper.error.KasperException;
@@ -19,6 +20,7 @@ import org._24601.kasper.fxc.elements.VoidElement;
 import org._24601.kasper.lex.ExternalExpression;
 import org._24601.kasper.type.Atom;
 import org._24601.kasper.type.Reference;
+import org._24601.kasper.type.Statement;
 
 import fxc.Element;
 
@@ -111,10 +113,14 @@ public class KasperLangImpl {
 	@Command("forEach")
 	public Object forEach(Reference items, Reference commands) throws IOException, UnsupportedOperationException, KasperException {
 		Object foo = items.evaluate();
+		if (foo instanceof Executable){
+			foo = ((Executable)foo).execute((KasperBindings)items.getBindings(),(Statement)null);
+		}
 		Object[] arr = Utils.toArray(foo);
 		StringBuilder sb = new StringBuilder();
 		for(Object object:arr){
 			commands.createChildScope();
+			commands.getBindings().put("item", object);
 			String str = (String)commands.evaluate();
 			sb.append(str);
 		}
