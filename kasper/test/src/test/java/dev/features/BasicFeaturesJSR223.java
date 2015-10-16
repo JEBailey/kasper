@@ -94,7 +94,7 @@ public class BasicFeaturesJSR223 {
 	
 	@Test
 	public void testForIf() throws KasperException {
-		assertEquals("<a>this</a><a>is</a><a>a</a><a>test</a>", eval("if true "));
+		assertEquals("<a>fish</a>", eval("if true { a 'fish' } "));
 	}
 	
 	private Object eval(String expression) throws KasperException {
