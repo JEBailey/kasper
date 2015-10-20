@@ -34,7 +34,6 @@ public class KasperScriptEngineFactory implements ScriptEngineFactory {
 
 	@Override
 	public List<String> getMimeTypes() {
-		// TODO Auto-generated method stub
 		return new ArrayList<>();
 	}
 

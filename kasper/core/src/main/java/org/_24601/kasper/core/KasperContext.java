@@ -135,10 +135,6 @@ public class KasperContext implements ScriptContext {
 		return new ArrayList<Lexeme>(lexemes);
 	}
 
-	public void setLexemes(List<Lexeme> lexemes) {
-		this.lexemes.addAll(lexemes);
-	}
-
 	/**
 	 * 
 	 * 
@@ -202,14 +198,6 @@ public class KasperContext implements ScriptContext {
 		return parser.complete();
 	}
 
-	public void setOutputStream(OutputStream os) {
-		bindings.put(output, os);
-
-	}
-
-	public void resetParser() {
-		this.parser = new DefaultParser();
-	}
 
 	@Override
 	public void setBindings(Bindings bindings, int scope) {

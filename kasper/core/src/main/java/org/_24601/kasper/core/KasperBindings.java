@@ -73,17 +73,6 @@ public class KasperBindings implements Bindings {
 		return content.put(key, value);
 	}
 
-	public KasperBindings getRootScope() {
-		if (enclosingScope != null) {
-			return enclosingScope.getRootScope();
-		}
-		return this;
-	}
-
-	public Object update(Atom key, Object value) throws Exception {
-		return update(key.toString(), value);
-	}
-
 	public KasperBindings createChildScope() {
 		return new KasperBindings(this);
 	}
@@ -104,14 +93,13 @@ public class KasperBindings implements Bindings {
 		Object response = object;
 		if (response instanceof Atom) {
 			response = get(object.toString());
-			if (response == null) {
-				return Undefined.getInstance();
-			}
 		}
 		if (response instanceof Statement) {
 			response = Interpreter.process(this, (StatementProvider) response);
 		}
-		
+		if (response == null) {
+			return Undefined.getInstance();
+		}
 		return response;
 	}
 	
@@ -137,13 +125,6 @@ public class KasperBindings implements Bindings {
 		}
 		
 		return response;
-	}
-
-	/**
-	 * Resolves an object and provides it's String representation
-	 */
-	public String getString(Object object) throws KasperException {
-		return getValue(object).toString();
 	}
 
 	/**
