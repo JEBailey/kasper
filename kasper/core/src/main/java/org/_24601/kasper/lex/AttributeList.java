@@ -9,7 +9,7 @@ import org._24601.kasper.api.Token;
 import org._24601.kasper.core.BasicToken;
 import org._24601.kasper.type.ListCollector;
 
-public class StatementList implements Lexeme {
+public class AttributeList implements Lexeme {
 
 	private char open = '(';
 

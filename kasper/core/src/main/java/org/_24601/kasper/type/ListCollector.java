@@ -24,10 +24,8 @@ public class ListCollector implements Collector {
 		return content.add(object);
 	}
 
-
 	@Override
-	public boolean invokeEndOfStatement() {
-		return false;
+	public void addEol() {
 	}
 
 	@Override
@@ -37,9 +35,8 @@ public class ListCollector implements Collector {
 
 
 	@Override
-	public void addEOL() {
-		// TODO Auto-generated method stub
-		
+	public boolean finished() {
+		return true;
 	}
 
 

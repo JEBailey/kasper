@@ -4,18 +4,18 @@ import java.util.LinkedList;
 import java.util.List;
 
 import org._24601.kasper.api.Collector;
-import org._24601.kasper.api.StatementProvider;
-import org._24601.kasper.api.StatementProviderVisitor;
+import org._24601.kasper.api.ListProvider;
+import org._24601.kasper.api.ListProviderVisitor;
 import org._24601.kasper.error.KasperException;
 
 /**
- * consume a series of statements into a single object
+ * consume a series of Lists into a single List of those List items
  * 
  * 
  * @author je bailey
  *
  */
-public class MultiLineStatement implements StatementProvider, Collector {
+public class ListOfLists implements ListProvider, Collector {
 
 	private List<Statement> statements = new LinkedList<Statement>();
 
@@ -23,7 +23,7 @@ public class MultiLineStatement implements StatementProvider, Collector {
 
 	private int startPos;
 
-	public MultiLineStatement() {
+	public ListOfLists() {
 		statement = new Statement(0, 0);
 	}
 
@@ -50,19 +50,18 @@ public class MultiLineStatement implements StatementProvider, Collector {
 	}
 
 	@Override
-	public boolean invokeEndOfStatement() {
+	public void addEol() {
 		if (statement.notEmpty()) {
 			statements.add(statement);
 			this.statement = new Statement(0, 0);
 		}
-		return false;
 	}
 
 	@Override
-	public Object accept(StatementProviderVisitor function) throws KasperException {
+	public Object accept(ListProviderVisitor function) throws KasperException {
 		StringBuilder sb = new StringBuilder();
 		for (Statement statement : statements) {
-			Object result = function.apply(statement);
+			Object result = function.apply(statement.get());
 			if (result instanceof String) {
 				sb.append((String) result);
 			} else {
@@ -73,9 +72,8 @@ public class MultiLineStatement implements StatementProvider, Collector {
 	}
 
 	@Override
-	public void addEOL() {
-		// TODO Auto-generated method stub
-
+	public boolean finished() {
+		return false;
 	}
 
 	@Override

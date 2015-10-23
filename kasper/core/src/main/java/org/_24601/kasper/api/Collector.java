@@ -20,7 +20,7 @@ public interface Collector {
 	/**
 	 * increment the internal Line Number count
 	 */
-	void addEOL();
+	boolean finished();
 	
 	/**
 	 * return the last line number this collector references
@@ -36,10 +36,10 @@ public interface Collector {
 	 * 
 	 * @return true if the Collector is done Collecting
 	 */
-	boolean invokeEndOfStatement();
+	void addEol();
 
 	/**
-	 * This returns the object that the collector is collecting into. This could
+	 * Returns the object that the collector is collecting into. This could
 	 * the collector itself or a new object
 	 * 
 	 * @return object which encompasses the supplied tokens

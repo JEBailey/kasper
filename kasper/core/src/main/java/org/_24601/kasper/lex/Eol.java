@@ -51,7 +51,8 @@ public class Eol implements Lexeme {
 
 		@Override
 		public Collector consume(Collector statement, Stack<Collector> statements, Stack<Character> charStack) {
-			if (statement.invokeEndOfStatement()) {
+			statement.addEol();
+			if (statement.finished()) {
 				statements.add(statement);
 				statement = new Statement(startPos, statement.getLineNumber());
 			}

@@ -12,8 +12,8 @@ import org._24601.kasper.core.BasicToken;
 import org._24601.kasper.type.Atom;
 
 /**
- * 
- * 
+ * Representation of a word that represents something else in the content of the
+ * script. This could be a name of a command or a variable.
  * 
  * @author jebailey
  *
@@ -24,12 +24,12 @@ public class Identifier implements Lexeme {
 
 	private Matcher matcher;
 
-	private CharSequence cachedSequence;
+	private CharSequence charSequence;
 
 	@Override
 	public int consume(List<Token> tokens, CharSequence ps, int offset) {
-		if (cachedSequence != ps) {
-			cachedSequence = ps;
+		if (charSequence != ps) {
+			charSequence = ps;
 			matcher = pattern.matcher(ps);
 		}
 		matcher.region(offset, ps.length());

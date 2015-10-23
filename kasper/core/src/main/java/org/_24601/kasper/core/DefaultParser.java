@@ -60,16 +60,10 @@ public class DefaultParser implements Parser {
 	public boolean hasNext() {
 		return !collectors.isEmpty();
 	}
-	
-
-	@Override
-	public boolean complete() {
-		return charStack.isEmpty();
-	}
 
 
 	@Override
 	public void remove() {
-		log.warning("remove not supported");
+		throw new UnsupportedOperationException();
 	}
 }

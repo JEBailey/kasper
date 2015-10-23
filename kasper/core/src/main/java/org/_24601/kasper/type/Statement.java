@@ -2,11 +2,11 @@ package org._24601.kasper.type;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 
 import org._24601.kasper.api.Collector;
-import org._24601.kasper.api.Executable;
-import org._24601.kasper.api.StatementProvider;
-import org._24601.kasper.api.StatementProviderVisitor;
+import org._24601.kasper.api.ListProvider;
+import org._24601.kasper.api.ListProviderVisitor;
 import org._24601.kasper.error.KasperException;
 
 /**
@@ -15,13 +15,10 @@ import org._24601.kasper.error.KasperException;
  * @author jebailey
  *
  */
-public class Statement implements Collector, StatementProvider {
+public class Statement implements Collector, ListProvider {
 	
-	private LinkedList<Object> content = new LinkedList<Object>();
+	private List<Object> content = new LinkedList<Object>();
 	private int startPos;
-	private int endPos;
-	private int lineNumberStart;
-	private int lineNumberEnd;
 	
 	public Statement(int startPos, int lineNumber){
 		this.startPos = startPos;
@@ -32,18 +29,11 @@ public class Statement implements Collector, StatementProvider {
 		content.addAll(list);
 	}
 	
-	public Statement(Object executable) {
-		content.add(executable);
-	}
 	
 	public boolean notEmpty(){
 		return !content.isEmpty();
 	}
 
-	public Statement subList(int arg0, int arg1){
-		return new Statement(content.subList(arg0, arg1));
-	}
-	
 	public String errorString() {
 		return "at pos :" + toString();
 	}
@@ -64,54 +54,32 @@ public class Statement implements Collector, StatementProvider {
 		return content.add(object);
 	}
 
-	public Object get(int i) {
-		
-		return content.get(i);
+
+	@Override
+	public void addEol() {
 	}
 
-	public int size() {
-		return content.size();
-	}
 
-	public void push(Atom atom) {
-		content.push(atom);
+	@Override
+	public List<Object> get() {
+		return content;
 	}
 
 	@Override
-	public boolean invokeEndOfStatement() {
+	public Object accept(ListProviderVisitor visitor) throws KasperException {
+		return visitor.apply(content);
+	}
+
+
+	@Override
+	public boolean finished() {
 		return !content.isEmpty();
-	}
-
-	public int startPos() {
-		return startPos;
-	}
-
-	public int endPos() {
-		return endPos;
-	}
-
-	@Override
-	public Object get() {
-		return this;
-	}
-
-	@Override
-	public Object accept(StatementProviderVisitor visitor) throws KasperException {
-		return visitor.apply(this);
-	}
-
-
-	@Override
-	public void addEOL() {
-		// TODO Auto-generated method stub
-		
 	}
 
 
 	@Override
 	public int getLineNumber() {
-		// TODO Auto-generated method stub
-		return 0;
+		return startPos;
 	}
 	
 

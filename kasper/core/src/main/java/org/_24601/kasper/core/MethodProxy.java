@@ -2,10 +2,10 @@ package org._24601.kasper.core;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.List;
 
 import org._24601.kasper.api.Executable;
 import org._24601.kasper.error.KasperException;
-import org._24601.kasper.type.Statement;
 
 /**
  * MethodProxy is used to wrap an invocation of an executable that
@@ -30,15 +30,13 @@ public class MethodProxy implements Executable {
 	}
 
 	@Override
-	public Object execute(KasperBindings argumentScope, Statement statement) throws KasperException {
+	public Object execute(KasperBindings argumentScope, List<Object> list) throws KasperException {
 		try {
-			return method.invoke(object, resolver.render(argumentScope, statement));
-		} catch (InvocationTargetException ite) {
-			KasperException exception = new KasperException(statement.startPos(),ite.getCause().toString());
+			return method.invoke(object, resolver.render(argumentScope, list));
+		} catch (InvocationTargetException|IllegalAccessException ite) {
+			KasperException exception = new KasperException(-1,ite.getCause().toString());
 			throw exception;
-		} catch (IllegalAccessException e) {
-			throw new KasperException(statement.startPos(),e.toString());
-		} 
+		}
 	}
 	
 	@Override

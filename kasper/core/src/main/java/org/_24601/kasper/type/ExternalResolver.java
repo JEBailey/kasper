@@ -1,8 +1,11 @@
 package org._24601.kasper.type;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org._24601.kasper.api.Executable;
-import org._24601.kasper.api.StatementProvider;
-import org._24601.kasper.api.StatementProviderVisitor;
+import org._24601.kasper.api.ListProvider;
+import org._24601.kasper.api.ListProviderVisitor;
 import org._24601.kasper.core.KasperBindings;
 import org._24601.kasper.core.KasperContext;
 import org._24601.kasper.error.KasperException;
@@ -11,7 +14,7 @@ import ognl.Ognl;
 import ognl.OgnlContext;
 import ognl.OgnlException;
 
-public class ExternalResolver implements Executable, StatementProvider {
+public class ExternalResolver implements Executable, ListProvider {
 
 
 	private String key = "";
@@ -35,7 +38,7 @@ public class ExternalResolver implements Executable, StatementProvider {
 	}
 
 	@Override
-	public Object execute(KasperBindings scope, Statement statement) throws KasperException {
+	public Object execute(KasperBindings scope, List<Object> list) throws KasperException {
 		KasperBindings bindings = (KasperBindings)scope.get(KasperContext.engineScopeID);
 		Object reply = bindings.get(key);
 		if (reply == null){
@@ -52,9 +55,9 @@ public class ExternalResolver implements Executable, StatementProvider {
 	}
 
 	@Override
-	public Object accept(StatementProviderVisitor visitor)
+	public Object accept(ListProviderVisitor visitor)
 			throws KasperException {
-		return visitor.apply(new Statement(this));
+		return visitor.apply(Arrays.asList(this));
 	}
 
 }

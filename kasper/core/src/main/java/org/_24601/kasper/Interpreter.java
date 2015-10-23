@@ -14,15 +14,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.URL;
+import java.util.List;
 
 import org._24601.kasper.api.Executable;
+import org._24601.kasper.api.ListProvider;
+import org._24601.kasper.api.ListProviderVisitor;
 import org._24601.kasper.api.Parser;
-import org._24601.kasper.api.StatementProvider;
-import org._24601.kasper.api.StatementProviderVisitor;
 import org._24601.kasper.core.KasperBindings;
 import org._24601.kasper.core.KasperContext;
 import org._24601.kasper.error.KasperException;
-import org._24601.kasper.type.Statement;
 
 /**
  * Initiates the process of turning a string of text into an executable
@@ -80,14 +80,14 @@ public class Interpreter {
 	 * @return
 	 * @throws KasperException
 	 */
-	public static Object process(final KasperBindings scope, StatementProvider provider) throws KasperException {
-		return provider.accept(new StatementProviderVisitor() {
+	public static Object process(final KasperBindings scope, ListProvider provider) throws KasperException {
+		return provider.accept(new ListProviderVisitor() {
 			
 			@Override
-			public Object apply(Statement statement) throws KasperException {
-				Object token = scope.getValue(statement.get(0), true);
+			public Object apply(List list) throws KasperException {
+				Object token = scope.getValue(list.get(0), true);
 				if (token instanceof Executable) {
-					token = ((Executable) token).execute(scope, statement);
+					token = ((Executable) token).execute(scope, list);
 				}
 				return token;
 			}

@@ -5,13 +5,13 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.List;
 
 import org._24601.kasper.annotations.Optional;
 import org._24601.kasper.annotations.Property;
 import org._24601.kasper.annotations.parameter.CommandName;
 import org._24601.kasper.error.KasperException;
 import org._24601.kasper.type.Reference;
-import org._24601.kasper.type.Statement;
 
 /**
  * Represents the
@@ -66,7 +66,7 @@ public class ParameterInfo {
 		return state == State.OPTIONAL;
 	}
 
-	public Object render(KasperBindings bindings, Statement statement, int tokenIndex) throws KasperException {
+	public Object render(KasperBindings bindings, List<Object> statement, int tokenIndex) throws KasperException {
 		switch (state) {
 		case CONTEXT_PROPERTY:
 			return bindings.get((String) parameter);
@@ -82,8 +82,9 @@ public class ParameterInfo {
 					add.invoke(list, bindings.get(generic, statement.get(index)));
 				}
 			} catch (Exception e) {
-				throw new KasperException(statement.startPos(), "failed to get COLLECTION");
+				throw new KasperException(-1, "failed to get COLLECTION");
 			}
+			default:
 
 		}
 		if (pType == KasperBindings.class) {

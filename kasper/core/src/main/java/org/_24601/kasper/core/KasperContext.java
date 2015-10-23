@@ -23,10 +23,10 @@ import org._24601.kasper.lex.DoubleQuoteString;
 import org._24601.kasper.lex.Eol;
 import org._24601.kasper.lex.ExternalExpression;
 import org._24601.kasper.lex.Identifier;
+import org._24601.kasper.lex.AttributeList;
 import org._24601.kasper.lex.SingleQuoteStrings;
 import org._24601.kasper.lex.Special;
 import org._24601.kasper.lex.StatementBlock;
-import org._24601.kasper.lex.StatementList;
 import org._24601.kasper.lex.WhiteSpace;
 
 public class KasperContext implements ScriptContext {
@@ -96,7 +96,7 @@ public class KasperContext implements ScriptContext {
 				add(new ExternalExpression());
 				add(new Eol());
 				add(new Special());
-				add(new StatementList());
+				add(new AttributeList());
 				add(new StatementBlock());
 				add(new ClosingElement());
 			}
@@ -188,16 +188,6 @@ public class KasperContext implements ScriptContext {
 			}
 		}
 	}
-
-	/**
-	 * 
-	 * 
-	 * @return state of the parser
-	 */
-	public boolean isComplete() {
-		return parser.complete();
-	}
-
 
 	@Override
 	public void setBindings(Bindings bindings, int scope) {

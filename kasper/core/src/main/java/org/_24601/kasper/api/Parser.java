@@ -17,6 +17,4 @@ public interface Parser extends Iterator<Statement> {
 	
 	void process(CharSequence string, List<Lexeme> lexemes) throws KasperException;
 
-	boolean complete();
-
 }

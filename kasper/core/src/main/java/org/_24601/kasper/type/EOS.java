@@ -15,7 +15,8 @@ public class EOS extends BasicToken {
 
 	@Override
 	public Collector consume(Collector collector, Stack<Collector> collectors, Stack<Character> charStack) {
-		if (collector.invokeEndOfStatement()) {
+		collector.addEol();
+		if (collector.finished()) {
 			collectors.add(collector);
 			collector = new Statement(startPos, collector.getLineNumber());
 		}

@@ -36,7 +36,7 @@ public class ClosingElement implements Lexeme {
 			// to the expected value from the char stack
 			if (!charStack.empty() && charStack.pop() == close) {
 				// let the collector know that we've come to a grammatical end
-				collector.invokeEndOfStatement();
+				collector.addEol();
 				// hold onto the Collector
 				Object temp = collector;
 				// replace it with one from the stack

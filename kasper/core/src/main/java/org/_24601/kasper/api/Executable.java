@@ -1,8 +1,9 @@
 package org._24601.kasper.api;
 
+import java.util.List;
+
 import org._24601.kasper.core.KasperBindings;
 import org._24601.kasper.error.KasperException;
-import org._24601.kasper.type.Statement;
 
 /**
  * Designates an object that performs work in the script environment.
@@ -14,6 +15,6 @@ import org._24601.kasper.type.Statement;
  */
 public interface Executable {
 
-	Object execute(KasperBindings scope, Statement statement) throws KasperException;
+	Object execute(KasperBindings scope, List<Object> statement) throws KasperException;
 
 }

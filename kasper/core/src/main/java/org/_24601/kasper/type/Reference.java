@@ -3,7 +3,7 @@ package org._24601.kasper.type;
 import javax.script.Bindings;
 
 import org._24601.kasper.Interpreter;
-import org._24601.kasper.api.StatementProvider;
+import org._24601.kasper.api.ListProvider;
 import org._24601.kasper.core.KasperBindings;
 import org._24601.kasper.error.KasperException;
 
@@ -73,8 +73,8 @@ public class Reference {
 
 	public Object evaluate() throws KasperException {
 		Object result = bindings.getValue(key);
-		if (result instanceof StatementProvider) {
-			return Interpreter.process(bindings, (StatementProvider) result);
+		if (result instanceof ListProvider) {
+			return Interpreter.process(bindings, (ListProvider) result);
 		}
 		return result;
 	}
