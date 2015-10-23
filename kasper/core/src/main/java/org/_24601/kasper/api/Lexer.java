@@ -1,10 +1,15 @@
 package org._24601.kasper.api;
 
-import java.util.Iterator;
 import java.util.List;
 
-public interface Lexer extends Iterator<Token> {
+/**
+ * 
+ * 
+ * @author Jason E Bailey
+ *
+ */
+public interface Lexer {
 	
-	void tokenize(CharSequence data, List<Lexeme>lexemes);
+	List<Token> tokenize(CharSequence data, List<Lexeme>lexemes);
 
 }

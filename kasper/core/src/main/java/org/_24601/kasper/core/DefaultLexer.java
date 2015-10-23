@@ -6,36 +6,23 @@ import java.util.List;
 import org._24601.kasper.api.Lexeme;
 import org._24601.kasper.api.Lexer;
 import org._24601.kasper.api.Token;
+import org._24601.kasper.error.KasperRuntimeException;
 import org._24601.kasper.type.EOS;
 
 /**
- * Tokenizes the incoming CharSequence based on the List of Lexical definitions
+ * Reference implementation of the Lexer the incoming CharSequence based on the
+ * List of Lexical definitions
  * 
  * 
- * @author jebailey
+ * @author Jason E Bailey
  *
  */
 public class DefaultLexer implements Lexer {
 
-	private List<Token> tokens;
-
-	private List<Lexeme> lexemes;
-
-	private CharSequence data;
-
 	@Override
-	public void tokenize(CharSequence reader, List<Lexeme> lexemes) {
-		data = reader;
-		tokens = new ArrayList<Token>();
-		this.lexemes = lexemes;
-		tokenize();
-	}
+	public List<Token> tokenize(CharSequence data, List<Lexeme> lexemes) {
 
-	/**
-	 * 
-	 * 
-	 */
-	private void tokenize() {
+		List<Token> tokens = new ArrayList<Token>();
 		int offset = 0;
 		while (offset < data.length()) {
 			// for each iteration through the available lexes
@@ -52,34 +39,14 @@ public class DefaultLexer implements Lexer {
 			// NOTE: If this IS EOF an EOL would have been caught
 			if (consumed == offset) {
 				if (data.length() > consumed) {
-					// TODO unhandled data - must log
-					// String problem = wrapper.getSubString();
-					System.out.print("unprocessed: " + data.subSequence(consumed, data.length()));
+					throw new KasperRuntimeException("unprocessed: "+ data.subSequence(consumed, data.length()));
 				}
-				return;
 			}
 			// reset to false for next iteration
 			offset = consumed;
 		}
 		tokens.add(new EOS("", offset, offset));
-	}
-
-	@Override
-	public Token next() {
-		if (!tokens.isEmpty()) {
-			return tokens.remove(0);
-		}
-		return null;
-	}
-
-	@Override
-	public boolean hasNext() {
-		return !tokens.isEmpty();
-	}
-
-	@Override
-	public void remove() {
-		throw new UnsupportedOperationException();
+		return tokens;
 	}
 
 }

@@ -24,7 +24,8 @@ import org._24601.kasper.type.Undefined;
 
 /**
  * Provides a wrapper around an enclosed Map which represents the items
- * available to the Interpreter at a particular level
+ * available to the Interpreter at a particular level. Additionally implements
+ * the <tt>Bindings</tt> interface
  * 
  * @author JE Bailey
  */
@@ -40,8 +41,11 @@ public class KasperBindings implements Bindings {
 	 */
 	private Map<String, Object> content;
 
-	// private static Logger log = Logger.getLogger(Scope.class.getName());
-
+	
+	/**
+	 * Default creation process wrapping a <tt>ConcurrentHashMap</tt>
+	 * 
+	 */
 	public KasperBindings() {
 		content = new ConcurrentHashMap<String, Object>();
 	}
@@ -128,9 +132,7 @@ public class KasperBindings implements Bindings {
 	}
 
 	/**
-	 * Possible Types that are being inputed Atom - return the object that the
-	 * Atom represents
-	 * 
+	 * Attempts to resolve the input object to meet the requested type
 	 * 
 	 * 
 	 * @param requestedType
@@ -196,24 +198,6 @@ public class KasperBindings implements Bindings {
 		return result;
 	}
 
-	/**
-	 * Attempts to locate the key at the current Scope level, if the Key is not
-	 * at this level, an attempt to locate the key in the parent scope will me
-	 * made
-	 * 
-	 * @param key
-	 *            value located in the internal Map
-	 * @return associated value object or `null`
-	 */
-	public Object get(String key) {
-		Object object = content.get(key);
-		if (object == null) {
-			if (enclosingScope != null) {
-				object = enclosingScope.get(key);
-			}
-		}
-		return object;
-	}
 
 	public Object remove(Object key) {
 		return null;

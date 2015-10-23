@@ -14,6 +14,7 @@ import org._24601.kasper.api.Collector;
 import org._24601.kasper.api.Lexeme;
 import org._24601.kasper.api.Lexer;
 import org._24601.kasper.api.Parser;
+import org._24601.kasper.api.Token;
 import org._24601.kasper.error.KasperException;
 import org._24601.kasper.type.Statement;
 
@@ -27,8 +28,6 @@ public class DefaultParser implements Parser {
 
 	private Lexer lexer;
 	
-	private static Logger log = Logger.getLogger(DefaultParser.class.getName());
-
 	private Stack<Collector> collectors = new Stack<Collector>();
 
 	private Collector collector;
@@ -43,27 +42,13 @@ public class DefaultParser implements Parser {
 
 
 	@Override
-	public void process(CharSequence is, List<Lexeme> lexemes) throws KasperException {
-		lexer.tokenize(is, lexemes);
-		while (lexer.hasNext()) {			
-			collector = lexer.next().consume(collector, collectors, charStack);
+	public Stack <Collector> process(CharSequence is, List<Lexeme> lexemes) throws KasperException {
+		List<Token> tokens = lexer.tokenize(is, lexemes);
+		for (Token token: tokens) {			
+			collector = token.consume(collector, collectors, charStack);
 		}
-	}
-
-	@Override
-	public Statement next() {
-		return (Statement)collectors.remove(0);
+		return collectors;
 	}
 
 
-	@Override
-	public boolean hasNext() {
-		return !collectors.isEmpty();
-	}
-
-
-	@Override
-	public void remove() {
-		throw new UnsupportedOperationException();
-	}
 }
