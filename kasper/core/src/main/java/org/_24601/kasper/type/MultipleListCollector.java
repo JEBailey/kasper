@@ -15,7 +15,7 @@ import org._24601.kasper.error.KasperException;
  * @author je bailey
  *
  */
-public class ListOfLists implements ListProvider, Collector {
+public class MultipleListCollector implements ListProvider, Collector {
 
 	private List<Statement> statements = new LinkedList<Statement>();
 
@@ -23,7 +23,8 @@ public class ListOfLists implements ListProvider, Collector {
 
 	private int startPos;
 
-	public ListOfLists() {
+	public MultipleListCollector(int startPos) {
+		this.startPos = startPos;
 		statement = new Statement(0, 0);
 	}
 
@@ -58,15 +59,11 @@ public class ListOfLists implements ListProvider, Collector {
 	}
 
 	@Override
-	public Object accept(ListProviderVisitor function) throws KasperException {
+	public Object accept(ListProviderVisitor visitor) throws KasperException {
 		StringBuilder sb = new StringBuilder();
 		for (Statement statement : statements) {
-			Object result = function.apply(statement.get());
-			if (result instanceof String) {
-				sb.append((String) result);
-			} else {
-				sb.append(result.toString());
-			}
+			Object result = visitor.apply(statement.get());
+			sb.append(result);
 		}
 		return sb.toString();
 	}
@@ -78,8 +75,7 @@ public class ListOfLists implements ListProvider, Collector {
 
 	@Override
 	public int getLineNumber() {
-		// TODO Auto-generated method stub
-		return 0;
+		return startPos;
 	}
 
 }
