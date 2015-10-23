@@ -15,7 +15,7 @@ import org._24601.kasper.error.KasperException;
  * @author je bailey
  *
  */
-public class ListOfLists implements ListProvider, Collector {
+public class MultipleListCollector implements ListProvider, Collector {
 
 	private List<Statement> statements = new LinkedList<Statement>();
 
@@ -23,7 +23,7 @@ public class ListOfLists implements ListProvider, Collector {
 
 	private int startPos;
 
-	public ListOfLists() {
+	public MultipleListCollector() {
 		statement = new Statement(0, 0);
 	}
 
