@@ -1,7 +1,6 @@
 /**
- * The majority of types within a posl stream is the actual java objects
- * themselves, this is for objects that posl creates that are specifically
- * for posl to facilitate the implementation of the dsl
+ * When the object stream is generated, the objects that are inserted into this Stream are of
+ * the types within this package.
  * 
  * 
  * @author jebailey

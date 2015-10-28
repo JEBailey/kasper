@@ -18,7 +18,7 @@ import org._24601.kasper.type.Statement;
  * @author jebailey
  *
  */
-public class Eol implements Lexeme {
+public class EndOfLine implements Lexeme {
 
 	private static final Pattern pattern = Pattern.compile("\r?\n");
 
@@ -50,13 +50,13 @@ public class Eol implements Lexeme {
 		}
 
 		@Override
-		public Collector consume(Collector statement, Stack<Collector> statements, Stack<Character> charStack) {
-			statement.addEol();
-			if (statement.finished()) {
-				statements.add(statement);
-				statement = new Statement(startPos, statement.getLineNumber());
+		public Collector consume(Collector collector, Stack<Collector> collectors, Stack<Character> charStack) {
+			collector.addEol();
+			if (collector.finished()) {
+				collectors.add(collector);
+				collector = new Statement(startPos, collector.getLineNumber());
 			}
-			return statement;
+			return collector;
 		}
 
 	}

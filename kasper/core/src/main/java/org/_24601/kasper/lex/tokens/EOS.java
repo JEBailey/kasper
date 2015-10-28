@@ -1,9 +1,10 @@
-package org._24601.kasper.type;
+package org._24601.kasper.lex.tokens;
 
 import java.util.Stack;
 
 import org._24601.kasper.api.Collector;
 import org._24601.kasper.core.BasicToken;
+import org._24601.kasper.type.Statement;
 
 public class EOS extends BasicToken {
 

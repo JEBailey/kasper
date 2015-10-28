@@ -6,7 +6,7 @@ import java.util.List;
 import org._24601.kasper.api.Lexeme;
 import org._24601.kasper.api.Lexer;
 import org._24601.kasper.api.Token;
-import org._24601.kasper.type.EOS;
+import org._24601.kasper.lex.tokens.EOS;
 
 /**
  * Tokenizes the incoming CharSequence based on the List of Lexical definitions

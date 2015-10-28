@@ -20,7 +20,7 @@ import org._24601.kasper.lang.KasperLangImpl;
 import org._24601.kasper.lex.ClosingElement;
 import org._24601.kasper.lex.Comments;
 import org._24601.kasper.lex.DoubleQuoteString;
-import org._24601.kasper.lex.Eol;
+import org._24601.kasper.lex.EndOfLine;
 import org._24601.kasper.lex.ExternalExpression;
 import org._24601.kasper.lex.Identifier;
 import org._24601.kasper.lex.AttributeList;
@@ -94,7 +94,7 @@ public class KasperContext implements ScriptContext {
 				add(new DoubleQuoteString());
 				add(new SingleQuoteStrings());
 				add(new ExternalExpression());
-				add(new Eol());
+				add(new EndOfLine());
 				add(new Special());
 				add(new AttributeList());
 				add(new StatementBlock());
