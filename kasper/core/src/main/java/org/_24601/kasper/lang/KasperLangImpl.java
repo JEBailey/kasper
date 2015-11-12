@@ -22,7 +22,7 @@ import org._24601.kasper.type.Atom;
 import org._24601.kasper.type.Reference;
 import org._24601.kasper.type.Statement;
 
-import fxc.Element;
+import org._24601.fxc.Element;
 
 public class KasperLangImpl {
 

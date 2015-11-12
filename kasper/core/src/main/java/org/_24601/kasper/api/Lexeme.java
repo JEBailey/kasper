@@ -2,24 +2,29 @@ package org._24601.kasper.api;
 
 import java.util.List;
 
+/**
+ * Defines a word of interest to the Scripting Language
+ * 
+ * 
+ * @author Jason E Bailey
+ *
+ */
 public interface Lexeme {
 
 	/**
-	 * The lexeme implementation defines a word. The lexeme scans the incoming
-	 * CharSequence starting from the offset and if the stream starts with the
-	 * defined lexeme, that series of characters is consumed from the Stream and
-	 * a token representing those characters are added to the token list.<br/>
-	 * 
+	 * Scans the incoming <tt>CharSequence</tt> starting from the offset. 
+	 * If the stream starts with the pattern that we are looking for, that
+	 * series of characters is consumed from the Stream and a token representing
+	 * those characters are added to the provided <tt>List</tt> of tokens.<br/>
 	 * 
 	 * @param tokens
-	 *            That are being collected from the incoming data
-	 * @param ps
-	 *            Incoming data
+	 *            container object to put discovered tokens
+	 * @param sequence
+	 *            provided sequence to be scanned
 	 * @param offset
 	 *            the total char count already consumed from the existing data
-	 * @return the amount consumed by this function
+	 * @return the amount consumed, if any, by this class
 	 */
-	int consume(List<Token> tokens, CharSequence ps, int offset);
-
+	int consume(List<Token> tokens, CharSequence sequence, int offset);
 
 }

@@ -1,6 +1,7 @@
 package org._24601.kasper.type;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import org._24601.kasper.api.Executable;
@@ -9,6 +10,8 @@ import org._24601.kasper.api.ListProviderVisitor;
 import org._24601.kasper.core.KasperBindings;
 import org._24601.kasper.core.KasperContext;
 import org._24601.kasper.error.KasperException;
+import org._24601.kasper.error.KasperRuntimeException;
+import org._24601.kasper.lang.Utils;
 
 import ognl.Ognl;
 import ognl.OgnlContext;
@@ -38,7 +41,7 @@ public class ExternalResolver implements Executable, ListProvider {
 	}
 
 	@Override
-	public Object execute(KasperBindings scope, List<Object> list) throws KasperException {
+	public Object execute(KasperBindings scope, List<Object> list)  {
 		KasperBindings bindings = (KasperBindings)scope.get(KasperContext.engineScopeID);
 		Object reply = bindings.get(key);
 		if (reply == null){
@@ -48,9 +51,24 @@ public class ExternalResolver implements Executable, ListProvider {
 			try {
 				reply = Ognl.getValue(expression, context, reply);
 			} catch (OgnlException e) {
-				throw new KasperException(0,e.getMessage());
+				throw new KasperRuntimeException(e.getMessage());
 			}
 		}
+	
+		if (reply instanceof Boolean){
+			
+		}
+		
+		if (reply instanceof Collection<?>){
+			
+		}
+		
+		if (reply.getClass().isArray()){
+			for (Object a:Arrays.asList(reply)){
+				
+			}
+		}
+		
 		return reply;
 	}
 

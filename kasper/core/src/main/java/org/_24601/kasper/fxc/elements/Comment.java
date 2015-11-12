@@ -1,6 +1,6 @@
 package org._24601.kasper.fxc.elements;
 
-import fxc.Element;
+import org._24601.fxc.Element;
 
 public class Comment extends Element {
 

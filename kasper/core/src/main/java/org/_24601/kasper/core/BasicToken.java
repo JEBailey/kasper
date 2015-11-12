@@ -22,9 +22,6 @@ public abstract class BasicToken implements Token {
 		this.endPos = end;
 	}
 	
-	/* (non-Javadoc)
-	 * @see posl.engine.api.Token#consume(posl.engine.api.Collector, java.util.Stack, java.util.Stack)
-	 */
 	@Override
 	public abstract Collector consume(Collector statement, Stack<Collector> statements ,Stack<Character> charStack);
 
