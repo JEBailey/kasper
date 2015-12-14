@@ -15,7 +15,7 @@
 						<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
 						<Bundle-Name>${project.name}</Bundle-Name>
 						<Bundle-Vendor>Jason Bailey</Bundle-Vendor>
-						<Embed-Dependency>fxc;scope=compile</Embed-Dependency>
+						<Embed-Dependency>ognl,fxc</Embed-Dependency>
 						<Include-Resource>
 							{maven-resources}, {maven-dependencies},
 							/META-INF/services/javax.script.ScriptEngineFactory=target/classes/META-INF/services/javax.script.ScriptEngineFactory
@@ -76,6 +76,8 @@
 			<groupId>ognl</groupId>
 			<artifactId>ognl</artifactId>
 			<version>3.1</version>
+			<scope>provided</scope>
+			<optional>true</optional>
 		</dependency>
 	</dependencies>
 	<packaging>bundle</packaging>

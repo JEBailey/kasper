@@ -98,7 +98,7 @@ public class KasperBindings implements Bindings {
 		if (response instanceof Atom) {
 			response = get(object.toString());
 		}
-		if (response instanceof Statement) {
+		if (response instanceof ListProvider) {
 			response = Interpreter.process(this, (ListProvider) response);
 		}
 		if (response == null) {
