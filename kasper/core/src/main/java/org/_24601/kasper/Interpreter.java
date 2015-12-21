@@ -6,25 +6,38 @@
 
 package org._24601.kasper;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
+import javax.script.Bindings;
+import javax.script.ScriptContext;
+
 import org._24601.kasper.api.Collector;
 import org._24601.kasper.api.Executable;
+import org._24601.kasper.api.Lexeme;
+import org._24601.kasper.api.Lexer;
 import org._24601.kasper.api.ListProvider;
 import org._24601.kasper.api.ListProviderVisitor;
-import org._24601.kasper.api.Parser;
-import org._24601.kasper.core.KasperBindings;
-import org._24601.kasper.core.KasperContext;
+import org._24601.kasper.api.Token;
+import org._24601.kasper.core.DefaultLexer;
 import org._24601.kasper.error.KasperException;
+import org._24601.kasper.lex.AttributeList;
+import org._24601.kasper.lex.ClosingElement;
+import org._24601.kasper.lex.Comments;
+import org._24601.kasper.lex.DoubleQuoteString;
+import org._24601.kasper.lex.EndOfLine;
+import org._24601.kasper.lex.ExternalExpression;
+import org._24601.kasper.lex.Identifier;
+import org._24601.kasper.lex.SingleQuoteStrings;
+import org._24601.kasper.lex.Special;
+import org._24601.kasper.lex.StatementBlock;
+import org._24601.kasper.lex.WhiteSpace;
+import org._24601.kasper.type.Reference;
 import org._24601.kasper.type.Statement;
 
 /**
@@ -36,22 +49,39 @@ import org._24601.kasper.type.Statement;
  */
 public class Interpreter {
 
-	private Interpreter() {
+	private Lexer lexer;
+	
+	private Stack<Collector> collectors = new Stack<Collector>();
+
+	private Collector collector;
+	
+	private Stack<Character> charStack = new Stack<Character>();
+	
+	@SuppressWarnings("serial")
+	List<Lexeme> lexemes = new ArrayList<Lexeme>() {
+		{
+			add(new WhiteSpace());
+			add(new Comments());
+			add(new Identifier());
+			add(new DoubleQuoteString());
+			add(new SingleQuoteStrings());
+			add(new ExternalExpression());
+			add(new EndOfLine());
+			add(new Special());
+			add(new AttributeList());
+			add(new StatementBlock());
+			add(new ClosingElement());
+		}
+	};
+	
+	public Interpreter() {
+		lexer = new DefaultLexer();
+		collector = new Statement(0,1);
 	}
 
-	public static Object process(KasperContext context, File file) throws FileNotFoundException, KasperException {
-		return process(context, new FileInputStream(file));
-	}
 
-	public static Object process(KasperContext context, URL resource) throws KasperException, IOException {
-		return process(context, resource.openStream());
-	}
 
-	public static Object process(KasperContext context, InputStream stream) throws KasperException {
-		return process(context, toString(stream));
-	}
-
-	public static Object process(KasperContext scriptContext, Reader reader) throws KasperException {
+	public Object process(ScriptContext scriptContext, Reader reader) throws KasperException {
 		return process(scriptContext, toString(reader));
 	}
 
@@ -62,13 +92,17 @@ public class Interpreter {
 	 * @return
 	 * @throws KasperException
 	 */
-	public static Object process(KasperContext context, CharSequence string) throws KasperException {
-		Parser parser = context.getParser();
-		KasperBindings bindings = context.getScope();
+	public  Object process(ScriptContext context, CharSequence string) throws KasperException {
+
 		Object result = null;
-		Stack <Collector>collectors = parser.process(string, context.getLexemes());
+		
+		List<Token> tokens = lexer.tokenize(string, lexemes);
+		for (Token token: tokens) {			
+			collector = token.consume(collector, collectors, charStack);
+		}
+
 		while (!collectors.empty()){
-			result = process(bindings, (Statement)collectors.pop());
+			result = process(context, (Statement)collectors.pop());
 		}
 		return result;
 	}
@@ -83,14 +117,16 @@ public class Interpreter {
 	 * @return
 	 * @throws KasperException
 	 */
-	public static Object process(final KasperBindings scope, ListProvider provider) throws KasperException {
+	public Object process(final ScriptContext context, ListProvider provider) throws KasperException {
+
+		
 		return provider.accept(new ListProviderVisitor() {
 			
-			@Override
 			public Object apply(List list) throws KasperException {
-				Object token = scope.getValue(list.get(0), true);
+				final Reference reference = new Reference(list.get(0), context);
+				Object token = reference.evaluate();
 				if (token instanceof Executable) {
-					token = ((Executable) token).execute(scope, list);
+					token = ((Executable) token).execute(context, list);
 				}
 				return token;
 			}

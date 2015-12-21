@@ -1,10 +1,15 @@
-package org._24601.kasper.type;
+ package org._24601.kasper.type;
+
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 
 import javax.script.Bindings;
+import javax.script.ScriptContext;
 
 import org._24601.kasper.Interpreter;
 import org._24601.kasper.api.ListProvider;
 import org._24601.kasper.core.KasperBindings;
+import org._24601.kasper.core.Util;
 import org._24601.kasper.error.KasperException;
 
 /**
@@ -19,11 +24,11 @@ public class Reference {
 	
 	private Object key;
 
-	private KasperBindings bindings;
+	private ScriptContext context;
 
-	public Reference(Object key, KasperBindings scope) {
+	public Reference(Object key, ScriptContext context) {
 		this.key = key;
-		this.bindings = scope;
+		this.context = context;
 	}
 
 	public Object getKey() {
@@ -32,15 +37,15 @@ public class Reference {
 
 	@SuppressWarnings("unchecked")
 	public <R> R getValue(Class<R> klass) throws KasperException {
-		return (R) bindings.get(klass, key);
+		return (R) Util.eval(context, key, klass);
 	}
 
-	public Object getValue() {
-		return bindings.get(key.toString());
+	public Object getValue() throws KasperException {
+		return Util.eval(context , key);
 	}
 
 	public void setValue(Object value) {
-		this.bindings.put(key.toString(), value);
+		this.context.put(key.toString(), value);
 	}
 			
 	/**
@@ -51,7 +56,7 @@ public class Reference {
 	 * @return inserted value
 	 */
 	public Object updateValue(Object value) {
-		return this.bindings.update(key.toString(), value);
+		return this.context.update(key.toString(), value);
 	}
 
 	/**
@@ -64,23 +69,103 @@ public class Reference {
 	 * @return inserted value
 	 */
 	public Object put(Object value) {
-		return bindings.put(key.toString(), value);
+		return context.put(key.toString(), value);
 	}
 
 	public void createChildScope() {
-		this.bindings= this.bindings.createChildScope();
+		this.context= this.context.createChildScope();
 	}
 
 	public Object evaluate() throws KasperException {
-		Object result = bindings.getValue(key);
+		Object result = context.getValue(key);
 		if (result instanceof ListProvider) {
-			return Interpreter.process(bindings, (ListProvider) result);
+			return Interpreter.process(context, (ListProvider) result);
 		}
 		return result;
 	}
 	
 	public Bindings getBindings(){
-		return (Bindings)this.bindings;
+		return (Bindings)this.context;
 	}
+	
+	/**
+	 * Returns the associated object or, if the object is a statement, evaluates
+	 * the statement and returns the response. If no value is found attempts to
+	 * return the default value if that has been defined
+	 * 
+	 * @param object
+	 * @return
+	 * @throws KasperException
+	 */
+	private Object getValue(final Object object, boolean useDefault) throws KasperException {
+		Object response = object;
+		if (response instanceof Atom) {
+			response = context.getAttribute(object.toString());
+			if (response == null) {
+				return context.getAttribute("_default");
+			}
+		}
+		if (response instanceof Statement) {
+			response = new Interpreter().process(context, (ListProvider) response);
+		}
+		
+		return response;
+	}
+	
+	/**
+	 * Attempts to resolve the input object to meet the requested type
+	 * 
+	 * 
+	 * @param requestedType
+	 * @param object
+	 * @return
+	 * @throws KasperException
+	 */
+	private Object get(Type requestedType, Object object) throws KasperException {
+		if (requestedType instanceof ParameterizedType) {
+			return get(((ParameterizedType) requestedType).getRawType(), object);
+		}
+
+		if (object instanceof Statement) {
+			return get(requestedType,
+					new Interpreter().process(context, (Statement) object));
+		}
+
+		if (object instanceof Atom) {
+			if (requestedType != Atom.class) {
+				return get(requestedType, this.getValue(object));
+			}
+		}
+
+		final Class<? extends Object> klass = object.getClass();
+		if (((Class<?>) requestedType).isAssignableFrom(klass)) {
+			return object;
+		}
+
+		return null;
+	}
+	
+	/**
+	 * Returns the associated object or, if the object is a statement, evaluates
+	 * the statement and returns the response
+	 * 
+	 * @param object
+	 * @return
+	 * @throws KasperException
+	 */
+	private Object getValue(final Object object) throws KasperException {
+		Object response = object;
+		if (response instanceof Atom) {
+			response = get(object.toString());
+		}
+		if (response instanceof ListProvider) {
+			response = new Interpreter().process(context, (ListProvider) response);
+		}
+		if (response == null) {
+			return Undefined.getInstance();
+		}
+		return response;
+	}
+
 
 }

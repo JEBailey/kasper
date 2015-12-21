@@ -5,6 +5,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.List;
 
+import javax.script.ScriptContext;
+
 import org._24601.kasper.error.KasperException;
 /**
  * Provides a mechanism to resolve the parameters that
@@ -34,12 +36,12 @@ protected Type[] params;
 	 * 
 	 * 
 	 * 
-	 * @param scope provides the available set of objects to work with
+	 * @param context provides the available set of objects to work with
 	 * @param statement is the executable statement
 	 * @return
 	 * @throws KasperException
 	 */
-	public Object[] render(KasperBindings scope, List<Object> statement) throws KasperException {
+	public Object[] render(ScriptContext context, List<Object> statement) throws KasperException {
 		// This is the argument array that will be passed in the method call
 		Object[] arguments = new Object[info.length];
 		// we're going to loop through the parameter information
@@ -60,7 +62,7 @@ protected Type[] params;
 				}
 			} else {
 				// we have enough arguments. do we need them?
-				arguments[storedParamIndex] = param.render(scope, statement, providedArgIndex);
+				arguments[storedParamIndex] = param.render(context, statement, providedArgIndex);
 				//if we were unable to obtain an object and the parameter was optional
 				//lets move on
 				if (param.isOptional() && arguments[storedParamIndex] == null){

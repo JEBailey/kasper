@@ -6,21 +6,12 @@
 
 package org._24601.kasper.core;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import javax.script.Bindings;
-
-import org._24601.kasper.Interpreter;
-import org._24601.kasper.api.ListProvider;
-import org._24601.kasper.error.KasperException;
-import org._24601.kasper.type.Atom;
-import org._24601.kasper.type.Statement;
-import org._24601.kasper.type.Undefined;
 
 /**
  * Provides a wrapper around an enclosed Map which represents the items
@@ -34,7 +25,7 @@ public class KasperBindings implements Bindings {
 	/**
 	 * parent scope
 	 */
-	private KasperBindings enclosingScope;
+	private Bindings parentBindings;
 
 	/**
 	 * objects existing in the current scope
@@ -47,24 +38,21 @@ public class KasperBindings implements Bindings {
 	 * 
 	 */
 	public KasperBindings() {
-		content = new ConcurrentHashMap<String, Object>();
+		this(null);
+		addLibrary();
 	}
 
-	private KasperBindings(KasperBindings scope) {
-		this();
-		enclosingScope = scope;
+	private void addLibrary() {
+		// TODO Auto-generated method stub
+		
 	}
 
-	/**
-	 * Wrapper class over the default String key, Object value
-	 * 
-	 * @param key
-	 * @param value
-	 * @return
-	 */
-	public Object put(Atom key, Object value) {
-		return put(key.toString(), value);
+	private KasperBindings(Bindings scope) {
+		content = new HashMap<String, Object>();
+		parentBindings = scope;
 	}
+
+
 
 	/**
 	 * Place the key value mapping into the backing Map
@@ -81,88 +69,11 @@ public class KasperBindings implements Bindings {
 		return new KasperBindings(this);
 	}
 	
-	public KasperBindings getParentScope(){
-		return enclosingScope;
-	}
 
-	/**
-	 * Returns the associated object or, if the object is a statement, evaluates
-	 * the statement and returns the response
-	 * 
-	 * @param object
-	 * @return
-	 * @throws KasperException
-	 */
-	public Object getValue(final Object object) throws KasperException {
-		Object response = object;
-		if (response instanceof Atom) {
-			response = get(object.toString());
-		}
-		if (response instanceof ListProvider) {
-			response = Interpreter.process(this, (ListProvider) response);
-		}
-		if (response == null) {
-			return Undefined.getInstance();
-		}
-		return response;
-	}
+
 	
-	/**
-	 * Returns the associated object or, if the object is a statement, evaluates
-	 * the statement and returns the response. If no value is found attempts to
-	 * return the default value if that has been defined
-	 * 
-	 * @param object
-	 * @return
-	 * @throws KasperException
-	 */
-	public Object getValue(final Object object, boolean useDefault) throws KasperException {
-		Object response = object;
-		if (response instanceof Atom) {
-			response = get(object.toString());
-			if (response == null) {
-				return get("_default");
-			}
-		}
-		if (response instanceof Statement) {
-			response = Interpreter.process(this, (ListProvider) response);
-		}
-		
-		return response;
-	}
 
-	/**
-	 * Attempts to resolve the input object to meet the requested type
-	 * 
-	 * 
-	 * @param requestedType
-	 * @param object
-	 * @return
-	 * @throws KasperException
-	 */
-	public Object get(Type requestedType, Object object) throws KasperException {
-		if (requestedType instanceof ParameterizedType) {
-			return get(((ParameterizedType) requestedType).getRawType(), object);
-		}
 
-		if (object instanceof Statement) {
-			return get(requestedType,
-					Interpreter.process(this, (Statement) object));
-		}
-
-		if (object instanceof Atom) {
-			if (requestedType != Atom.class) {
-				return get(requestedType, this.getValue(object));
-			}
-		}
-
-		final Class<? extends Object> klass = object.getClass();
-		if (((Class<?>) requestedType).isAssignableFrom(klass)) {
-			return object;
-		}
-
-		return null;
-	}
 
 	/**
 	 * Attempts to locate the key object in the hierarchy of Scopes. This is a
@@ -174,8 +85,8 @@ public class KasperBindings implements Bindings {
 	public boolean containsKey(Object key) {
 		boolean result = content.containsKey(key);
 		if (!result) {
-			if (enclosingScope != null) {
-				return enclosingScope.containsKey(key);
+			if (parentBindings != null) {
+				return parentBindings.containsKey(key);
 			}
 		}
 		return result;
@@ -191,8 +102,8 @@ public class KasperBindings implements Bindings {
 	public boolean containsValue(Object value) {
 		boolean result = content.containsValue(value);
 		if (!result) {
-			if (enclosingScope != null) {
-				return enclosingScope.containsValue(value);
+			if (parentBindings != null) {
+				return parentBindings.containsValue(value);
 			}
 		}
 		return result;
@@ -203,12 +114,16 @@ public class KasperBindings implements Bindings {
 		return null;
 	}
 
-	public Object update(String key, Object value) {
-		if (content.containsKey(key)) {
-			put(key, value);
+	public Object update(String name, Object value) {
+		if (content.containsKey(name)) {
+			put(name, value);
 		} else {
-			if (enclosingScope != null) {
-				enclosingScope.update(key, value);
+			if (parentBindings != null) {
+				if (parentBindings instanceof KasperBindings){
+					((KasperBindings)parentBindings).update(name, value);
+				} else {
+					parentBindings.put(name, value);
+				}
 			} else {
 				throw new RuntimeException(
 						"unable to update value that's not defined");

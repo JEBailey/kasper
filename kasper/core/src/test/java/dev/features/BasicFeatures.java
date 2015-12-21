@@ -63,7 +63,7 @@ public class BasicFeatures {
 	}
 	
 	private Object eval(String expression) throws KasperException {
-        return Interpreter.process(context, expression);
+        return new Interpreter().process(context, expression);
     }
 
 }

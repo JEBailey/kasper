@@ -34,7 +34,7 @@ public class KasperLangImpl {
 	/**
 	 */
 	@Command("_default")
-	public Object defaultCommand(KasperBindings bindings, @CommandName String tag, @Optional List<Object> arg1, @Optional Reference arg2)
+	public Object defaultCommand(@CommandName String tag, @Optional List<Object> arg1, @Optional Reference arg2)
 			throws IOException, UnsupportedOperationException, KasperException {
 		Element element = new Element(tag);
 		// force closing tag
@@ -68,7 +68,7 @@ public class KasperLangImpl {
 		Matcher matcher = ExternalExpression.pattern.matcher(toParse);
 		if (matcher.find()) {
 			String s = matcher.group(0);
-			Object replacement = Interpreter.process(context, s);
+			Object replacement = new Interpreter().process(context, s);
 		}
 		return null;
 	}

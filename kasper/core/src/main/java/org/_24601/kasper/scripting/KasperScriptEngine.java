@@ -17,14 +17,20 @@ public class KasperScriptEngine  implements ScriptEngine {
     protected ScriptContext context;
     
     protected ScriptEngineFactory factory;
+    
+    protected Bindings global;
+    
+    private Interpreter interpreter;
 
     public KasperScriptEngine(KasperScriptEngineFactory factory) {
-        context = new KasperContext();
+        this();
         this.factory = factory;
     }
     
     public KasperScriptEngine() {
         context = new KasperContext();
+        global = new KasperBindings();
+        interpreter = new Interpreter();
     }
 
     /**
@@ -164,9 +170,8 @@ public class KasperScriptEngine  implements ScriptEngine {
 
 	@Override
 	public Object eval(String script, ScriptContext context) throws ScriptException {
-		KasperContext scriptContext = (KasperContext)context;
 		try {
-			return Interpreter.process(scriptContext, script);
+			return new Interpreter().process(context, script);
 		} catch (Throwable e) {
 			throw new ScriptException((Exception)e);
 		}
@@ -174,13 +179,14 @@ public class KasperScriptEngine  implements ScriptEngine {
 
 	@Override
 	public Object eval(Reader reader, ScriptContext context) throws ScriptException {
-		KasperContext scriptContext = (KasperContext)context;
 		try {
-			return Interpreter.process(scriptContext, reader);
+			return interpreter.process(context, reader);
 		} catch (Throwable e) {
 			throw new ScriptException((Exception)e);
 		}
 	}
+
+
 
 	@Override
 	public Bindings createBindings() {

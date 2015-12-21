@@ -2,7 +2,8 @@ package org._24601.kasper.api;
 
 import java.util.List;
 
-import org._24601.kasper.core.KasperBindings;
+import javax.script.ScriptContext;
+
 import org._24601.kasper.error.KasperException;
 
 /**
@@ -15,6 +16,6 @@ import org._24601.kasper.error.KasperException;
  */
 public interface Executable {
 
-	Object execute(KasperBindings scope, List<Object> statement) throws KasperException;
+	Object execute(ScriptContext context, List<Object> statement) throws KasperException;
 
 }

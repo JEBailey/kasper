@@ -5,6 +5,9 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.script.Bindings;
+import javax.script.ScriptContext;
+
 import ognl.Ognl;
 import ognl.OgnlContext;
 import ognl.OgnlException;
@@ -15,6 +18,7 @@ import org._24601.kasper.api.ListProvider;
 import org._24601.kasper.api.ListProviderVisitor;
 import org._24601.kasper.core.KasperBindings;
 import org._24601.kasper.core.KasperContext;
+import org._24601.kasper.core.Util;
 import org._24601.kasper.error.KasperException;
 import org._24601.kasper.error.KasperRuntimeException;
 
@@ -51,23 +55,22 @@ public class ExternalResolver implements Executable, ListProvider {
 	 * 
 	 */
 	@Override
-	public Object execute(KasperBindings scope, List<Object> list)
+	public Object execute(ScriptContext context, List<Object> list)
 			throws KasperException {
-		KasperBindings bindings = (KasperBindings) scope
-				.get(KasperContext.engineScopeID);
+		Bindings bindings = context.getBindings(ScriptContext.ENGINE_SCOPE);
 		
 		Object reply = bindings.get(key);
 		
 		// if bindings don't reference the key,
 		// obtain from scope
 		if (reply == null) {
-			reply = scope.get(key);
+			reply = Util.eval(context,key);
 		}
 		
 		
 		if (expression != null) {
 			try {
-				reply = Ognl.getValue(expression, context, reply);
+				reply = Ognl.getValue(expression, context.getBindings(ScriptContext.ENGINE_SCOPE), reply);
 			} catch (OgnlException e) {
 				throw new KasperRuntimeException(e.getMessage());
 			}
@@ -81,7 +84,7 @@ public class ExternalResolver implements Executable, ListProvider {
 		
 		if (reply instanceof Boolean) {
 			if (((Boolean) reply).booleanValue()) {
-				return scope.getValue(sublist.get(0), true);
+				return Util.eval(context, sublist.get(0) , true);
 			}
 		}
 
@@ -89,18 +92,18 @@ public class ExternalResolver implements Executable, ListProvider {
 			Iterator<?> collection = ((Collection<?>) reply).iterator();
 			
 			while (collection.hasNext()) {
-				KasperBindings childScope = scope.createChildScope();
+				KasperBindings childScope = context.createChildScope();
 				childScope.put("this", collection.next());
-				reply = scope.getValue(reply);
+				reply = context.getValue(reply);
 			}
 			return reply;
 		}
 
 		if (reply.getClass().isArray()) {
 			for (Object item : Arrays.asList(reply)) {
-				KasperBindings childScope = scope.createChildScope();
+				KasperBindings childScope = ((KasperBindings)context.getBindings(ScriptContext.GLOBAL_SCOPE).createChildScope();
 				childScope.put("this", item);
-				reply = scope.getValue(reply);
+				reply = context.getValue(reply);
 			}
 		}
 

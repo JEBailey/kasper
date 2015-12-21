@@ -7,6 +7,8 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
 
+import javax.script.ScriptContext;
+
 import org._24601.kasper.annotations.Optional;
 import org._24601.kasper.annotations.Property;
 import org._24601.kasper.annotations.parameter.CommandName;
@@ -66,10 +68,10 @@ public class ParameterInfo {
 		return state == State.OPTIONAL;
 	}
 
-	public Object render(KasperBindings bindings, List<Object> statement, int tokenIndex) throws KasperException {
+	public Object render(ScriptContext context, List<Object> statement, int tokenIndex) throws KasperException {
 		switch (state) {
 		case CONTEXT_PROPERTY:
-			return bindings.get((String) parameter);
+			return context.getAttribute(parameter.toString());
 		case COMMANDNAME:
 			return statement.get(0).toString();
 		case COLLECTION:
@@ -79,7 +81,7 @@ public class ParameterInfo {
 				Type generic = parameterizedType.getActualTypeArguments()[0];
 				Method add = Collection.class.getDeclaredMethod("add", Object.class);
 				for (int index = tokenIndex; index < statement.size(); ++index) {
-					add.invoke(list, bindings.get(generic, statement.get(index)));
+					add.invoke(list, Util.eval(context, statement.get(index),generic));
 				}
 			} catch (Exception e) {
 				throw new KasperException(-1, "failed to get COLLECTION");
@@ -88,13 +90,12 @@ public class ParameterInfo {
 
 		}
 		if (pType == KasperBindings.class) {
-			return bindings;
+			return context.getBindings(ScriptContext.ENGINE_SCOPE);
 		}
 		if (pType == Reference.class) {
-			return new Reference(statement.get(tokenIndex), bindings);
+			return new Reference(statement.get(tokenIndex), context);
 		}
-		return bindings.get(type, statement.get(tokenIndex));
-		
+		return Util.eval(context,statement.get(tokenIndex),type);
 	}
 
 }
