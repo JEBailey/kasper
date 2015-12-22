@@ -25,6 +25,7 @@ import org._24601.kasper.api.ListProvider;
 import org._24601.kasper.api.ListProviderVisitor;
 import org._24601.kasper.api.Token;
 import org._24601.kasper.core.DefaultLexer;
+import org._24601.kasper.core.Util;
 import org._24601.kasper.error.KasperException;
 import org._24601.kasper.lex.AttributeList;
 import org._24601.kasper.lex.ClosingElement;
@@ -122,9 +123,8 @@ public class Interpreter {
 		
 		return provider.accept(new ListProviderVisitor() {
 			
-			public Object apply(List list) throws KasperException {
-				final Reference reference = new Reference(list.get(0), context);
-				Object token = reference.evaluate();
+			public Object apply(List list) throws KasperException {				
+				Object token = Util.eval(context, list.get(0), true);
 				if (token instanceof Executable) {
 					token = ((Executable) token).execute(context, list);
 				}

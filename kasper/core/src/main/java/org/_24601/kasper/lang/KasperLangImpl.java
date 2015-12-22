@@ -3,26 +3,19 @@ package org._24601.kasper.lang;
 import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
-import java.util.regex.Matcher;
 
-import org._24601.kasper.Interpreter;
+import org._24601.fxc.Element;
 import org._24601.kasper.annotations.Command;
 import org._24601.kasper.annotations.Optional;
 import org._24601.kasper.annotations.Primitive;
 import org._24601.kasper.annotations.parameter.CommandName;
-import org._24601.kasper.api.Executable;
 import org._24601.kasper.core.KasperBindings;
-import org._24601.kasper.core.KasperContext;
 import org._24601.kasper.error.KasperException;
 import org._24601.kasper.fxc.elements.Comment;
 import org._24601.kasper.fxc.elements.DocType;
 import org._24601.kasper.fxc.elements.VoidElement;
-import org._24601.kasper.lex.ExternalExpression;
 import org._24601.kasper.type.Atom;
 import org._24601.kasper.type.Reference;
-import org._24601.kasper.type.Statement;
-
-import org._24601.fxc.Element;
 
 public class KasperLangImpl {
 
@@ -62,16 +55,6 @@ public class KasperLangImpl {
 		lookingForVar, lookingForAssignment, lookingForValue, lookingForSeperator
 	};
 
-
-	
-	private String evalString(KasperContext context, String toParse) throws KasperException{
-		Matcher matcher = ExternalExpression.pattern.matcher(toParse);
-		if (matcher.find()) {
-			String s = matcher.group(0);
-			Object replacement = new Interpreter().process(context, s);
-		}
-		return null;
-	}
 
 	@Command("var")
 	public Object run(KasperBindings bindings, Reference varName ,Atom assign, Reference value) throws IOException, UnsupportedOperationException, KasperException {

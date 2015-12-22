@@ -2,11 +2,16 @@ package org._24601.kasper.core;
 
 import java.io.Reader;
 import java.io.Writer;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import javax.script.Bindings;
 import javax.script.ScriptContext;
+import javax.script.ScriptEngine;
 
 import org._24601.kasper.api.Parser;
 
@@ -14,11 +19,7 @@ public class KasperContext implements ScriptContext {
 
 	private Parser parser;
 
-	public static String globalScopeId = "_GLOBAL_SCOPE";
-
-	public static String engineScopeID = "_ENGING_SCOPE";
-
-	private KasperBindings bindings;
+	private Map<Integer,Bindings> bindings;
 
 	private static final String output = "__outputstream";
 
@@ -26,8 +27,10 @@ public class KasperContext implements ScriptContext {
 			.getName());
 
 	public KasperContext() {
-		this.bindings = new KasperBindings();
-		bindings.put(output, System.out);
+		bindings = new HashMap<Integer, Bindings>(3);
+		KasperBindings temp = new KasperBindings();
+		bindings.put(ScriptContext.GLOBAL_SCOPE, temp);
+		bindings.put(ScriptContext.ENGINE_SCOPE, temp.createChildScope());
 	}
 
 	public KasperContext(ScriptContext context) {
@@ -39,9 +42,6 @@ public class KasperContext implements ScriptContext {
 		return parser;
 	}
 
-	public KasperBindings getScope() {
-		return bindings;
-	}
 
 	/**
 	 * facade to add a key value pair to the underlying scope
@@ -52,11 +52,12 @@ public class KasperContext implements ScriptContext {
 	 * @return
 	 */
 	public Object put(String key, Object value) {
-		return bindings.put(key, value);
+		setAttribute(key, value, ScriptContext.ENGINE_SCOPE);
+		return value;
 	}
 
 	public Object get(String key) {
-		return bindings.get(key);
+		return getAttribute(key, ENGINE_SCOPE);
 	}
 
 	public boolean containsKey(String key) {
@@ -72,23 +73,20 @@ public class KasperContext implements ScriptContext {
 			if (bindings == null) {
 				throw new NullPointerException("Engine scope cannot be null.");
 			}
-			this.bindings.put(engineScopeID, bindings);
-			break;
-		case GLOBAL_SCOPE:
-			this.bindings.put(globalScopeId, bindings);
+
 			break;
 		default:
 			throw new IllegalArgumentException("Invalid scope value.");
 		}
+		this.bindings.put(scope, bindings);
 	}
 
 	@Override
 	public Bindings getBindings(int scope) {
 		switch (scope) {
 		case ENGINE_SCOPE:
-			return (Bindings) this.bindings.get(engineScopeID);
 		case GLOBAL_SCOPE:
-			return (Bindings) this.bindings.get(globalScopeId);
+			return this.bindings.get(scope);
 		default:
 			throw new IllegalArgumentException("Illegal scope value.");
 		}
@@ -124,7 +122,7 @@ public class KasperContext implements ScriptContext {
 	public Object getAttribute(String name) {
 		Object reply = getAttribute(name, ENGINE_SCOPE);
 		if (reply == null) {
-			Bindings bindings = (Bindings) this.bindings.get(globalScopeId);
+			Bindings bindings = (Bindings) this.bindings.get(GLOBAL_SCOPE);
 			if (bindings != null) {
 				reply = bindings.get(name);
 			}
@@ -183,8 +181,7 @@ public class KasperContext implements ScriptContext {
 
 	@Override
 	public List<Integer> getScopes() {
-		// TODO Auto-generated method stub
-		return null;
+		return Arrays.asList(ENGINE_SCOPE,GLOBAL_SCOPE);
 	}
 
 }

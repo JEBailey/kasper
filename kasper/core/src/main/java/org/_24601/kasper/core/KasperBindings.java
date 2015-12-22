@@ -13,6 +13,8 @@ import java.util.Set;
 
 import javax.script.Bindings;
 
+import org._24601.kasper.lang.KasperLangImpl;
+
 /**
  * Provides a wrapper around an enclosed Map which represents the items
  * available to the Interpreter at a particular level. Additionally implements
@@ -43,8 +45,7 @@ public class KasperBindings implements Bindings {
 	}
 
 	private void addLibrary() {
-		// TODO Auto-generated method stub
-		
+		Util.load(this, new KasperLangImpl());
 	}
 
 	private KasperBindings(Bindings scope) {

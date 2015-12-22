@@ -195,6 +195,9 @@ public class KasperScriptEngine  implements ScriptEngine {
 
 	@Override
 	public ScriptEngineFactory getFactory() {
-		return new KasperScriptEngineFactory();
+		if (this.factory == null){
+			this.factory =  new KasperScriptEngineFactory();
+		}
+		return this.factory;
 	}
 }
