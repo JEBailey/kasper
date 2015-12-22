@@ -142,7 +142,11 @@ public class Util {
 		return null;
 	}
 	
-	public static void createChildScope(ScriptContext context){
-		
+	public static ScriptContext createChildScope(ScriptContext context){
+		return null;
+	}
+	
+	public static ScriptContext removeChildScope(ScriptContext context){
+		return null;
 	}
 }

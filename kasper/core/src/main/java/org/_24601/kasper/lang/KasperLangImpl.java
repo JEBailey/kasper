@@ -78,7 +78,7 @@ public class KasperLangImpl {
 		if (!assign.equals("=")){
 			throw new UnsupportedOperationException();
 		}
-		varName.updateValue(value.evaluate());
+		varName.setValue(value.evaluate());
 		return "";
 	}
 
