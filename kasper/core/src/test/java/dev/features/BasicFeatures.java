@@ -3,8 +3,8 @@ package dev.features;
 import static org.junit.Assert.assertEquals;
 
 import org._24601.kasper.Interpreter;
-import org._24601.kasper.core.KasperContext;
 import org._24601.kasper.error.KasperException;
+import org._24601.kasper.scripting.KasperContext;
 import org.junit.Before;
 import org.junit.Test;
 

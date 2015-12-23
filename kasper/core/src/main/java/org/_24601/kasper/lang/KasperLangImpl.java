@@ -9,11 +9,11 @@ import org._24601.kasper.annotations.Command;
 import org._24601.kasper.annotations.Optional;
 import org._24601.kasper.annotations.Primitive;
 import org._24601.kasper.annotations.parameter.CommandName;
-import org._24601.kasper.core.KasperBindings;
 import org._24601.kasper.error.KasperException;
 import org._24601.kasper.fxc.elements.Comment;
 import org._24601.kasper.fxc.elements.DocType;
 import org._24601.kasper.fxc.elements.VoidElement;
+import org._24601.kasper.scripting.KasperBindings;
 import org._24601.kasper.type.Atom;
 import org._24601.kasper.type.Reference;
 

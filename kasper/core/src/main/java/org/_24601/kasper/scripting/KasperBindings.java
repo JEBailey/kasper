@@ -4,7 +4,7 @@
  * Created on September 26, 2003, 9:16 AM
  */
 
-package org._24601.kasper.core;
+package org._24601.kasper.scripting;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -13,6 +13,7 @@ import java.util.Set;
 
 import javax.script.Bindings;
 
+import org._24601.kasper.core.Util;
 import org._24601.kasper.lang.KasperLangImpl;
 
 /**
@@ -48,7 +49,7 @@ public class KasperBindings implements Bindings {
 		Util.load(this, new KasperLangImpl());
 	}
 
-	private KasperBindings(Bindings scope) {
+	public KasperBindings(Bindings scope) {
 		content = new HashMap<String, Object>();
 		parentBindings = scope;
 	}

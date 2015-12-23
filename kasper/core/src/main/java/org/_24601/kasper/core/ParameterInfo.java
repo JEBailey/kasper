@@ -13,6 +13,7 @@ import org._24601.kasper.annotations.Optional;
 import org._24601.kasper.annotations.Property;
 import org._24601.kasper.annotations.parameter.CommandName;
 import org._24601.kasper.error.KasperException;
+import org._24601.kasper.scripting.KasperBindings;
 import org._24601.kasper.type.Reference;
 
 /**

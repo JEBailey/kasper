@@ -1,8 +1,7 @@
-package org._24601.kasper.core;
+package org._24601.kasper.scripting;
 
 import java.io.Reader;
 import java.io.Writer;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -11,17 +10,16 @@ import java.util.logging.Logger;
 
 import javax.script.Bindings;
 import javax.script.ScriptContext;
-import javax.script.ScriptEngine;
-
-import org._24601.kasper.api.Parser;
 
 public class KasperContext implements ScriptContext {
-
-	private Parser parser;
+	
+	private Reader reader;
+	
+	private Writer writer;
+	
+	private Writer errorWriter;
 
 	private Map<Integer,Bindings> bindings;
-
-	private static final String output = "__outputstream";
 
 	private static final Logger log = Logger.getLogger(KasperContext.class
 			.getName());
@@ -32,38 +30,6 @@ public class KasperContext implements ScriptContext {
 		bindings.put(ScriptContext.GLOBAL_SCOPE, temp);
 		bindings.put(ScriptContext.ENGINE_SCOPE, temp.createChildScope());
 	}
-
-	public KasperContext(ScriptContext context) {
-		// TODO Auto-generated constructor stub
-	}
-
-
-	public Parser getParser() {
-		return parser;
-	}
-
-
-	/**
-	 * facade to add a key value pair to the underlying scope
-	 * 
-	 * @param key
-	 *            A string representation
-	 * @param value
-	 * @return
-	 */
-	public Object put(String key, Object value) {
-		setAttribute(key, value, ScriptContext.ENGINE_SCOPE);
-		return value;
-	}
-
-	public Object get(String key) {
-		return getAttribute(key, ENGINE_SCOPE);
-	}
-
-	public boolean containsKey(String key) {
-		return bindings.containsKey(key);
-	}
-
 
 
 	@Override
@@ -145,38 +111,32 @@ public class KasperContext implements ScriptContext {
 
 	@Override
 	public Writer getWriter() {
-		// TODO Auto-generated method stub
-		return null;
+		return writer;
 	}
 
 	@Override
 	public Writer getErrorWriter() {
-		// TODO Auto-generated method stub
-		return null;
+		return errorWriter;
 	}
 
 	@Override
 	public void setWriter(Writer writer) {
-		// TODO Auto-generated method stub
-
+		this.writer = writer;
 	}
 
 	@Override
-	public void setErrorWriter(Writer writer) {
-		// TODO Auto-generated method stub
-
+	public void setErrorWriter(Writer errorWriter) {
+		this.errorWriter = errorWriter;
 	}
 
 	@Override
 	public Reader getReader() {
-		// TODO Auto-generated method stub
-		return null;
+		return reader;
 	}
 
 	@Override
 	public void setReader(Reader reader) {
-		// TODO Auto-generated method stub
-
+		this.reader = reader;
 	}
 
 	@Override

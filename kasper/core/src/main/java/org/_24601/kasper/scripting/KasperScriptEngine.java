@@ -9,8 +9,6 @@ import javax.script.ScriptException;
 
 import org._24601.kasper.Interpreter;
 import org._24601.kasper.KasperScriptEngineFactory;
-import org._24601.kasper.core.KasperBindings;
-import org._24601.kasper.core.KasperContext;
 
 public class KasperScriptEngine  implements ScriptEngine {
 
@@ -60,6 +58,14 @@ public class KasperScriptEngine  implements ScriptEngine {
             throw new NullPointerException("null context");
         }
         context = ctxt;
+        wrapBindings(context, ScriptContext.ENGINE_SCOPE);
+        wrapBindings(context, ScriptContext.GLOBAL_SCOPE);
+    }
+    
+    private void wrapBindings(ScriptContext context, int scope){
+    	Bindings bindings = context.getBindings(scope);
+    	bindings = new KasperBindings(bindings);
+    	context.setBindings(bindings, scope);
     }
 
     /**
