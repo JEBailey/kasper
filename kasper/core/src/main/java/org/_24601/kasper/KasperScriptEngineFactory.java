@@ -1,6 +1,7 @@
 package org._24601.kasper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.script.ScriptEngine;
@@ -22,14 +23,9 @@ public class KasperScriptEngineFactory implements ScriptEngineFactory {
 		return "0.0.1";
 	}
 
-	@SuppressWarnings("serial")
 	@Override
 	public List<String> getExtensions() {
-		return new ArrayList<String>() {
-			{
-				add("ksp");
-			}
-		};
+		return Arrays.asList("ksp");
 	}
 
 	@Override
@@ -39,9 +35,7 @@ public class KasperScriptEngineFactory implements ScriptEngineFactory {
 
 	@Override
 	public List<String> getNames() {
-		List<String> names = new ArrayList<String>();
-		names.add("kasper");
-		return names;
+		return Arrays.asList("kasper");
 	}
 
 	@Override

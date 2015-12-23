@@ -14,17 +14,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import javax.script.Bindings;
 import javax.script.ScriptContext;
 
 import org._24601.kasper.api.Collector;
 import org._24601.kasper.api.Executable;
 import org._24601.kasper.api.Lexeme;
-import org._24601.kasper.api.Lexer;
 import org._24601.kasper.api.ListProvider;
 import org._24601.kasper.api.ListProviderVisitor;
 import org._24601.kasper.api.Token;
-import org._24601.kasper.core.DefaultLexer;
+import org._24601.kasper.core.Lexer;
 import org._24601.kasper.core.Util;
 import org._24601.kasper.error.KasperException;
 import org._24601.kasper.lex.AttributeList;
@@ -38,7 +36,6 @@ import org._24601.kasper.lex.SingleQuoteStrings;
 import org._24601.kasper.lex.Special;
 import org._24601.kasper.lex.StatementBlock;
 import org._24601.kasper.lex.WhiteSpace;
-import org._24601.kasper.type.Reference;
 import org._24601.kasper.type.Statement;
 
 /**
@@ -49,8 +46,6 @@ import org._24601.kasper.type.Statement;
  * @author je bailey
  */
 public class Interpreter {
-
-	private Lexer lexer;
 	
 	private Stack<Collector> collectors = new Stack<Collector>();
 
@@ -76,7 +71,6 @@ public class Interpreter {
 	};
 	
 	public Interpreter() {
-		lexer = new DefaultLexer();
 		collector = new Statement(0,1);
 	}
 
@@ -97,7 +91,7 @@ public class Interpreter {
 
 		Object result = null;
 		
-		List<Token> tokens = lexer.tokenize(string, lexemes);
+		List<Token> tokens = Lexer.tokenize(string, lexemes);
 		for (Token token: tokens) {			
 			collector = token.consume(collector, collectors, charStack);
 		}
@@ -119,7 +113,6 @@ public class Interpreter {
 	 * @throws KasperException
 	 */
 	public Object process(final ScriptContext context, ListProvider provider) throws KasperException {
-
 		
 		return provider.accept(new ListProviderVisitor() {
 			

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org._24601.kasper.api.Lexeme;
-import org._24601.kasper.api.Lexer;
 import org._24601.kasper.api.Token;
 import org._24601.kasper.error.KasperRuntimeException;
 import org._24601.kasper.lex.tokens.EOS;
@@ -18,10 +17,10 @@ import org._24601.kasper.lex.tokens.EOS;
  * @author Jason E Bailey
  *
  */
-public class DefaultLexer implements Lexer {
+public class Lexer {
 
-	@Override
-	public List<Token> tokenize(CharSequence data, List<Lexeme> lexemes) {
+
+	public static List<Token> tokenize(CharSequence data, List<Lexeme> lexemes) {
 
 		List<Token> tokens = new ArrayList<Token>();
 		int offset = 0;
