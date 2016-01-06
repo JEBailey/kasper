@@ -42,7 +42,15 @@ public class KasperContext implements ScriptContext {
 
 			break;
 		default:
-			throw new IllegalArgumentException("Invalid scope value.");
+			//throw new IllegalArgumentException("Invalid scope value.");
+		}
+		Bindings current = getBindings(scope);
+		if (current == null){
+			current = new KasperBindings();
+		}
+		if (current instanceof KasperBindings){
+			current.putAll(bindings);
+			bindings = current;
 		}
 		this.bindings.put(scope, bindings);
 	}

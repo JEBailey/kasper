@@ -92,6 +92,9 @@ public class Util {
 	
 	public static  Object eval(ScriptContext context, Object object) throws KasperException{
 		Object response = object;
+		if (response instanceof String) {
+			response = context.getAttribute((String)response);
+		}
 		if (response instanceof Atom) {
 			response = context.getAttribute(object.toString());
 		}

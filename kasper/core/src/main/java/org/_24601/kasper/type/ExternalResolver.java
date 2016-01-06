@@ -66,12 +66,13 @@ public class ExternalResolver implements Executable, ListProvider {
 		if (list.size() < 2){
 			return reply;
 		}
-
+		StringBuilder sb = new StringBuilder();
+		
 		List<Object> sublist = list.subList(1, list.size());
 		
 		if (reply instanceof Boolean) {
 			if (((Boolean) reply).booleanValue()) {
-				return Util.eval(context, sublist.get(0) , true);
+				return sb.append(Util.eval(context, sublist.get(0) , true));
 			}
 		}
 
@@ -81,22 +82,22 @@ public class ExternalResolver implements Executable, ListProvider {
 			while (collection.hasNext()) {
 				Util.createChildScope(context);
 				context.setAttribute("this", collection.next(),ScriptContext.ENGINE_SCOPE);
-				reply = Util.eval(context, reply);
+				sb.append(Util.eval(context, sublist.get(0)));
 				Util.removeChildScope(context);
 			}
 			return reply;
 		}
 
 		if (reply.getClass().isArray()) {
-			for (Object item : Arrays.asList(reply)) {
+			for (Object item : (Object[])reply) {
 				Util.createChildScope(context);
 				context.setAttribute("this", item ,ScriptContext.ENGINE_SCOPE);
-				reply = Util.eval(context, reply);
+				sb.append(Util.eval(context, sublist.get(0)));
 				Util.removeChildScope(context);
 			}
 		}
 
-		return reply;
+		return sb.toString();
 	}
 
 	@Override

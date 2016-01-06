@@ -1,6 +1,5 @@
 package org._24601.kasper;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -30,7 +29,7 @@ public class KasperScriptEngineFactory implements ScriptEngineFactory {
 
 	@Override
 	public List<String> getMimeTypes() {
-		return new ArrayList<>();
+		return Arrays.asList("text/x-kasper");
 	}
 
 	@Override
@@ -71,7 +70,7 @@ public class KasperScriptEngineFactory implements ScriptEngineFactory {
 
 	@Override
 	public ScriptEngine getScriptEngine() {
-		return new KasperScriptEngine();
+		return new KasperScriptEngine(this);
 	}
 
 }

@@ -8,14 +8,13 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
-import org._24601.kasper.core.KasperContext;
 import org._24601.kasper.error.KasperException;
 import org.junit.Before;
 import org.junit.Test;
 
 public class BasicFeaturesJSR223 {
 	
-	private KasperContext context;
+	private ScriptContext context;
 
     @Before
     public void setUp() throws KasperException {
@@ -78,18 +77,13 @@ public class BasicFeaturesJSR223 {
 	}
 	
 	@Test
-	public void testForEach() throws KasperException {
-		assertEquals("<a>this</a><a>is</a><a>a</a><a>test</a>", eval("forEach ${foobar} { a item }"));
-	}
-	
-	@Test
 	public void testForEachExtended() throws KasperException {
-		assertEquals("<a>this</a><a>is</a><a>a</a><a>test</a>", eval("forEach ${foobar} { a ${item} }"));
+		assertEquals("<a>this</a><a>is</a><a>a</a><a>test</a>", eval("${foobar} { a ${this} }"));
 	}
 	
 	@Test
 	public void testForEachExtendedOgnl() throws KasperException {
-		assertEquals("<a>4</a><a>2</a><a>1</a><a>4</a>", eval("forEach ${foobar} { a ${item.length()}}"));
+		assertEquals("<a>4</a><a>2</a><a>1</a><a>4</a>", eval("${foobar} { a ${this.length()}}"));
 	}
 	
 	@Test
@@ -100,7 +94,7 @@ public class BasicFeaturesJSR223 {
 	private Object eval(String expression) throws KasperException {
 		ScriptEngineManager manager = new ScriptEngineManager();
 		ScriptEngine engine = manager.getEngineByExtension("ksp");
-		Bindings bindings = engine.createBindings();
+		Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
 		bindings.put("foo", 1);
 		bindings.put("bar", "this is sparta");
 		bindings.put("foobar", new String[]{"this", "is", "a", "test"});

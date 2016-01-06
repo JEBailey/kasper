@@ -40,12 +40,13 @@
 		<dependency>
 			<groupId>org.24601</groupId>
 			<artifactId>kasper.lang</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
+			<version>0.0.2-SNAPSHOT</version>
+			<optional>true</optional>
 		</dependency>
 	</dependencies>
 	<parent>
 		<groupId>org.24601</groupId>
 		<artifactId>kasper</artifactId>
-		<version>0.0.1-SNAPSHOT</version>
+		<version>0.0.2-SNAPSHOT</version>
 	</parent>
 </project>
