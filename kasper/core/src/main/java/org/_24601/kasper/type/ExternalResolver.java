@@ -97,7 +97,7 @@ public class ExternalResolver implements Executable, ListProvider {
 			}
 		}
 
-		return sb.toString();
+		return sb.toString() ;
 	}
 
 	@Override

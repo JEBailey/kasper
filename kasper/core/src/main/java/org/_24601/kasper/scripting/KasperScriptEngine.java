@@ -186,7 +186,8 @@ public class KasperScriptEngine  implements ScriptEngine {
 	@Override
 	public Object eval(Reader reader, ScriptContext context) throws ScriptException {
 		try {
-			return interpreter.process(context, reader);
+			context.getWriter().write((String)interpreter.process(context, reader));
+			return null;
 		} catch (Throwable e) {
 			throw new ScriptException((Exception)e);
 		}

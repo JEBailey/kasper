@@ -1,7 +1,5 @@
 package org._24601.kasper.scripting;
 
-import java.io.Reader;
-import java.io.Writer;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -10,14 +8,10 @@ import java.util.logging.Logger;
 
 import javax.script.Bindings;
 import javax.script.ScriptContext;
+import javax.script.SimpleScriptContext;
 
-public class KasperContext implements ScriptContext {
-	
-	private Reader reader;
-	
-	private Writer writer;
-	
-	private Writer errorWriter;
+
+public class KasperContext extends SimpleScriptContext {
 
 	private Map<Integer,Bindings> bindings;
 
@@ -117,35 +111,6 @@ public class KasperContext implements ScriptContext {
 		return -1;
 	}
 
-	@Override
-	public Writer getWriter() {
-		return writer;
-	}
-
-	@Override
-	public Writer getErrorWriter() {
-		return errorWriter;
-	}
-
-	@Override
-	public void setWriter(Writer writer) {
-		this.writer = writer;
-	}
-
-	@Override
-	public void setErrorWriter(Writer errorWriter) {
-		this.errorWriter = errorWriter;
-	}
-
-	@Override
-	public Reader getReader() {
-		return reader;
-	}
-
-	@Override
-	public void setReader(Reader reader) {
-		this.reader = reader;
-	}
 
 	@Override
 	public List<Integer> getScopes() {

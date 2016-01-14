@@ -2,11 +2,11 @@ package dev.features;
 
 import static org.junit.Assert.assertEquals;
 
-import javax.script.Bindings;
+import java.io.StringWriter;
+
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 
 import org._24601.kasper.error.KasperException;
 import org.junit.Before;
@@ -88,20 +88,22 @@ public class BasicFeaturesJSR223 {
 	
 	@Test
 	public void testForIf() throws KasperException {
-		assertEquals("<a>fish</a>", eval("if true { a 'fish' } "));
+		assertEquals("<a>fish</a>", eval("if true { a {'fish'} } "));
 	}
 	
 	private Object eval(String expression) throws KasperException {
 		ScriptEngineManager manager = new ScriptEngineManager();
 		ScriptEngine engine = manager.getEngineByExtension("ksp");
-		Bindings bindings = engine.getBindings(ScriptContext.ENGINE_SCOPE);
-		bindings.put("foo", 1);
-		bindings.put("bar", "this is sparta");
-		bindings.put("foobar", new String[]{"this", "is", "a", "test"});
-		engine.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
+		ScriptContext context = engine.getContext();
+		context.setAttribute("foo", 1, ScriptContext.ENGINE_SCOPE);
+		context.setAttribute("bar", "this is sparta", ScriptContext.ENGINE_SCOPE);
+		context.setAttribute("foobar", new String[]{"this", "is", "a", "test"}, ScriptContext.ENGINE_SCOPE);
+		StringWriter sw = new StringWriter();
+		context.setWriter(sw);
         try {
-			return engine.eval(expression);
-		} catch (ScriptException e) {
+			engine.eval(expression, context);
+			return sw.toString();
+		} catch (Throwable e) {
 			return e.getMessage();
 		}
     }

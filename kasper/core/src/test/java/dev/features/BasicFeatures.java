@@ -2,9 +2,16 @@ package dev.features;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.StringWriter;
+
+import javax.script.ScriptContext;
+import javax.script.ScriptEngine;
+import javax.script.ScriptException;
+
 import org._24601.kasper.Interpreter;
 import org._24601.kasper.error.KasperException;
 import org._24601.kasper.scripting.KasperContext;
+import org._24601.kasper.scripting.KasperScriptEngine;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -63,7 +70,20 @@ public class BasicFeatures {
 	}
 	
 	private Object eval(String expression) throws KasperException {
-        return new Interpreter().process(context, expression);
+		ScriptEngine engine = new KasperScriptEngine();
+		ScriptContext context = new KasperContext();
+		context.setAttribute("foo", 1, ScriptContext.ENGINE_SCOPE);
+		context.setAttribute("bar", "this is sparta", ScriptContext.ENGINE_SCOPE);
+		context.setAttribute("foobar", new String[]{"this", "is", "a", "test"}, ScriptContext.ENGINE_SCOPE);
+		StringWriter sw = new StringWriter();
+		context.setWriter(sw);
+		try {
+			engine.eval(expression, context);
+		} catch (ScriptException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+        return sw.toString();
     }
 
 }

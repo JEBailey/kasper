@@ -19,11 +19,6 @@ import org._24601.kasper.type.Reference;
 
 public class KasperLangImpl {
 
-	private Writer writer;
-
-	public KasperLangImpl() {
-	}
-
 	/**
 	 */
 	@Command("_default")
