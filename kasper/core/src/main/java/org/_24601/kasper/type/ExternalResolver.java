@@ -7,16 +7,16 @@ import java.util.List;
 
 import javax.script.ScriptContext;
 
-import ognl.Ognl;
-import ognl.OgnlContext;
-import ognl.OgnlException;
-
+import org._24601.kasper.Scope;
 import org._24601.kasper.api.Executable;
 import org._24601.kasper.api.ListProvider;
 import org._24601.kasper.api.ListProviderVisitor;
-import org._24601.kasper.core.Util;
 import org._24601.kasper.error.KasperException;
 import org._24601.kasper.error.KasperRuntimeException;
+
+import ognl.Ognl;
+import ognl.OgnlContext;
+import ognl.OgnlException;
 
 public class ExternalResolver implements Executable, ListProvider {
 
@@ -49,10 +49,14 @@ public class ExternalResolver implements Executable, ListProvider {
 	 * 
 	 */
 	@Override
-	public Object execute(ScriptContext context, List<Object> list)
+	public Object execute(Scope context, List<Object> list)
 			throws KasperException {
 
-		Object reply = Util.eval(context,key);
+		ScriptContext cxt = (ScriptContext)context.getAttribute("_context");
+		Object reply = context.eval(key);
+		if (reply == null){
+			reply = cxt.getAttribute(key);
+		}
 		
 		
 		if (expression != null) {
@@ -72,7 +76,7 @@ public class ExternalResolver implements Executable, ListProvider {
 		
 		if (reply instanceof Boolean) {
 			if (((Boolean) reply).booleanValue()) {
-				return sb.append(Util.eval(context, sublist.get(0) , true));
+				return sb.append(context.eval(sublist.get(0) , true));
 			}
 		}
 
@@ -80,20 +84,18 @@ public class ExternalResolver implements Executable, ListProvider {
 			Iterator<?> collection = ((Collection<?>) reply).iterator();
 			
 			while (collection.hasNext()) {
-				Util.createChildScope(context);
-				context.setAttribute("this", collection.next(),ScriptContext.ENGINE_SCOPE);
-				sb.append(Util.eval(context, sublist.get(0)));
-				Util.removeChildScope(context);
+				Scope childScope = context.createChildScope();
+				childScope.put("this", collection.next());
+				sb.append(childScope.eval(sublist.get(0)));
 			}
 			return reply;
 		}
 
 		if (reply.getClass().isArray()) {
 			for (Object item : (Object[])reply) {
-				Util.createChildScope(context);
-				context.setAttribute("this", item ,ScriptContext.ENGINE_SCOPE);
-				sb.append(Util.eval(context, sublist.get(0)));
-				Util.removeChildScope(context);
+				Scope childScope = context.createChildScope();
+				childScope.put("this", item);
+				sb.append(childScope.eval(sublist.get(0)));
 			}
 		}
 

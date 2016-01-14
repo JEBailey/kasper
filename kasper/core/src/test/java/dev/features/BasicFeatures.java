@@ -7,21 +7,18 @@ import java.io.StringWriter;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
+import javax.script.SimpleScriptContext;
 
-import org._24601.kasper.Interpreter;
 import org._24601.kasper.error.KasperException;
-import org._24601.kasper.scripting.KasperContext;
 import org._24601.kasper.scripting.KasperScriptEngine;
 import org.junit.Before;
 import org.junit.Test;
 
 public class BasicFeatures {
-	
-	private KasperContext context;
 
     @Before
     public void setUp() throws KasperException {
-		context = new KasperContext();
+
     }
 
 	@Test
@@ -71,7 +68,7 @@ public class BasicFeatures {
 	
 	private Object eval(String expression) throws KasperException {
 		ScriptEngine engine = new KasperScriptEngine();
-		ScriptContext context = new KasperContext();
+		ScriptContext context = new SimpleScriptContext();
 		context.setAttribute("foo", 1, ScriptContext.ENGINE_SCOPE);
 		context.setAttribute("bar", "this is sparta", ScriptContext.ENGINE_SCOPE);
 		context.setAttribute("foobar", new String[]{"this", "is", "a", "test"}, ScriptContext.ENGINE_SCOPE);

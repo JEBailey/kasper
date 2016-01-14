@@ -76,7 +76,7 @@ public class Interpreter {
 
 
 
-	public Object process(ScriptContext scriptContext, Reader reader) throws KasperException {
+	public Object process(Scope scriptContext, Reader reader) throws KasperException {
 		return process(scriptContext, toString(reader));
 	}
 
@@ -87,7 +87,7 @@ public class Interpreter {
 	 * @return
 	 * @throws KasperException
 	 */
-	public  Object process(ScriptContext context, CharSequence string) throws KasperException {
+	public  Object process(Scope context, CharSequence string) throws KasperException {
 
 		Object result = null;
 		
@@ -112,12 +112,12 @@ public class Interpreter {
 	 * @return
 	 * @throws KasperException
 	 */
-	public Object process(final ScriptContext context, ListProvider provider) throws KasperException {
+	public Object process(final Scope context, ListProvider provider) throws KasperException {
 		
 		return provider.accept(new ListProviderVisitor() {
 			
 			public Object apply(List list) throws KasperException {				
-				Object token = Util.eval(context, list.get(0), true);
+				Object token = context.eval(list.get(0), true);
 				if (token instanceof Executable) {
 					token = ((Executable) token).execute(context, list);
 				}

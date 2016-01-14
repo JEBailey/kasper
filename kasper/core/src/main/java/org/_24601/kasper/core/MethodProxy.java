@@ -4,8 +4,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.List;
 
-import javax.script.ScriptContext;
-
+import org._24601.kasper.Scope;
 import org._24601.kasper.api.Executable;
 import org._24601.kasper.error.KasperException;
 
@@ -32,7 +31,7 @@ public class MethodProxy implements Executable {
 	}
 
 	@Override
-	public Object execute(ScriptContext context, List<Object> list) throws KasperException {
+	public Object execute(Scope context, List<Object> list) throws KasperException {
 		try {
 			return method.invoke(object, resolver.render(context, list));
 		} catch (InvocationTargetException|IllegalAccessException ite) {

@@ -1,7 +1,6 @@
 package org._24601.kasper.lang;
 
 import java.io.IOException;
-import java.io.Writer;
 import java.util.List;
 
 import org._24601.fxc.Element;
@@ -13,7 +12,6 @@ import org._24601.kasper.error.KasperException;
 import org._24601.kasper.fxc.elements.Comment;
 import org._24601.kasper.fxc.elements.DocType;
 import org._24601.kasper.fxc.elements.VoidElement;
-import org._24601.kasper.scripting.KasperBindings;
 import org._24601.kasper.type.Atom;
 import org._24601.kasper.type.Reference;
 
@@ -37,7 +35,7 @@ public class KasperLangImpl {
 	}
 
 	@Command({ "area", "base", "br", "col", "command", "embed", "hr", "img", "input", "keygen", "link","meta","param","source","track","wbr" })
-	public Object defaultVoid(KasperBindings bindings, @CommandName String tag, @Optional List<Object> arg1)
+	public Object defaultVoid(@CommandName String tag, @Optional List<Object> arg1)
 			throws IOException, UnsupportedOperationException, KasperException {
 		Element element = new VoidElement(tag);
 		if (arg1 != null) {
@@ -52,7 +50,7 @@ public class KasperLangImpl {
 
 
 	@Command("var")
-	public Object run(KasperBindings bindings, Reference varName ,Atom assign, Reference value) throws IOException, UnsupportedOperationException, KasperException {
+	public Object run(Reference varName ,Atom assign, Reference value) throws IOException, UnsupportedOperationException, KasperException {
 		if (!assign.equals("=")){
 			throw new UnsupportedOperationException();
 		}
@@ -87,19 +85,6 @@ public class KasperLangImpl {
 		return "";
 	}
 	
-	@Command("forEach")
-	public Object forEach(Reference items, Reference commands) throws IOException, UnsupportedOperationException, KasperException {
-		Object foo = items.evaluate();
-		Object[] arr = Utils.toArray(foo);
-		StringBuilder sb = new StringBuilder();
-		for(Object object:arr){
-			commands.createChildScope();
-			commands.getBindings().put("item", object);
-			String str = (String)commands.evaluate();
-			sb.append(str);
-		}
-		return sb.toString();
-	}
 	
 	@Primitive("true")
 	public boolean boolTrue(){

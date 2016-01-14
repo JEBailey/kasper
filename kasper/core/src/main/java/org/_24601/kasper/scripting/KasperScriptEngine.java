@@ -1,22 +1,26 @@
 package org._24601.kasper.scripting;
 import java.io.Reader;
+import java.io.Writer;
 
 import javax.script.Bindings;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 import javax.script.ScriptException;
+import javax.script.SimpleBindings;
+import javax.script.SimpleScriptContext;
 
 import org._24601.kasper.Interpreter;
 import org._24601.kasper.KasperScriptEngineFactory;
+import org._24601.kasper.Scope;
 
 public class KasperScriptEngine  implements ScriptEngine {
 
-    protected ScriptContext context;
+    protected Scope scope;
+    
+    protected ScriptContext scriptContext;
     
     protected ScriptEngineFactory factory;
-    
-    protected Bindings global;
     
     private Interpreter interpreter;
 
@@ -26,9 +30,10 @@ public class KasperScriptEngine  implements ScriptEngine {
     }
     
     public KasperScriptEngine() {
-        context = new KasperContext();
-        global = new KasperBindings();
         interpreter = new Interpreter();
+        scope = new Scope();
+        scriptContext = new SimpleScriptContext();
+        scope.put("_context", new SimpleScriptContext());
     }
 
     /**
@@ -43,7 +48,7 @@ public class KasperScriptEngine  implements ScriptEngine {
         if (bindings == null) {
             throw new NullPointerException("bindings is null");
         }
-        context.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
+        scriptContext.setBindings(bindings, ScriptContext.ENGINE_SCOPE);
     }
 
     /**
@@ -57,16 +62,11 @@ public class KasperScriptEngine  implements ScriptEngine {
         if (ctxt == null) {
             throw new NullPointerException("null context");
         }
-        context = ctxt;
-        wrapBindings(context, ScriptContext.ENGINE_SCOPE);
-        wrapBindings(context, ScriptContext.GLOBAL_SCOPE);
+        scriptContext = ctxt;
+        scope.put("_context", ctxt);
     }
     
-    private void wrapBindings(ScriptContext context, int scope){
-    	Bindings bindings = context.getBindings(scope);
-    	bindings = new KasperBindings(bindings);
-    	context.setBindings(bindings, scope);
-    }
+
 
     /**
      * Returns the value of the protected <code>context</code> field.
@@ -74,7 +74,7 @@ public class KasperScriptEngine  implements ScriptEngine {
      * @return The value of the protected <code>context</code> field.
      */
     public ScriptContext getContext() {
-        return context;
+        return scriptContext;
     }
 
     /**
@@ -89,7 +89,7 @@ public class KasperScriptEngine  implements ScriptEngine {
      * invalid for the type the protected <code>context</code> field.
      */
     public Bindings getBindings(int scope) {
-    	return context.getBindings(scope);
+    	return scriptContext.getBindings(scope);
     }
 
     /**
@@ -105,7 +105,7 @@ public class KasperScriptEngine  implements ScriptEngine {
      * <code>ScriptContext.ENGINE_SCOPE</code>
      */
     public void setBindings(Bindings bindings, int scope) {
-    	context.setBindings(bindings, scope);
+    	scriptContext.setBindings(bindings, scope);
     }
 
     public void put(String key, Object value) {
@@ -133,51 +133,35 @@ public class KasperScriptEngine  implements ScriptEngine {
     }
 
     public Object eval(Reader reader, Bindings bindings ) throws ScriptException {
-        ScriptContext ctxt = getScriptContext(bindings);
-        return eval(reader, ctxt);
+        setBindings(bindings, ScriptContext.ENGINE_SCOPE);
+        return eval(reader, scriptContext);
     }
 
     public Object eval(String script, Bindings bindings) throws ScriptException {
-        ScriptContext ctxt = getScriptContext(bindings);
-        return eval(script , ctxt);
+    	setBindings(bindings, ScriptContext.ENGINE_SCOPE);
+        return eval(script , scriptContext);
     }
 
 
     public Object eval(Reader reader) throws ScriptException {
-        return eval(reader, context);
+        return eval(reader, scriptContext);
     }
 
     public Object eval(String script) throws ScriptException {
-        return eval(script, context);
+        return eval(script, scriptContext);
     }
 
-    protected ScriptContext getScriptContext(Bindings bindings) {
-        KasperContext ctxt = new KasperContext();
-        Bindings gs = getBindings(ScriptContext.GLOBAL_SCOPE);
-
-        if (gs != null) {
-            ctxt.setBindings(gs, ScriptContext.GLOBAL_SCOPE);
-        }
-
-        if (bindings != null) {
-            ctxt.setBindings(bindings,
-                    ScriptContext.ENGINE_SCOPE);
-        } else {
-            throw new NullPointerException("Engine scope Bindings may not be null.");
-        }
-
-        ctxt.setReader(context.getReader());
-        ctxt.setWriter(context.getWriter());
-        ctxt.setErrorWriter(context.getErrorWriter());
-
-        return ctxt;
-
-    }
 
 	@Override
 	public Object eval(String script, ScriptContext context) throws ScriptException {
+		scope.put("_context", context);
 		try {
-			return new Interpreter().process(context, script);
+			String response = (String)interpreter.process(scope, script);
+			Writer writer = context.getWriter();
+			if (writer != null){
+				writer.write(response);
+			}
+			return response;
 		} catch (Throwable e) {
 			throw new ScriptException((Exception)e);
 		}
@@ -185,8 +169,9 @@ public class KasperScriptEngine  implements ScriptEngine {
 
 	@Override
 	public Object eval(Reader reader, ScriptContext context) throws ScriptException {
+		scope.put("_context", context);
 		try {
-			context.getWriter().write((String)interpreter.process(context, reader));
+			interpreter.process(scope, reader);
 			return null;
 		} catch (Throwable e) {
 			throw new ScriptException((Exception)e);
@@ -197,7 +182,7 @@ public class KasperScriptEngine  implements ScriptEngine {
 
 	@Override
 	public Bindings createBindings() {
-		return new KasperBindings();
+		return new SimpleBindings();
 	}
 
 	@Override

@@ -7,13 +7,11 @@ import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.List;
 
-import javax.script.ScriptContext;
-
+import org._24601.kasper.Scope;
 import org._24601.kasper.annotations.Optional;
 import org._24601.kasper.annotations.Property;
 import org._24601.kasper.annotations.parameter.CommandName;
 import org._24601.kasper.error.KasperException;
-import org._24601.kasper.scripting.KasperBindings;
 import org._24601.kasper.type.Reference;
 
 /**
@@ -51,10 +49,7 @@ public class ParameterInfo {
 				state = State.COMMANDNAME;
 			}
 		}
-		if (param == KasperBindings.class) {
-			increment = 0;
-		}
-		if (param == ScriptContext.class) {
+		if (param == Scope.class) {
 			increment = 0;
 		}
 	}
@@ -67,7 +62,7 @@ public class ParameterInfo {
 		return state == State.OPTIONAL;
 	}
 
-	public Object render(ScriptContext context, List<Object> statement,
+	public Object render(Scope context, List<Object> statement,
 			int tokenIndex) throws KasperException {
 		switch (state) {
 		case CONTEXT_PROPERTY:
@@ -84,7 +79,7 @@ public class ParameterInfo {
 						Object.class);
 				for (int index = tokenIndex; index < statement.size(); ++index) {
 					add.invoke(list,
-							Util.eval(context, statement.get(index), generic));
+							context.eval(statement.get(index), generic));
 				}
 			} catch (Exception e) {
 				throw new KasperException(-1, "failed to get COLLECTION");
@@ -92,16 +87,13 @@ public class ParameterInfo {
 		default:
 
 		}
-		if (type == KasperBindings.class) {
-			return context.getBindings(ScriptContext.ENGINE_SCOPE);
-		}
-		if (type == ScriptContext.class) {
+		if (type == Scope.class) {
 			return context;
 		}
 		if (type == Reference.class) {
 			return new Reference(statement.get(tokenIndex), context);
 		}
-		return Util.eval(context, statement.get(tokenIndex), type);
+		return context.eval(statement.get(tokenIndex), type);
 	}
 
 }

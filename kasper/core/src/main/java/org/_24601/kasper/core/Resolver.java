@@ -5,8 +5,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.util.List;
 
-import javax.script.ScriptContext;
-
+import org._24601.kasper.Scope;
 import org._24601.kasper.error.KasperException;
 /**
  * Provides a mechanism to resolve the parameters that
@@ -41,7 +40,7 @@ protected Type[] params;
 	 * @return
 	 * @throws KasperException
 	 */
-	public Object[] render(ScriptContext context, List<Object> statement) throws KasperException {
+	public Object[] render(Scope context, List<Object> statement) throws KasperException {
 		// This is the argument array that will be passed in the method call
 		Object[] arguments = new Object[info.length];
 		// we're going to loop through the parameter information

@@ -1,9 +1,6 @@
  package org._24601.kasper.type;
 
-import javax.script.Bindings;
-import javax.script.ScriptContext;
-
-import org._24601.kasper.core.Util;
+import org._24601.kasper.Scope;
 import org._24601.kasper.error.KasperException;
 
 /**
@@ -18,9 +15,9 @@ public class Reference {
 	
 	private Object key;
 
-	private ScriptContext context;
+	private Scope context;
 
-	public Reference(Object key, ScriptContext context) {
+	public Reference(Object key, Scope context) {
 		this.key = key;
 		this.context = context;
 	}
@@ -31,27 +28,23 @@ public class Reference {
 
 	@SuppressWarnings("unchecked")
 	public <R> R getValue(Class<R> klass) throws KasperException {
-		return (R) Util.eval(context, key, klass);
+		return (R) context.eval(key, klass);
 	}
 
 	public Object getValue() throws KasperException {
-		return Util.eval(context , key);
+		return context.eval(key);
 	}
 
 	public void setValue(Object value) {
-		this.context.setAttribute(key.toString(),value, ScriptContext.ENGINE_SCOPE);
+		this.context.put(key.toString(),value);
 	}
 
 	public void createChildScope() {
-		this.context= Util.createChildScope(context);
+		this.context= context.createChildScope();
 	}
 
 	public Object evaluate() throws KasperException {
-		return Util.eval(context, key);
-	}
-	
-	public Bindings getBindings(){
-		return (Bindings)this.context;
+		return context.eval(key);
 	}
 
 }
