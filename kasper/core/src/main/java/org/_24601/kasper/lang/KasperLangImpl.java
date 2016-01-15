@@ -20,7 +20,7 @@ public class KasperLangImpl {
 	/**
 	 */
 	@Command("_default")
-	public Object defaultCommand(@CommandName String tag, @Optional List<Object> arg1, @Optional Reference arg2)
+	public String defaultCommand(@CommandName String tag, @Optional List<Object> arg1, @Optional Reference arg2)
 			throws IOException, UnsupportedOperationException, KasperException {
 		Element element = new Element(tag);
 		// force closing tag
@@ -43,11 +43,6 @@ public class KasperLangImpl {
 		}
 		return element.toString();
 	}
-
-	enum state {
-		lookingForVar, lookingForAssignment, lookingForValue, lookingForSeperator
-	};
-
 
 	@Command("var")
 	public Object run(Reference varName ,Atom assign, Reference value) throws IOException, UnsupportedOperationException, KasperException {

@@ -4,7 +4,6 @@ import java.util.List;
 
 import org._24601.fxc.Element;
 import org._24601.kasper.error.KasperException;
-import org._24601.kasper.lang.KasperLangImpl.state;
 import org._24601.kasper.type.Atom;
 
 public class Utils {
@@ -12,7 +11,9 @@ public class Utils {
 	public Utils() {
 		// TODO Auto-generated constructor stub
 	}
-	
+	enum state {
+		lookingForVar, lookingForAssignment, lookingForValue, lookingForSeperator
+	};
 	public static void listToAttributes(Element element, List<Object> argList) throws KasperException {
 		state stateMachine = state.lookingForVar;
 		Object key = null;
