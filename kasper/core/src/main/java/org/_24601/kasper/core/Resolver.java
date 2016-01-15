@@ -42,7 +42,7 @@ public class Resolver {
 	 * @return
 	 * @throws KasperException
 	 */
-	public Object[] render(Scope context, List<Object> statement) throws KasperException {
+	public Object[] render(Scope context, List<?> statement) throws KasperException {
 		// This is the argument array that will be passed in the method call
 		Object[] arguments = new Object[info.length];
 		// we're going to loop through the parameter information

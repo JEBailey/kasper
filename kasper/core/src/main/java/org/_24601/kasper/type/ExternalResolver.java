@@ -49,7 +49,7 @@ public class ExternalResolver implements Executable, ListProvider {
 	 * 
 	 */
 	@Override
-	public Object execute(Scope scope, List<Object> list)
+	public Object execute(Scope scope, List<?> list)
 			throws KasperException {
 
 		ScriptContext cxt = (ScriptContext)scope.getAttribute("_context");
@@ -73,7 +73,7 @@ public class ExternalResolver implements Executable, ListProvider {
 		}
 		StringBuilder sb = new StringBuilder();
 		
-		List<Object> sublist = list.subList(1, list.size());
+		List<?> sublist = list.subList(1, list.size());
 		
 		if (reply instanceof Boolean) {
 			if (((Boolean) reply).booleanValue()) {

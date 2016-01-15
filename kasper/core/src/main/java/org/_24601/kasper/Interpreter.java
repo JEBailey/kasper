@@ -113,7 +113,7 @@ public class Interpreter {
 		
 		return provider.accept(new ListProviderVisitor() {
 			
-			public Object apply(List list) throws KasperException {				
+			public Object apply(List<?> list) throws KasperException {				
 				Object token = context.eval(list.get(0), true);
 				if (token instanceof Executable) {
 					token = ((Executable) token).execute(context, list);

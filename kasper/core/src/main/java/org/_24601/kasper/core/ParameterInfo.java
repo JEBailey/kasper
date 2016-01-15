@@ -62,7 +62,7 @@ public class ParameterInfo {
 		return state == State.OPTIONAL;
 	}
 
-	public Object render(Scope context, List<Object> statement, int tokenIndex) throws KasperException {
+	public Object render(Scope context, List<?> statement, int tokenIndex) throws KasperException {
 		switch (state) {
 		case CONTEXT_PROPERTY:
 			return context.getAttribute(parameter.toString());

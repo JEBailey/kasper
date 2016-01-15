@@ -8,13 +8,9 @@ package org._24601.kasper;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import javax.script.Bindings;
-import javax.script.ScriptContext;
 
 import org._24601.kasper.api.ListProvider;
 import org._24601.kasper.core.Util;
