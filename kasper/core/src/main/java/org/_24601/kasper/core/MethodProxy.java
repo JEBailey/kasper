@@ -31,9 +31,9 @@ public class MethodProxy implements Executable {
 	}
 
 	@Override
-	public Object execute(Scope context, List<Object> list) throws KasperException {
+	public Object execute(Scope scope, List<Object> list) throws KasperException {
 		try {
-			return method.invoke(object, resolver.render(context, list));
+			return method.invoke(object, resolver.render(scope, list));
 		} catch (InvocationTargetException|IllegalAccessException ite) {
 			KasperException exception = new KasperException(-1,ite.getCause().toString());
 			throw exception;

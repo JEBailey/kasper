@@ -14,8 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
 
-import javax.script.ScriptContext;
-
 import org._24601.kasper.api.Collector;
 import org._24601.kasper.api.Executable;
 import org._24601.kasper.api.Lexeme;
@@ -23,7 +21,6 @@ import org._24601.kasper.api.ListProvider;
 import org._24601.kasper.api.ListProviderVisitor;
 import org._24601.kasper.api.Token;
 import org._24601.kasper.core.Lexer;
-import org._24601.kasper.core.Util;
 import org._24601.kasper.error.KasperException;
 import org._24601.kasper.lex.AttributeList;
 import org._24601.kasper.lex.ClosingElement;
@@ -40,7 +37,7 @@ import org._24601.kasper.type.Statement;
 
 /**
  * Initiates the process of turning a string of text into an executable
- * structure based on information supplied in the Context
+ * structure based on information supplied in the Scope
  * 
  * 
  * @author je bailey

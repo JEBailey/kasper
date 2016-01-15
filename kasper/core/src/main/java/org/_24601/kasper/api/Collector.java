@@ -18,7 +18,7 @@ public interface Collector {
 	boolean add(Object token);
 	
 	/**
-	 * increment the internal Line Number count
+	 * Indicates whether the collector can continue to accept more tokens
 	 */
 	boolean finished();
 	
@@ -28,13 +28,7 @@ public interface Collector {
 	int getLineNumber();
 
 	/**
-	 * There are times when the Token process believes the collector has reached
-	 * an end point (EOS,EOL)
-	 * 
-	 * This provides an indicator as to whether the token creates a new
-	 * collector or continues to use the existing one
-	 * 
-	 * @return true if the Collector is done Collecting
+	 * Informs the collector that an end of line has been reached. 
 	 */
 	void addEol();
 

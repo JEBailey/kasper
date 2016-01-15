@@ -2,21 +2,10 @@ package org._24601.kasper.core;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 
-import javax.script.Bindings;
-import javax.script.ScriptContext;
-
-import org._24601.kasper.Interpreter;
 import org._24601.kasper.Scope;
 import org._24601.kasper.annotations.Command;
 import org._24601.kasper.annotations.Primitive;
-import org._24601.kasper.api.ListProvider;
-import org._24601.kasper.error.KasperException;
-import org._24601.kasper.type.Atom;
-import org._24601.kasper.type.Statement;
-import org._24601.kasper.type.Undefined;
 
 public class Util {
 

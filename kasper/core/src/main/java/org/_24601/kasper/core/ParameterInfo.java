@@ -62,8 +62,7 @@ public class ParameterInfo {
 		return state == State.OPTIONAL;
 	}
 
-	public Object render(Scope context, List<Object> statement,
-			int tokenIndex) throws KasperException {
+	public Object render(Scope context, List<Object> statement, int tokenIndex) throws KasperException {
 		switch (state) {
 		case CONTEXT_PROPERTY:
 			return context.getAttribute(parameter.toString());
@@ -72,14 +71,11 @@ public class ParameterInfo {
 		case COLLECTION:
 			try {
 				Object list = type.getClass().newInstance();
-				ParameterizedType parameterizedType = (ParameterizedType) type
-						.getClass().getGenericSuperclass();
+				ParameterizedType parameterizedType = (ParameterizedType) type.getClass().getGenericSuperclass();
 				Type generic = parameterizedType.getActualTypeArguments()[0];
-				Method add = Collection.class.getDeclaredMethod("add",
-						Object.class);
+				Method add = Collection.class.getDeclaredMethod("add", Object.class);
 				for (int index = tokenIndex; index < statement.size(); ++index) {
-					add.invoke(list,
-							context.eval(statement.get(index), generic));
+					add.invoke(list, context.eval(statement.get(index), generic));
 				}
 			} catch (Exception e) {
 				throw new KasperException(-1, "failed to get COLLECTION");

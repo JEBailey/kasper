@@ -1,4 +1,4 @@
-package org._24601.kasper;
+package org._24601.kasper.scripting;
 
 import java.util.Arrays;
 import java.util.List;
@@ -6,7 +6,6 @@ import java.util.List;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineFactory;
 
-import org._24601.kasper.scripting.KasperScriptEngine;
 import org.kohsuke.MetaInfServices;
 
 @MetaInfServices

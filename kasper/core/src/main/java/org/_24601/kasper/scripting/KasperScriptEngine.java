@@ -11,7 +11,6 @@ import javax.script.SimpleBindings;
 import javax.script.SimpleScriptContext;
 
 import org._24601.kasper.Interpreter;
-import org._24601.kasper.KasperScriptEngineFactory;
 import org._24601.kasper.Scope;
 
 public class KasperScriptEngine  implements ScriptEngine {
@@ -171,8 +170,12 @@ public class KasperScriptEngine  implements ScriptEngine {
 	public Object eval(Reader reader, ScriptContext context) throws ScriptException {
 		scope.put("_context", context);
 		try {
-			interpreter.process(scope, reader);
-			return null;
+			String response = (String)interpreter.process(scope, reader);
+			Writer writer = context.getWriter();
+			if (writer != null){
+				writer.write(response);
+			}
+			return response;
 		} catch (Throwable e) {
 			throw new ScriptException((Exception)e);
 		}

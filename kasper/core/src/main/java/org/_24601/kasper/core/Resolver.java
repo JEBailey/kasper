@@ -7,36 +7,38 @@ import java.util.List;
 
 import org._24601.kasper.Scope;
 import org._24601.kasper.error.KasperException;
+
 /**
- * Provides a mechanism to resolve the parameters that
- * will be passed into a wrapped java method.
+ * Provides a mechanism to resolve the parameters that will be passed into a
+ * wrapped java method.
  * 
  * 
  * @author JE Bailey
  *
  */
-public class Resolver  {
-	
-protected Type[] params;
-	
+public class Resolver {
+
+	protected Type[] params;
+
 	protected ParameterInfo[] info;
-	
-	public Resolver(Method method){
+
+	public Resolver(Method method) {
 		this.params = method.getGenericParameterTypes();
 		Annotation[][] annotations = method.getParameterAnnotations();
 		info = new ParameterInfo[params.length];
-		for (int i = 0;i < params.length ; i++){
+		for (int i = 0; i < params.length; i++) {
 			info[i] = new ParameterInfo(params[i], annotations[i]);
 		}
 	}
-	
 
 	/**
 	 * 
 	 * 
 	 * 
-	 * @param context provides the available set of objects to work with
-	 * @param statement is the executable statement
+	 * @param context
+	 *            provides the available set of objects to work with
+	 * @param statement
+	 *            is the executable statement
 	 * @return
 	 * @throws KasperException
 	 */
@@ -48,7 +50,7 @@ protected Type[] params;
 		// t is the index for the passed in tokens.
 		int providedArgIndex = 0;
 		// number of arguments minus the caller
-		int providedArgSize = statement.size() - 1; 
+		int providedArgSize = statement.size() - 1;
 		for (int storedParamIndex = 0; storedParamIndex < info.length; ++storedParamIndex) {
 			ParameterInfo param = info[storedParamIndex];
 			// first check to see if we've ran out of arguments
@@ -56,15 +58,15 @@ protected Type[] params;
 			providedArgIndex += param.incr();
 			if (providedArgIndex > providedArgSize) {
 				if (!param.isOptional()) {
-					throw new KasperException(-1,
-							"incorrect number of arguments");
+					throw new KasperException(-1, "incorrect number of arguments");
 				}
 			} else {
 				// we have enough arguments. do we need them?
 				arguments[storedParamIndex] = param.render(context, statement, providedArgIndex);
-				//if we were unable to obtain an object and the parameter was optional
-				//lets move on
-				if (param.isOptional() && arguments[storedParamIndex] == null){
+				// if we were unable to obtain an object and the parameter was
+				// optional
+				// lets move on
+				if (param.isOptional() && arguments[storedParamIndex] == null) {
 					providedArgIndex -= param.incr();
 				}
 			}
