@@ -44,6 +44,9 @@ public class Reference {
 	}
 
 	public Object evaluate() throws KasperException {
+		if (key instanceof String) {
+			return key;
+		}
 		return context.eval(key);
 	}
 
