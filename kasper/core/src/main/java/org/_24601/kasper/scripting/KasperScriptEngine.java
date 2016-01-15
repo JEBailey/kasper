@@ -32,7 +32,7 @@ public class KasperScriptEngine  implements ScriptEngine {
         interpreter = new Interpreter();
         scope = new Scope();
         scriptContext = new SimpleScriptContext();
-        scope.put("_context", new SimpleScriptContext());
+        scope.put("_context", scriptContext);
     }
 
     /**
@@ -155,10 +155,10 @@ public class KasperScriptEngine  implements ScriptEngine {
 	public Object eval(String script, ScriptContext context) throws ScriptException {
 		scope.put("_context", context);
 		try {
-			String response = (String)interpreter.process(scope, script);
+			Object response = interpreter.process(scope, script);
 			Writer writer = context.getWriter();
 			if (writer != null){
-				writer.write(response);
+				writer.write(toString(response));
 			}
 			return response;
 		} catch (Throwable e) {
@@ -166,14 +166,21 @@ public class KasperScriptEngine  implements ScriptEngine {
 		}
 	}
 
+	private String toString(Object response) {
+		if (response instanceof String){
+			return (String)response;
+		}
+		return response.toString();
+	}
+
 	@Override
 	public Object eval(Reader reader, ScriptContext context) throws ScriptException {
 		scope.put("_context", context);
 		try {
-			String response = (String)interpreter.process(scope, reader);
+			Object response = interpreter.process(scope, reader);
 			Writer writer = context.getWriter();
 			if (writer != null){
-				writer.write(response);
+				writer.write(toString(response));
 			}
 			return response;
 		} catch (Throwable e) {

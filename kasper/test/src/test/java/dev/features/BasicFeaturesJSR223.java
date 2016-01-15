@@ -58,17 +58,17 @@ public class BasicFeaturesJSR223 {
 	
 	@Test
 	public void testBindings() throws KasperException {
-		assertEquals(1, eval("${foo}"));
+		assertEquals("1", eval("${foo}"));
 	}
 	
 	@Test
 	public void testAccessorNonbean() throws KasperException {
-		assertEquals(14, eval("${bar.length()}"));
+		assertEquals("14", eval("${bar.length()}"));
 	}
 	
 	@Test
 	public void testAccessorForBean() throws KasperException {
-		assertEquals(false, eval("${bar.empty}"));
+		assertEquals("false", eval("${bar.empty}"));
 	}
 	
 	@Test

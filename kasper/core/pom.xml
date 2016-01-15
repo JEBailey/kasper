@@ -104,6 +104,6 @@
 	<parent>
 		<groupId>org.24601</groupId>
 		<artifactId>kasper</artifactId>
-		<version>0.0.2-SNAPSHOT</version>
+		<version>0.0.4-SNAPSHOT</version>
 	</parent>
 </project>

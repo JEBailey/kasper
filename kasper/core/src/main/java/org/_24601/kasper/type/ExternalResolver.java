@@ -49,12 +49,13 @@ public class ExternalResolver implements Executable, ListProvider {
 	 * 
 	 */
 	@Override
-	public Object execute(Scope context, List<Object> list)
+	public Object execute(Scope scope, List<Object> list)
 			throws KasperException {
 
-		ScriptContext cxt = (ScriptContext)context.getAttribute("_context");
-		Object reply = context.eval(key);
-		if (reply == null){
+		ScriptContext cxt = (ScriptContext)scope.getAttribute("_context");
+		Object reply = scope.eval(key);
+		
+		if (reply instanceof Undefined){
 			reply = cxt.getAttribute(key);
 		}
 		
@@ -76,7 +77,7 @@ public class ExternalResolver implements Executable, ListProvider {
 		
 		if (reply instanceof Boolean) {
 			if (((Boolean) reply).booleanValue()) {
-				return sb.append(context.eval(sublist.get(0) , true));
+				return sb.append(scope.eval(sublist.get(0) , true));
 			}
 		}
 
@@ -84,7 +85,7 @@ public class ExternalResolver implements Executable, ListProvider {
 			Iterator<?> collection = ((Collection<?>) reply).iterator();
 			
 			while (collection.hasNext()) {
-				Scope childScope = context.createChildScope();
+				Scope childScope = scope.createChildScope();
 				childScope.put("this", collection.next());
 				sb.append(childScope.eval(sublist.get(0)));
 			}
@@ -93,7 +94,7 @@ public class ExternalResolver implements Executable, ListProvider {
 
 		if (reply.getClass().isArray()) {
 			for (Object item : (Object[])reply) {
-				Scope childScope = context.createChildScope();
+				Scope childScope = scope.createChildScope();
 				childScope.put("this", item);
 				sb.append(childScope.eval(sublist.get(0)));
 			}
