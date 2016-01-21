@@ -68,12 +68,12 @@ public class BasicFeaturesJSR223 {
 	
 	@Test
 	public void testAccessorForBean() throws KasperException {
-		assertEquals("false", eval("${bar.empty}"));
+		assertEquals("false", eval("${bar.isEmpty()}"));
 	}
 	
 	@Test
 	public void testAccessorForMultipleBeanLevels() throws KasperException {
-		assertEquals("false", eval("${bar.empty.toString()}"));
+		assertEquals("false", eval("${bar.isEmpty().toString()}"));
 	}
 	
 	@Test

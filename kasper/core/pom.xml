@@ -15,7 +15,8 @@
 						<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
 						<Bundle-Name>${project.name}</Bundle-Name>
 						<Bundle-Vendor>Jason Bailey</Bundle-Vendor>
-						<Embed-Dependency>ognl,fxc</Embed-Dependency>
+						<Embed-Dependency>fxc,commons-jexl3,commons-logging</Embed-Dependency>
+						<Import-Package>!org.apache.avalon.*, *;resolution:=optional</Import-Package>
 						<Include-Resource>
 							{maven-resources}, {maven-dependencies},
 							/META-INF/services/javax.script.ScriptEngineFactory=target/classes/META-INF/services/javax.script.ScriptEngineFactory
@@ -73,11 +74,6 @@
 			<version>0.9.0</version>
 		</dependency>
 		<dependency>
-			<groupId>ognl</groupId>
-			<artifactId>ognl</artifactId>
-			<version>3.1</version>
-		</dependency>
-		<dependency>
 			<groupId>org.apache.sling</groupId>
 			<artifactId>org.apache.sling.adapter</artifactId>
 			<version>2.0.14</version>
@@ -88,9 +84,15 @@
 			<version>1.9.6</version>
 		</dependency>
 		<dependency>
-			<groupId>javassist</groupId>
-			<artifactId>javassist</artifactId>
-			<version>3.11.0.GA</version>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-jexl3</artifactId>
+			<version>3.0</version>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>1.2</version>
 			<optional>true</optional>
 		</dependency>
 	</dependencies>
