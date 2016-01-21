@@ -184,7 +184,7 @@ public class KasperScriptEngine  implements ScriptEngine {
 			}
 			return response;
 		} catch (Throwable e) {
-			throw new ScriptException((Exception)e);
+			throw new ScriptException(new Exception(e));
 		}
 	}
 
