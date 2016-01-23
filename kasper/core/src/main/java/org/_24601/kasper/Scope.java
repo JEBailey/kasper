@@ -9,10 +9,13 @@ package org._24601.kasper;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org._24601.kasper.api.Executable;
 import org._24601.kasper.api.ListProvider;
+import org._24601.kasper.api.ListProviderVisitor;
 import org._24601.kasper.core.Util;
 import org._24601.kasper.error.KasperException;
 import org._24601.kasper.lang.KasperLangImpl;
@@ -27,7 +30,7 @@ import org._24601.kasper.type.Undefined;
  * 
  * @author JE Bailey
  */
-public class Scope {
+public class Scope implements ListProviderVisitor {
 
 	/**
 	 * parent scope
@@ -47,6 +50,7 @@ public class Scope {
 	public Scope() {
 		this(null);
 		addLibrary();
+		
 	}
 
 	private void addLibrary() {
@@ -154,7 +158,7 @@ public class Scope {
 			response = this.getAttribute(object.toString());
 		}
 		if (response instanceof ListProvider) {
-			response = new Interpreter().process(this, (ListProvider) response);
+			response = ((ListProvider) response).accept(this);
 		}
 		if (response == null) {
 			return Undefined.getInstance();
@@ -171,7 +175,7 @@ public class Scope {
 			}
 		}
 		if (response instanceof Statement) {
-			response = new Interpreter().process(this, (ListProvider) response);
+			response = ((ListProvider) response).accept(this);
 		}
 		
 		return response;
@@ -183,7 +187,7 @@ public class Scope {
 		}
 
 		if (object instanceof Statement) {
-			return eval(new Interpreter().process(this, (Statement) object),type);
+			return eval(((Statement)object).accept(this),type);
 		}
 
 		if (object instanceof Atom) {
@@ -198,6 +202,15 @@ public class Scope {
 		}
 
 		return null;
+	}
+
+	@Override
+	public Object apply(List<?> list) throws KasperException {				
+		Object token = this.eval(list.get(0), true);
+		if (token instanceof Executable) {
+			return ((Executable) token).execute(this, list);
+		}
+		return token;
 	}
 
 }

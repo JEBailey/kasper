@@ -17,56 +17,56 @@ import org.junit.Test;
 public class BasicFeatures {
 
     @Before
-    public void setUp() throws KasperException {
+    public void setUp() {
 
     }
 
 	@Test
-	public void testTagCreation() throws KasperException {
+	public void testTagCreation() {
 		assertEquals("<a></a>", eval("a"));
 	}
 	
 	@Test
-	public void testChildElements() throws KasperException {
+	public void testChildElements() {
 		assertEquals("<a><b></b></a>", eval("a() {b}"));
 	}
 	
 	@Test
-	public void testDiscreteElements() throws KasperException {
+	public void testDiscreteElements() {
 		assertEquals("<a><b></b></a>", eval("a {b}"));
 	}
 	
 	@Test
-	public void testline() throws KasperException {
+	public void testline() {
 		assertEquals("<a>some content</a>", eval("a \"some content\""));
 	}
 	
 	@Test
-	public void testLink() throws KasperException {
+	public void testLink() {
 		assertEquals("<a href='./foo' src='http://gotohere'></a>", eval("a(href = \"./foo\", src=\"http://gotohere\")"));
 	}
 	
 	@Test
-	public void testDoctype() throws KasperException {
+	public void testDoctype() {
 		assertEquals("<!doctype html>", eval("doctype(html)"));
 	}
 	
 	@Test
-	public void testComment() throws KasperException {
+	public void testComment() {
 		assertEquals("<!--this is a child <br>this is another-->", eval("comment{\"this is a child \"\nbr\n\"this is another\"}"));
 	}
 	
 	@Test
-	public void conditionalIf() throws KasperException {
+	public void conditionalIf() {
 		assertEquals("<a></a>", eval("if 'true' {a}"));
 	}
 	
 	@Test
-	public void conditionalIfBool() throws KasperException {
+	public void conditionalIfBool() {
 		assertEquals("<a></a>", eval("if true {a}"));
 	}
 	
-	private Object eval(String expression) throws KasperException {
+	private Object eval(String expression) {
 		ScriptEngine engine = new KasperScriptEngine();
 		ScriptContext context = new SimpleScriptContext();
 		context.setAttribute("foo", 1, ScriptContext.ENGINE_SCOPE);

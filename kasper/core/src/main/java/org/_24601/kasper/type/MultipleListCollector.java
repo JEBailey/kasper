@@ -62,8 +62,7 @@ public class MultipleListCollector implements ListProvider, Collector {
 	public Object accept(ListProviderVisitor visitor) throws KasperException {
 		StringBuilder sb = new StringBuilder();
 		for (Statement statement : statements) {
-			Object result = visitor.apply(statement.get());
-			sb.append(result);
+			sb.append(visitor.apply(statement.get()).toString());
 		}
 		return sb.toString();
 	}

@@ -1,6 +1,8 @@
 package org._24601.kasper.scripting;
+import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.List;
 
 import javax.script.Bindings;
 import javax.script.ScriptContext;
@@ -10,7 +12,7 @@ import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 import javax.script.SimpleScriptContext;
 
-import org._24601.kasper.Interpreter;
+import org._24601.kasper.Kasper;
 import org._24601.kasper.Scope;
 
 public class KasperScriptEngine  implements ScriptEngine {
@@ -20,8 +22,6 @@ public class KasperScriptEngine  implements ScriptEngine {
     protected ScriptContext scriptContext;
     
     protected ScriptEngineFactory factory;
-    
-    private Interpreter interpreter;
 
     public KasperScriptEngine(KasperScriptEngineFactory factory) {
         this();
@@ -29,7 +29,6 @@ public class KasperScriptEngine  implements ScriptEngine {
     }
     
     public KasperScriptEngine() {
-        interpreter = new Interpreter();
         scope = new Scope();
         scriptContext = new SimpleScriptContext();
         scope.put("_context", scriptContext);
@@ -154,11 +153,14 @@ public class KasperScriptEngine  implements ScriptEngine {
 	@Override
 	public Object eval(String script, ScriptContext context) throws ScriptException {
 		scope.put("_context", context);
+		
 		try {
-			Object response = interpreter.process(scope, script);
+			List<Object> response = new Kasper(script).eval(scope);
 			Writer writer = context.getWriter();
 			if (writer != null){
-				writer.write(toString(response));
+				for (Object line:response){
+					writer.write(line.toString());
+				}
 			}
 			return response;
 		} catch (Throwable e) {
@@ -166,26 +168,23 @@ public class KasperScriptEngine  implements ScriptEngine {
 		}
 	}
 
-	private String toString(Object response) {
-		if (response instanceof String){
-			return (String)response;
+	public static String toString(Reader reader) {
+		StringBuilder out = new StringBuilder();
+		char[] b = new char[4096];
+		try {
+			for (int n; (n = reader.read(b)) != -1;) {
+				out.append(b, 0, n);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		return response.toString();
+		return out.toString();
 	}
+
 
 	@Override
 	public Object eval(Reader reader, ScriptContext context) throws ScriptException {
-		scope.put("_context", context);
-		try {
-			Object response = interpreter.process(scope, reader);
-			Writer writer = context.getWriter();
-			if (writer != null){
-				writer.write(toString(response));
-			}
-			return response;
-		} catch (Throwable e) {
-			throw new ScriptException(new Exception(e));
-		}
+		return eval(toString(reader),context);
 	}
 
 
