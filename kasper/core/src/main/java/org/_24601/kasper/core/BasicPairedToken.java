@@ -23,6 +23,7 @@ public abstract class BasicPairedToken implements Token {
 	public abstract Collector consume(Collector statement, Stack<Collector> statements ,Stack<Character> charStack);
 	
 	
+	@Override
 	public String toString(){
 		return String.valueOf(value);
 	}

@@ -133,7 +133,7 @@ public class Scope implements ListProviderVisitor {
 		} else {
 			if (parentBindings != null) {
 				if (parentBindings instanceof Scope){
-					((Scope)parentBindings).update(name, value);
+					parentBindings.update(name, value);
 				} else {
 					parentBindings.put(name, value);
 				}
@@ -152,7 +152,7 @@ public class Scope implements ListProviderVisitor {
 	public Object eval(Object object) throws KasperException{
 		Object response = object;
 		if (response instanceof String) {
-			response = this.getAttribute((String)response);
+			response = this.getAttribute(response);
 		}
 		if (response instanceof Atom) {
 			response = this.getAttribute(object.toString());

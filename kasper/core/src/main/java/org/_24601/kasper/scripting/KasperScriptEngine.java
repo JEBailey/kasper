@@ -56,7 +56,8 @@ public class KasperScriptEngine  implements ScriptEngine {
      * @param ctxt The specified <code>ScriptContext</code>.
      * @throws NullPointerException if ctxt is null.
      */
-    public void setContext(ScriptContext ctxt) {
+    @Override
+	public void setContext(ScriptContext ctxt) {
         if (ctxt == null) {
             throw new NullPointerException("null context");
         }
@@ -71,7 +72,8 @@ public class KasperScriptEngine  implements ScriptEngine {
      *
      * @return The value of the protected <code>context</code> field.
      */
-    public ScriptContext getContext() {
+    @Override
+	public ScriptContext getContext() {
         return scriptContext;
     }
 
@@ -86,7 +88,8 @@ public class KasperScriptEngine  implements ScriptEngine {
      * @throws IllegalArgumentException if the value of scope is
      * invalid for the type the protected <code>context</code> field.
      */
-    public Bindings getBindings(int scope) {
+    @Override
+	public Bindings getBindings(int scope) {
     	return scriptContext.getBindings(scope);
     }
 
@@ -102,11 +105,13 @@ public class KasperScriptEngine  implements ScriptEngine {
      * @throws NullPointerException if the bindings is null and the scope is
      * <code>ScriptContext.ENGINE_SCOPE</code>
      */
-    public void setBindings(Bindings bindings, int scope) {
+    @Override
+	public void setBindings(Bindings bindings, int scope) {
     	scriptContext.setBindings(bindings, scope);
     }
 
-    public void put(String key, Object value) {
+    @Override
+	public void put(String key, Object value) {
         Bindings bindings = getBindings(ScriptContext.ENGINE_SCOPE);
         if (bindings != null) {
             bindings.put(key, value);
@@ -122,7 +127,8 @@ public class KasperScriptEngine  implements ScriptEngine {
      * @throws NullPointerException if key is null.
      * @throws IllegalArgumentException if key is empty.
      */
-    public Object get(String key) {
+    @Override
+	public Object get(String key) {
         Bindings bindings = getBindings(ScriptContext.ENGINE_SCOPE);
         if (bindings != null) {
             return bindings.get(key);
@@ -130,22 +136,26 @@ public class KasperScriptEngine  implements ScriptEngine {
         return null;
     }
 
-    public Object eval(Reader reader, Bindings bindings ) throws ScriptException {
+    @Override
+	public Object eval(Reader reader, Bindings bindings ) throws ScriptException {
         setBindings(bindings, ScriptContext.ENGINE_SCOPE);
         return eval(reader, scriptContext);
     }
 
-    public Object eval(String script, Bindings bindings) throws ScriptException {
+    @Override
+	public Object eval(String script, Bindings bindings) throws ScriptException {
     	setBindings(bindings, ScriptContext.ENGINE_SCOPE);
         return eval(script , scriptContext);
     }
 
 
-    public Object eval(Reader reader) throws ScriptException {
+    @Override
+	public Object eval(Reader reader) throws ScriptException {
         return eval(reader, scriptContext);
     }
 
-    public Object eval(String script) throws ScriptException {
+    @Override
+	public Object eval(String script) throws ScriptException {
         return eval(script, scriptContext);
     }
 

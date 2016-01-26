@@ -60,7 +60,7 @@ public class KasperLangImpl {
 		String className = reference.evaluate().toString();
 		
 		AdapterManager manager = sling.getService(AdapterManager.class);
-		DynamicClassLoaderManager classLoader  = (DynamicClassLoaderManager) sling.getService(DynamicClassLoaderManager.class);
+		DynamicClassLoaderManager classLoader  = sling.getService(DynamicClassLoaderManager.class);
 		Class<?> klass = classLoader.getDynamicClassLoader().loadClass(className);
 		Object model = manager.getAdapter(request, klass);
 		scope.put("model", model);
