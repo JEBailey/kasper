@@ -3,7 +3,10 @@ package org._24601.kasper.lang;
 import java.io.IOException;
 import java.util.List;
 
+import javax.script.ScriptContext;
+
 import org._24601.fxc.Element;
+import org._24601.kasper.Scope;
 import org._24601.kasper.annotations.Command;
 import org._24601.kasper.annotations.Optional;
 import org._24601.kasper.annotations.Primitive;
@@ -14,24 +17,54 @@ import org._24601.kasper.fxc.elements.DocType;
 import org._24601.kasper.fxc.elements.VoidElement;
 import org._24601.kasper.type.Atom;
 import org._24601.kasper.type.Reference;
+import org.apache.sling.api.SlingHttpServletRequest;
+import org.apache.sling.api.adapter.AdapterManager;
+import org.apache.sling.api.scripting.SlingScriptHelper;
+import org.apache.sling.commons.classloader.DynamicClassLoaderManager;
 
 public class KasperLangImpl {
 
 	/**
+	 * When no other defined command is available, this function processes the request
+	 * 
+	 * @param tag String value of tag that does not have it's own command
+	 * @param arguments List of arguments to be processed as attributes
+	 * @param reference
+	 * @return
+	 * @throws IOException
+	 * @throws UnsupportedOperationException
+	 * @throws KasperException
 	 */
 	@Command("_default")
-	public String defaultCommand(@CommandName String tag, @Optional List<Object> arg1, @Optional Reference arg2)
+	public String defaultCommand(@CommandName String tag, @Optional List<Object> arguments, @Optional Reference reference)
 			throws IOException, UnsupportedOperationException, KasperException {
 		Element element = new Element(tag);
 		// force closing tag
 		element.add("");
-		if (arg1 != null) {
-			Utils.listToAttributes(element, arg1);
+		if (arguments != null) {
+			Utils.listToAttributes(element, arguments);
 		}
-		if (arg2 != null) {
-			element.add(Utils.toString(arg2.evaluate()));
+		if (reference != null) {
+			element.add(Utils.toString(reference.evaluate()));
 		}
 		return element.toString();
+	}
+	
+	@Command("model")
+	public String model(Scope scope, Reference reference)
+			throws IOException, UnsupportedOperationException, KasperException, ClassNotFoundException {
+		ScriptContext context = (ScriptContext)scope.getAttribute("_context");
+		SlingScriptHelper sling = (SlingScriptHelper)context.getAttribute("sling");
+		
+		SlingHttpServletRequest request = (SlingHttpServletRequest)context.getAttribute("request");
+		String className = reference.evaluate().toString();
+		
+		AdapterManager manager = sling.getService(AdapterManager.class);
+		DynamicClassLoaderManager classLoader  = (DynamicClassLoaderManager) sling.getService(DynamicClassLoaderManager.class);
+		Class<?> klass = classLoader.getDynamicClassLoader().loadClass(className);
+		Object model = manager.getAdapter(request, klass);
+		scope.put("model", model);
+		return "";
 	}
 
 	@Command({ "area", "base", "br", "col", "command", "embed", "hr", "img", "input", "keygen", "link","meta","param","source","track","wbr" })
