@@ -25,7 +25,8 @@ import org.apache.sling.commons.classloader.DynamicClassLoaderManager;
 public class KasperLangImpl {
 
 	/**
-	 * When no other defined command is available, this function processes the request
+	 * When no other defined command is available, this is the default.
+	 * A closed tag is created of the defaulted element.
 	 * 
 	 * @param tag String value of tag that does not have it's own command
 	 * @param arguments List of arguments to be processed as attributes
@@ -39,7 +40,7 @@ public class KasperLangImpl {
 	public String defaultCommand(@CommandName String tag, @Optional List<Object> arguments, @Optional Reference reference)
 			throws IOException, UnsupportedOperationException, KasperException {
 		Element element = new Element(tag);
-		// force closing tag
+		// force closing tag <foo></foo>
 		element.add("");
 		if (arguments != null) {
 			Utils.listToAttributes(element, arguments);
@@ -103,14 +104,6 @@ public class KasperLangImpl {
 			element.add((String) arg1.evaluate());
 		}
 		return element.toString();
-	}
-	
-	@Command("if")
-	public Object condition(Reference predicate, Reference commands) throws IOException, UnsupportedOperationException, KasperException {
-		if (Boolean.valueOf(predicate.evaluate().toString())){
-			return commands.evaluate();
-		}
-		return "";
 	}
 	
 	

@@ -17,7 +17,6 @@ public class Utils {
 	public static void listToAttributes(Element element, List<Object> argList) throws KasperException {
 		state stateMachine = state.lookingForVar;
 		Object key = null;
-		String value = null;
 		for (Object object : argList) {
 			switch (stateMachine) {
 			case lookingForVar:
