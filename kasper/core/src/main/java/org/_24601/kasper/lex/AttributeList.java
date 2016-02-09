@@ -7,7 +7,7 @@ import org._24601.kasper.api.Collector;
 import org._24601.kasper.api.Lexeme;
 import org._24601.kasper.api.Token;
 import org._24601.kasper.core.BasicToken;
-import org._24601.kasper.type.ListCollector;
+import org._24601.kasper.type.ListCreator;
 
 public class AttributeList implements Lexeme {
 
@@ -41,7 +41,7 @@ public class AttributeList implements Lexeme {
 			if (charValue == '(') {
 				charStack.push(')');
 				collectors.push(collector);
-				collector = new ListCollector();
+				collector = new ListCreator();
 			} else {
 				if (!charStack.empty() && charStack.pop() == charValue) {
 					Collector temp = collector;

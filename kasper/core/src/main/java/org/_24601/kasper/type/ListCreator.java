@@ -10,11 +10,11 @@ import org._24601.kasper.api.Collector;
  * 
  * @author je bailey
  */
-public class ListCollector implements Collector {
+public class ListCreator implements Collector {
 
 	private List<Object>content;
 
-	public ListCollector() {
+	public ListCreator() {
 		content = new LinkedList<Object>();
 	}
 

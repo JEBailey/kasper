@@ -27,7 +27,7 @@ import org._24601.kasper.lex.SingleQuoteStrings;
 import org._24601.kasper.lex.Special;
 import org._24601.kasper.lex.StatementBlock;
 import org._24601.kasper.lex.WhiteSpace;
-import org._24601.kasper.type.Statement;
+import org._24601.kasper.type.StatementCreator;
 
 /**
  * Initiates the process of turning a string of text into an executable
@@ -58,7 +58,7 @@ public class Kasper {
 	};
 
 	public Kasper(String script) {
-		Collector collector = new Statement(0, 1);
+		Collector collector = new StatementCreator(0, 1);
 		Stack<Character> charStack = new Stack<Character>();
 
 		List<Token> tokens = Lexer.tokenize(script, lexemes);
@@ -70,7 +70,7 @@ public class Kasper {
 	public List<Object> eval(Scope scope) throws KasperException {
 		List<Object> reply = new LinkedList<>();
 		for (Collector statement : collectors) {
-			reply.add(((Statement) statement).accept(scope));
+			reply.add(((StatementCreator) statement).accept(scope));
 		}
 		return reply;
 	}

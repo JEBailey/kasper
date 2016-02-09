@@ -65,7 +65,7 @@ public class ParameterInfo {
 	public Object render(Scope context, List<?> statement, int tokenIndex) throws KasperException {
 		switch (state) {
 		case CONTEXT_PROPERTY:
-			return context.getAttribute(parameter.toString());
+			return context.get(parameter.toString());
 		case COMMANDNAME:
 			return statement.get(0).toString();
 		case COLLECTION:

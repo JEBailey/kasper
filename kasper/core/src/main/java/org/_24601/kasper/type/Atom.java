@@ -25,17 +25,23 @@ public class Atom {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj != null) {
-			if (obj instanceof Atom){
-				return ((Atom)obj).toString().equalsIgnoreCase(string);
-			}
+		if (this == obj){
+			return true;
 		}
-		return false;
+		if (obj == null){
+			return false;
+		}
+		
+		if (string == null || !string.equals(obj.toString())){
+			return false;
+		}
+		
+		return true;
 	}
 	
 	@Override
 	public int hashCode() {
-		  return string.hashCode();
+		return (string == null) ? 0 : string.hashCode();
 	}
 
 }

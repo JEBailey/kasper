@@ -7,7 +7,7 @@ import org._24601.kasper.api.Collector;
 import org._24601.kasper.api.Lexeme;
 import org._24601.kasper.api.Token;
 import org._24601.kasper.core.BasicPairedToken;
-import org._24601.kasper.type.MultipleListCollector;
+import org._24601.kasper.type.MultipleStatementCreator;
 
 public class StatementBlock implements Lexeme {
 
@@ -37,7 +37,7 @@ public class StatementBlock implements Lexeme {
 				charStack.push(closed);
 				collectors.push(collector);
 				// define a new Collector that will accept multiple lines
-				return new MultipleListCollector(this.startPos);
+				return new MultipleStatementCreator(this.startPos);
 		}
 
 	}

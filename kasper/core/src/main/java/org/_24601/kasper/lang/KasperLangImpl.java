@@ -54,7 +54,7 @@ public class KasperLangImpl {
 	@Command("model")
 	public String model(Scope scope, Reference reference)
 			throws IOException, UnsupportedOperationException, KasperException, ClassNotFoundException {
-		ScriptContext context = (ScriptContext)scope.getAttribute("_context");
+		ScriptContext context = (ScriptContext)scope.get("_context");
 		SlingScriptHelper sling = (SlingScriptHelper)context.getAttribute("sling");
 		
 		SlingHttpServletRequest request = (SlingHttpServletRequest)context.getAttribute("request");

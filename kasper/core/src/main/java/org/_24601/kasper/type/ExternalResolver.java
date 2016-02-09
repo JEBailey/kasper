@@ -49,7 +49,7 @@ public class ExternalResolver implements Executable, ListProvider {
 	@Override
 	public Object execute(Scope scope, List<?> list) throws KasperException {
 
-		ScriptContext cxt = (ScriptContext) scope.getAttribute("_context");
+		ScriptContext cxt = (ScriptContext) scope.get("_context");
 		Object reply = scope.eval(key);
 
 		if (reply instanceof Undefined) {

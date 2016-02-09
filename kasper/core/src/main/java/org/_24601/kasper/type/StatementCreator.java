@@ -15,17 +15,17 @@ import org._24601.kasper.error.KasperException;
  * @author jebailey
  *
  */
-public class Statement implements Collector, ListProvider {
+public class StatementCreator implements Collector, ListProvider {
 	
 	private List<Object> content = new LinkedList<Object>();
 	private int startPos;
 	
-	public Statement(int startPos, int lineNumber){
+	public StatementCreator(int startPos, int lineNumber){
 		this.startPos = startPos;
 	}
 	
 	
-	public Statement(Collection<? extends Object> list) {
+	public StatementCreator(Collection<? extends Object> list) {
 		content.addAll(list);
 	}
 	

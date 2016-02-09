@@ -56,15 +56,6 @@ public class BasicFeatures {
 		assertEquals("<!--this is a child <br>this is another-->", eval("comment{\"this is a child \"\nbr\n\"this is another\"}"));
 	}
 	
-	@Test
-	public void conditionalIf() {
-		assertEquals("<a></a>", eval("if 'true' {a}"));
-	}
-	
-	@Test
-	public void conditionalIfBool() {
-		assertEquals("<a></a>", eval("if true {a}"));
-	}
 	
 	private Object eval(String expression) {
 		ScriptEngine engine = new KasperScriptEngine();

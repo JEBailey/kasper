@@ -15,17 +15,17 @@ import org._24601.kasper.error.KasperException;
  * @author je bailey
  *
  */
-public class MultipleListCollector implements ListProvider, Collector {
+public class MultipleStatementCreator implements ListProvider, Collector {
 
-	private List<Statement> statements = new LinkedList<Statement>();
+	private List<StatementCreator> statements = new LinkedList<StatementCreator>();
 
-	private Statement statement;
+	private StatementCreator statement;
 
 	private int startPos;
 
-	public MultipleListCollector(int startPos) {
+	public MultipleStatementCreator(int startPos) {
 		this.startPos = startPos;
-		statement = new Statement(0, 0);
+		statement = new StatementCreator(0, 0);
 	}
 
 	@Override
@@ -37,7 +37,7 @@ public class MultipleListCollector implements ListProvider, Collector {
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
 		sb.append("{\n");
-		for (Statement statement : statements) {
+		for (StatementCreator statement : statements) {
 			sb.append(statement.toString());
 			sb.append('\n');
 		}
@@ -46,7 +46,7 @@ public class MultipleListCollector implements ListProvider, Collector {
 	}
 
 	@Override
-	public List<Statement> get() {
+	public List<StatementCreator> get() {
 		return statements;
 	}
 
@@ -54,14 +54,14 @@ public class MultipleListCollector implements ListProvider, Collector {
 	public void addEol() {
 		if (statement.notEmpty()) {
 			statements.add(statement);
-			this.statement = new Statement(0, 0);
+			this.statement = new StatementCreator(0, 0);
 		}
 	}
 
 	@Override
 	public Object accept(ListProviderVisitor visitor) throws KasperException {
 		StringBuilder sb = new StringBuilder();
-		for (Statement statement : statements) {
+		for (StatementCreator statement : statements) {
 			sb.append(visitor.apply(statement.get()).toString());
 		}
 		return sb.toString();

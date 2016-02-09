@@ -4,7 +4,7 @@ import java.util.Stack;
 
 import org._24601.kasper.api.Collector;
 import org._24601.kasper.core.BasicToken;
-import org._24601.kasper.type.Statement;
+import org._24601.kasper.type.StatementCreator;
 
 public class EOS extends BasicToken {
 
@@ -19,7 +19,7 @@ public class EOS extends BasicToken {
 		collector.addEol();
 		if (collector.finished()) {
 			collectors.add(collector);
-			collector = new Statement(startPos, collector.getLineNumber());
+			collector = new StatementCreator(startPos, collector.getLineNumber());
 		}
 		return collector;
 	}

@@ -9,7 +9,7 @@ import org._24601.kasper.api.Collector;
 import org._24601.kasper.api.Lexeme;
 import org._24601.kasper.api.Token;
 import org._24601.kasper.core.BasicToken;
-import org._24601.kasper.type.Statement;
+import org._24601.kasper.type.StatementCreator;
 
 /**
  * Consumes multiple end of line indicators
@@ -54,7 +54,7 @@ public class EndOfLine implements Lexeme {
 			collector.addEol();
 			if (collector.finished()) {
 				collectors.add(collector);
-				collector = new Statement(startPos, collector.getLineNumber());
+				collector = new StatementCreator(startPos, collector.getLineNumber());
 			}
 			return collector;
 		}

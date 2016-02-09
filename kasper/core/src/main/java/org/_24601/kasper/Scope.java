@@ -20,7 +20,7 @@ import org._24601.kasper.core.Util;
 import org._24601.kasper.error.KasperException;
 import org._24601.kasper.lang.KasperLangImpl;
 import org._24601.kasper.type.Atom;
-import org._24601.kasper.type.Statement;
+import org._24601.kasper.type.StatementCreator;
 import org._24601.kasper.type.Undefined;
 
 /**
@@ -32,39 +32,34 @@ import org._24601.kasper.type.Undefined;
  */
 public class Scope implements ListProviderVisitor {
 
-	/**
-	 * parent scope
-	 */
+	// parent scope
 	private Scope parentBindings;
 
-	/**
-	 * objects existing in the current scope
-	 */
+	// objects existing in the current scope
 	private Map<String, Object> content;
 
-	
 	/**
-	 * Default creation process wrapping a <tt>ConcurrentHashMap</tt>
+	 * Default creation process wrapping a <tt>Map</tt>
 	 * 
 	 */
 	public Scope() {
 		this(null);
-		addLibrary();
-		
-	}
-
-	private void addLibrary() {
 		Util.load(this, new KasperLangImpl());
+
 	}
 
+	/**
+	 * Creates a new empty scope, with the provided <tt>Scope</tt> as the parent
+	 * 
+	 * @param scope
+	 */
 	public Scope(Scope scope) {
 		content = new HashMap<String, Object>();
 		parentBindings = scope;
 	}
 
-
 	/**
-	 * Place the key value mapping into the backing Map
+	 * Stores the key & value at the existing level
 	 * 
 	 * @param key
 	 * @param value
@@ -74,6 +69,12 @@ public class Scope implements ListProviderVisitor {
 		return content.put(key, value);
 	}
 
+	/**
+	 * Convenience mechanism to provide a child scope whose parent is the
+	 * current one
+	 * 
+	 * @return child scope
+	 */
 	public Scope createChildScope() {
 		return new Scope(this);
 	}
@@ -111,20 +112,32 @@ public class Scope implements ListProviderVisitor {
 		}
 		return result;
 	}
-	
-	public Object getAttribute(Object key){
+
+	/**
+	 * Returns the value associated with the key, or null if the provided key is
+	 * not found
+	 * 
+	 * @param key
+	 * @return
+	 */
+	public Object get(Object key) {
 		Object response = content.get(key);
-		if (response == null){
-			if (parentBindings != null){
-				return parentBindings.getAttribute(key);
+		if (response == null) {
+			if (parentBindings != null) {
+				return parentBindings.get(key);
 			}
 		}
 		return response;
 	}
 
-
 	public Object remove(Object key) {
-		return null;
+		Object value = content.remove(key);
+		if (value == null) {
+			if (parentBindings != null) {
+				return parentBindings.remove(key);
+			}
+		}
+		return value;
 	}
 
 	public Object update(String name, Object value) {
@@ -132,7 +145,7 @@ public class Scope implements ListProviderVisitor {
 			put(name, value);
 		} else {
 			if (parentBindings != null) {
-				if (parentBindings instanceof Scope){
+				if (parentBindings instanceof Scope) {
 					parentBindings.update(name, value);
 				} else {
 					parentBindings.put(name, value);
@@ -145,54 +158,62 @@ public class Scope implements ListProviderVisitor {
 		return value;
 	}
 
-	public Set<String> keySet() {
-		return content.keySet();
-	}
-	
-	public Object eval(Object object) throws KasperException{
+	/**
+	 * Evaluates the object in the context of the existing scope. 
+	 * 
+	 * @param object
+	 * @return
+	 * @throws KasperException
+	 */
+	public Object eval(Object object) throws KasperException {
 		Object response = object;
 		if (response instanceof String) {
-			response = this.getAttribute(response);
+			response = this.get(response);
 		}
 		if (response instanceof Atom) {
-			response = this.getAttribute(object.toString());
+			response = this.get(object);
 		}
 		if (response instanceof ListProvider) {
-			response = ((ListProvider) response).accept(this);
+			response = ((ListProvider) response)
+					.accept((ListProviderVisitor) this);
 		}
 		if (response == null) {
 			return Undefined.getInstance();
 		}
 		return response;
 	}
-	
-	public Object eval(Object object, boolean useDefault) throws KasperException{
+
+	public Object eval(Object object, boolean useDefault)
+			throws KasperException {
 		Object response = object;
 		if (response instanceof Atom) {
-			response = this.getAttribute(object.toString());
+			response = this.get(object);
 			if (response == null) {
-				return this.getAttribute("_default");
+				return this.get("_default");
 			}
 		}
-		if (response instanceof Statement) {
-			response = ((ListProvider) response).accept(this);
-		}
-		
-		return response;
-	}
-	
-	public Object eval(Object object, Type type) throws KasperException{
-		if (type instanceof ParameterizedType) {
-			return eval(object,((ParameterizedType) type).getRawType());
+		if (response instanceof StatementCreator) {
+			response = ((ListProvider) response)
+					.accept((ListProviderVisitor) this);
 		}
 
-		if (object instanceof Statement) {
-			return eval(((Statement)object).accept(this),type);
+		return response;
+	}
+
+	public Object eval(Object object, Type type) throws KasperException {
+		if (type instanceof ParameterizedType) {
+			return eval(object, ((ParameterizedType) type).getRawType());
+		}
+
+		if (object instanceof StatementCreator) {
+			return eval(
+					((StatementCreator) object).accept((ListProviderVisitor) this),
+					type);
 		}
 
 		if (object instanceof Atom) {
 			if (type != Atom.class) {
-				return eval(eval(object),type);
+				return eval(eval(object), type);
 			}
 		}
 
@@ -205,7 +226,7 @@ public class Scope implements ListProviderVisitor {
 	}
 
 	@Override
-	public Object apply(List<?> list) throws KasperException {				
+	public Object apply(List<?> list) throws KasperException {
 		Object token = this.eval(list.get(0), true);
 		if (token instanceof Executable) {
 			return ((Executable) token).execute(this, list);
