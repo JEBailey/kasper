@@ -29,7 +29,7 @@ public class Lexer {
 			// we want to be assured that something was consumed
 			int consumed = offset;
 			for (Lexeme lexeme : lexemes) {
-				consumed += lexeme.consume(tokens, data, consumed);
+				consumed += lexeme.consume(tokens, consumed);
 				if (consumed != offset) {
 					break;
 				}

@@ -10,20 +10,20 @@ import org._24601.kasper.api.Token;
 public class WhiteSpace implements Lexeme {
 
 	// custom white space identifier as we don't want to capture EOL's
-	Pattern pattern = Pattern.compile("[ \\t\\x0B\\f]+");
-	
-	Matcher matcher;
-	
-	CharSequence cachedStream;
+	private Pattern pattern = Pattern.compile("[ \\t\\x0B\\f]+");
+	private Matcher matcher;
+	private int length;
+
+	public WhiteSpace(CharSequence charSequence) {
+		super();
+		matcher = pattern.matcher(charSequence);
+		length = charSequence.length();
+	}
 
 	@Override
-	public int consume(List<Token> tokens, CharSequence ps, int offset) {
-		if (ps != cachedStream){
-			matcher = pattern.matcher(ps);
-			cachedStream = ps;
-		}
+	public int consume(List<Token> tokens, int offset) {
 		int totalCaptured = 0;
-		matcher.region(offset, ps.length());
+		matcher.region(offset, length);
 		if (matcher.lookingAt()) {
 			String s = matcher.group();
 			totalCaptured += s.length();

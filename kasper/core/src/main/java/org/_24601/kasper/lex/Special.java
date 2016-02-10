@@ -15,18 +15,25 @@ import org._24601.kasper.type.Atom;
  * 
  * 
  * 
- * @author jebailey
+ * @author Jason E Bailey
  *
  */
 public class Special implements Lexeme {
 
-	Pattern pattern = Pattern.compile("[=,.]");
+	private Pattern pattern = Pattern.compile("[=,.]");
+	private Matcher matcher;
+	private int length;
+
+	public Special(CharSequence charSequence) {
+		super();
+		matcher = pattern.matcher(charSequence);
+		length = charSequence.length();
+	}
 
 	@Override
-	public int consume(List<Token> tokens, CharSequence ps, int offset) {
+	public int consume(List<Token> tokens, int offset) {
 		int totalCaptured = 0;
-		Matcher matcher = pattern.matcher(ps);
-		matcher.region(offset, ps.length());
+		matcher.region(offset, length);
 		if (matcher.lookingAt()) {
 			String s = matcher.group();
 			tokens.add(new Inner(s, offset, matcher.end()));

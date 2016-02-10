@@ -21,12 +21,19 @@ import org._24601.kasper.type.Atom;
 public class Assignment implements Lexeme {
 
 	Pattern pattern = Pattern.compile("[=,.]");
+	private Matcher matcher;
+	private int length;
+	
+	public Assignment(CharSequence cachedStream) {
+		super();
+		matcher = pattern.matcher(cachedStream);
+		length = cachedStream.length();
+	}
 
 	@Override
-	public int consume(List<Token> tokens, CharSequence ps, int offset) {
+	public int consume(List<Token> tokens, int offset) {
 		int totalCaptured = 0;
-		Matcher matcher = pattern.matcher(ps);
-		matcher.region(offset, ps.length());
+		matcher.region(offset, length);
 		if (matcher.lookingAt()) {
 			String s = matcher.group();
 			tokens.add(new Inner(s, offset, matcher.end()));

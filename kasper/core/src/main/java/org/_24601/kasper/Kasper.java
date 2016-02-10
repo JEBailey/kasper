@@ -41,26 +41,28 @@ public class Kasper {
 	private Stack<Collector> collectors = new Stack<Collector>();
 
 	@SuppressWarnings("serial")
-	List<Lexeme> lexemes = new ArrayList<Lexeme>() {
-		{
-			add(new WhiteSpace());
-			add(new Comments());
-			add(new Identifier());
-			add(new DoubleQuoteString());
-			add(new SingleQuoteStrings());
-			add(new ExternalExpression());
-			add(new EndOfLine());
-			add(new Special());
-			add(new AttributeList());
-			add(new StatementBlock());
-			add(new ClosingElement());
-		}
-	};
+	
 
-	public Kasper(String script) {
+	public Kasper(final String script) {
 		Collector collector = new StatementCreator(0, 1);
 		Stack<Character> charStack = new Stack<Character>();
 
+		List<Lexeme> lexemes = new ArrayList<Lexeme>() {
+			{
+				add(new WhiteSpace(script));
+				add(new Comments());
+				add(new Identifier());
+				add(new DoubleQuoteString());
+				add(new SingleQuoteStrings());
+				add(new ExternalExpression());
+				add(new EndOfLine());
+				add(new Special(script));
+				add(new AttributeList(script));
+				add(new StatementBlock());
+				add(new ClosingElement());
+			}
+		};
+		
 		List<Token> tokens = Lexer.tokenize(script, lexemes);
 		for (Token token : tokens) {
 			collector = token.consume(collector, collectors, charStack);

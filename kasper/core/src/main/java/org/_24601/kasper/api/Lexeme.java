@@ -12,7 +12,7 @@ import java.util.List;
 public interface Lexeme {
 
 	/**
-	 * Scans the incoming <tt>CharSequence</tt> starting from the offset. 
+	 * Scans the internal <tt>CharSequence</tt> starting from the offset. 
 	 * If the stream starts with the pattern that we are looking for, that
 	 * series of characters is consumed from the Stream and a token representing
 	 * those characters are added to the provided <tt>List</tt> of tokens.<br/>
@@ -25,6 +25,6 @@ public interface Lexeme {
 	 *            the total char count already consumed from the existing data
 	 * @return the amount consumed, if any, by this class
 	 */
-	int consume(List<Token> tokens, CharSequence sequence, int offset);
+	int consume(List<Token> tokens, int offset);
 
 }

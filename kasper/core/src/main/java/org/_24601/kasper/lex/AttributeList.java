@@ -15,9 +15,16 @@ public class AttributeList implements Lexeme {
 
 	private char close = ')';
 
+	private CharSequence cachedStream;
+	
+	public AttributeList(CharSequence cachedStream) {
+		super();
+		this.cachedStream = cachedStream;
+	}
+
 	@Override
-	public int consume(List<Token> tokens, CharSequence ps, int offset) {
-		char item = ps.charAt(offset);
+	public int consume(List<Token> tokens, int offset) {
+		char item = cachedStream.charAt(offset);
 		if (item == open || item == close) {
 			tokens.add(new Inner(Character.toString(item), offset, offset + 1));
 			return 1;
