@@ -21,18 +21,18 @@ import org._24601.kasper.type.StatementCreator;
 public class EndOfLine implements Lexeme {
 
 	private static final Pattern pattern = Pattern.compile("\r?\n");
-
 	private Matcher matcher;
+	private int length;
 
-	private CharSequence cachedSequence;
+	public EndOfLine(CharSequence charSequence) {
+		super();
+		matcher = pattern.matcher(charSequence);
+		length = charSequence.length();
+	}
 
 	@Override
-	public int consume(List<Token> tokens, CharSequence ps, int offset) {
-		if (ps != cachedSequence) {
-			cachedSequence = ps;
-			matcher = pattern.matcher(ps);
-		}
-		matcher.region(offset, ps.length());
+	public int consume(List<Token> tokens, int offset) {
+		matcher.region(offset, length);
 		if (matcher.lookingAt()) {
 			String s = matcher.group();
 			tokens.add(new Inner(s, offset, matcher.end()));

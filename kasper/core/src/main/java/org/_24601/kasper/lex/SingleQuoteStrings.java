@@ -13,11 +13,18 @@ import org._24601.kasper.core.BasicToken;
 public class SingleQuoteStrings implements Lexeme {
 
 	private static final Pattern pattern = Pattern.compile("^\'([^\'\\\\]*(?:\\\\.[^\'\\\\]*)*)\'");
+	private Matcher matcher;
+	private int length;
 
+	public SingleQuoteStrings(CharSequence charSequence) {
+		super();
+		matcher = pattern.matcher(charSequence);
+		length = charSequence.length();
+	}
+	
 	@Override
-	public int consume(List<Token> tokens, CharSequence ps, int offset) {
-		Matcher matcher = pattern.matcher(ps);
-		matcher.region(offset, ps.length());
+	public int consume(List<Token> tokens, int offset) {
+		matcher.region(offset, length);
 		if (matcher.lookingAt()) {
 			String s = matcher.group(1);
 			tokens.add(new Inner(s, offset, matcher.end()));

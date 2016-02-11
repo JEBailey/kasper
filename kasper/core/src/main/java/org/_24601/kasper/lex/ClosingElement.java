@@ -2,6 +2,7 @@ package org._24601.kasper.lex;
 
 import java.util.List;
 import java.util.Stack;
+import java.util.regex.Matcher;
 
 import org._24601.kasper.api.Collector;
 import org._24601.kasper.api.Lexeme;
@@ -11,10 +12,15 @@ import org._24601.kasper.core.BasicPairedToken;
 public class ClosingElement implements Lexeme {
 
 	private char close = '}';
+	private CharSequence charSequence;
 
+	public ClosingElement(CharSequence charSequence) {
+		super();
+		this.charSequence = charSequence;
+	}
 	@Override
-	public int consume(List<Token> tokens, CharSequence ps, int offset) {
-		char item = ps.charAt(offset);
+	public int consume(List<Token> tokens, int offset) {
+		char item = charSequence.charAt(offset);
 		if (item == close) {
 			tokens.add(new Inner(item, offset, offset + 1));
 			return 1;

@@ -14,10 +14,16 @@ public class StatementBlock implements Lexeme {
 	private char open = '{';
 	
 	private char closed = '}';
+	private CharSequence charSequence;
 
+	public StatementBlock(CharSequence charSequence) {
+		super();
+		this.charSequence = charSequence;
+	}
+	
 	@Override
-	public int consume(List<Token> tokens, CharSequence ps, int offset) {
-		char item = ps.charAt(offset);
+	public int consume(List<Token> tokens, int offset) {
+		char item = charSequence.charAt(offset);
 		if (item == open) {
 			tokens.add(new Inner(item, offset, offset + 1));
 			return 1; 

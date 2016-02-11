@@ -50,16 +50,16 @@ public class Kasper {
 		List<Lexeme> lexemes = new ArrayList<Lexeme>() {
 			{
 				add(new WhiteSpace(script));
-				add(new Comments());
-				add(new Identifier());
-				add(new DoubleQuoteString());
-				add(new SingleQuoteStrings());
-				add(new ExternalExpression());
-				add(new EndOfLine());
+				add(new Comments(script));
+				add(new Identifier(script));
+				add(new DoubleQuoteString(script));
+				add(new SingleQuoteStrings(script));
+				add(new ExternalExpression(script));
+				add(new EndOfLine(script));
 				add(new Special(script));
 				add(new AttributeList(script));
-				add(new StatementBlock());
-				add(new ClosingElement());
+				add(new StatementBlock(script));
+				add(new ClosingElement(script));
 			}
 		};
 		
