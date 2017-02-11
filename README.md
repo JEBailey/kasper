@@ -1,5 +1,5 @@
 # kasper
-Template/DSL for HTML 5 pages
+HTML5 server side transpiler
 
 The purpose of kasper came about as an ongoing conversation about the issues related to html and the confusion that occurs when some developers interact with it on only an occasional basis. The problem arises from the inconsistent manner that html is written.
 
@@ -17,7 +17,7 @@ a (href='#here') "this is a link"
 |       |         Body of the tag. If multiple lines of items
 |       |         are needed they can be encompassed with curly braces
 |       | 
-|     Comma seperated list fo attributes
+|     Comma seperated list of attributes
 |
 Tag identififier
 ```
