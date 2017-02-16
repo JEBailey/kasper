@@ -6,7 +6,7 @@ import java.util.List;
 
 import org._24601.kasper.Scope;
 import org._24601.kasper.api.Executable;
-import org._24601.kasper.error.KasperException;
+import org._24601.kasper.error.KasperRuntimeException;
 
 /**
  * MethodProxy is used to wrap an invocation of an executable that
@@ -31,12 +31,11 @@ public class MethodProxy implements Executable {
 	}
 
 	@Override
-	public Object execute(Scope scope, List<?> list) throws KasperException {
+	public Object execute(Scope scope, List<?> list) {
 		try {
 			return method.invoke(object, resolver.render(scope, list));
 		} catch (InvocationTargetException|IllegalAccessException ite) {
-			KasperException exception = new KasperException(-1,ite.getCause().toString());
-			throw exception;
+			throw new KasperRuntimeException(ite.getCause().toString());
 		}
 	}
 	

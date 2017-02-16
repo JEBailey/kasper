@@ -12,4 +12,6 @@ import java.lang.annotation.RetentionPolicy;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Command {
 	String[] value();
+	Class<?>[] classes() default {};
+	int numOptional() default 0;
 }

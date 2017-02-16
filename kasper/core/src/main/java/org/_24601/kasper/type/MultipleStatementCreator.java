@@ -21,11 +21,11 @@ public class MultipleStatementCreator implements ListProvider, Collector {
 
 	private StatementCreator statement;
 
-	private int startPos;
+	private int currentLineNumber;
 
-	public MultipleStatementCreator(int startPos) {
-		this.startPos = startPos;
-		statement = new StatementCreator(0, 0);
+	public MultipleStatementCreator(int currentLineNumber) {
+		this.currentLineNumber = currentLineNumber;
+		statement = new StatementCreator(0);
 	}
 
 	@Override
@@ -54,12 +54,12 @@ public class MultipleStatementCreator implements ListProvider, Collector {
 	public void addEol() {
 		if (statement.notEmpty()) {
 			statements.add(statement);
-			this.statement = new StatementCreator(0, 0);
+			this.statement = new StatementCreator(currentLineNumber);
 		}
 	}
 
 	@Override
-	public Object accept(ListProviderVisitor visitor) throws KasperException {
+	public Object accept(ListProviderVisitor visitor) {
 		StringBuilder sb = new StringBuilder();
 		for (StatementCreator statement : statements) {
 			sb.append(visitor.apply(statement.get()).toString());
@@ -68,13 +68,13 @@ public class MultipleStatementCreator implements ListProvider, Collector {
 	}
 
 	@Override
-	public boolean finished() {
+	public boolean isCollectorFull() {
 		return false;
 	}
 
 	@Override
 	public int getLineNumber() {
-		return startPos;
+		return currentLineNumber;
 	}
 
 }

@@ -10,7 +10,6 @@ import org._24601.kasper.Scope;
 import org._24601.kasper.api.Executable;
 import org._24601.kasper.api.ListProvider;
 import org._24601.kasper.api.ListProviderVisitor;
-import org._24601.kasper.error.KasperException;
 import org.apache.commons.jexl3.JexlBuilder;
 import org.apache.commons.jexl3.JexlContext;
 import org.apache.commons.jexl3.JexlEngine;
@@ -47,7 +46,7 @@ public class ExternalResolver implements Executable, ListProvider {
 	 * 
 	 */
 	@Override
-	public Object execute(Scope scope, List<?> list) throws KasperException {
+	public Object execute(Scope scope, List<?> list) {
 
 		ScriptContext cxt = (ScriptContext) scope.get("_context");
 		Object reply = scope.eval(key);
@@ -103,7 +102,7 @@ public class ExternalResolver implements Executable, ListProvider {
 	}
 
 	@Override
-	public Object accept(ListProviderVisitor visitor) throws KasperException {
+	public Object accept(ListProviderVisitor visitor) {
 		return visitor.apply(Arrays.asList(this));
 	}
 

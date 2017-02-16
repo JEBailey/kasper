@@ -20,7 +20,7 @@ public class StatementCreator implements Collector, ListProvider {
 	private List<Object> content = new LinkedList<Object>();
 	private int startPos;
 	
-	public StatementCreator(int startPos, int lineNumber){
+	public StatementCreator(int lineNumber){
 		this.startPos = startPos;
 	}
 	
@@ -66,13 +66,13 @@ public class StatementCreator implements Collector, ListProvider {
 	}
 
 	@Override
-	public Object accept(ListProviderVisitor visitor) throws KasperException {
+	public Object accept(ListProviderVisitor visitor) {
 		return visitor.apply(content);
 	}
 
 
 	@Override
-	public boolean finished() {
+	public boolean isCollectorFull() {
 		return !content.isEmpty();
 	}
 

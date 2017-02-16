@@ -16,14 +16,14 @@ import org._24601.kasper.type.ExternalResolver;
  * @author je bailey
  * 
  */
-public class ExternalExpression implements Lexeme {
+public class ObjectAccessor implements Lexeme {
 
  	                     
 	public static Pattern pattern = Pattern.compile("\\$\\{\\s*([\\w()\\[\\].]+)\\s*}");
 	private Matcher matcher;
 	private int length;
 
-	public ExternalExpression(CharSequence charSequence) {
+	public ObjectAccessor(CharSequence charSequence) {
 		super();
 		matcher = pattern.matcher(charSequence);
 		length = charSequence.length();

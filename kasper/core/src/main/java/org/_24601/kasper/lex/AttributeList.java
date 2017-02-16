@@ -48,7 +48,7 @@ public class AttributeList implements Lexeme {
 			if (charValue == '(') {
 				charStack.push(')');
 				collectors.push(collector);
-				collector = new ListCreator();
+				collector = new ListCreator(0);
 			} else {
 				if (!charStack.empty() && charStack.pop() == charValue) {
 					Collector temp = collector;

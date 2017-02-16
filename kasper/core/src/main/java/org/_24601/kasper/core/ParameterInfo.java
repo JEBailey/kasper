@@ -8,10 +8,7 @@ import java.util.Collection;
 import java.util.List;
 
 import org._24601.kasper.Scope;
-import org._24601.kasper.annotations.Optional;
-import org._24601.kasper.annotations.Property;
-import org._24601.kasper.annotations.parameter.CommandName;
-import org._24601.kasper.error.KasperException;
+import org._24601.kasper.error.KasperRuntimeException;
 import org._24601.kasper.type.Reference;
 
 /**
@@ -37,18 +34,6 @@ public class ParameterInfo {
 
 	public ParameterInfo(Type param, Annotation[] annotations) {
 		this.type = param;
-		for (Annotation annotation : annotations) {
-			if (annotation instanceof Optional) {
-				state = State.OPTIONAL;
-			} else if (annotation instanceof Property) {
-				increment = 0;
-				state = State.CONTEXT_PROPERTY;
-				this.parameter = ((Property) annotation).value();
-			} else if (annotation instanceof CommandName) {
-				increment = 0;
-				state = State.COMMANDNAME;
-			}
-		}
 		if (param == Scope.class) {
 			increment = 0;
 		}
@@ -62,7 +47,7 @@ public class ParameterInfo {
 		return state == State.OPTIONAL;
 	}
 
-	public Object render(Scope context, List<?> statement, int tokenIndex) throws KasperException {
+	public Object render(Scope context, List<?> statement, int tokenIndex) {
 		switch (state) {
 		case CONTEXT_PROPERTY:
 			return context.get(parameter.toString());
@@ -75,10 +60,10 @@ public class ParameterInfo {
 				Type generic = parameterizedType.getActualTypeArguments()[0];
 				Method add = Collection.class.getDeclaredMethod("add", Object.class);
 				for (int index = tokenIndex; index < statement.size(); ++index) {
-					add.invoke(list, context.eval(statement.get(index), generic));
+					add.invoke(list, context.eval(statement.get(index), generic.getClass()));
 				}
 			} catch (Exception e) {
-				throw new KasperException(-1, "failed to get COLLECTION");
+				throw new KasperRuntimeException("failed to get COLLECTION");
 			}
 		default:
 
@@ -89,7 +74,7 @@ public class ParameterInfo {
 		if (type == Reference.class) {
 			return new Reference(statement.get(tokenIndex), context);
 		}
-		return context.eval(statement.get(tokenIndex), type);
+		return context.eval(statement.get(tokenIndex), type.getClass());
 	}
 
 }

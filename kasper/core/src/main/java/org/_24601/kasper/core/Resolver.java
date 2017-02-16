@@ -7,6 +7,7 @@ import java.util.List;
 
 import org._24601.kasper.Scope;
 import org._24601.kasper.error.KasperException;
+import org._24601.kasper.error.KasperRuntimeException;
 
 /**
  * Provides a mechanism to resolve the parameters that will be passed into a
@@ -42,7 +43,7 @@ public class Resolver {
 	 * @return
 	 * @throws KasperException
 	 */
-	public Object[] render(Scope context, List<?> statement) throws KasperException {
+	public Object[] render(Scope context, List<?> statement) {
 		// This is the argument array that will be passed in the method call
 		Object[] arguments = new Object[info.length];
 		// we're going to loop through the parameter information
@@ -58,7 +59,7 @@ public class Resolver {
 			providedArgIndex += param.incr();
 			if (providedArgIndex > providedArgSize) {
 				if (!param.isOptional()) {
-					throw new KasperException(-1, "incorrect number of arguments");
+					throw new KasperRuntimeException("incorrect number of arguments");
 				}
 			} else {
 				// we have enough arguments. do we need them?

@@ -6,12 +6,9 @@
 
 package org._24601.kasper;
 
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org._24601.kasper.api.Executable;
 import org._24601.kasper.api.ListProvider;
@@ -165,7 +162,7 @@ public class Scope implements ListProviderVisitor {
 	 * @return
 	 * @throws KasperException
 	 */
-	public Object eval(Object object) throws KasperException {
+	public Object eval(Object object) {
 		Object response = object;
 		if (response instanceof String) {
 			response = this.get(response);
@@ -183,8 +180,7 @@ public class Scope implements ListProviderVisitor {
 		return response;
 	}
 
-	public Object eval(Object object, boolean useDefault)
-			throws KasperException {
+	public Object eval(Object object, boolean useDefault) {
 		Object response = object;
 		if (response instanceof Atom) {
 			response = this.get(object);
@@ -200,11 +196,8 @@ public class Scope implements ListProviderVisitor {
 		return response;
 	}
 
-	public Object eval(Object object, Type type) throws KasperException {
-		if (type instanceof ParameterizedType) {
-			return eval(object, ((ParameterizedType) type).getRawType());
-		}
-
+	@SuppressWarnings("unchecked")
+	public <T> T eval(Object object, Class<T> type) {
 		if (object instanceof StatementCreator) {
 			return eval(
 					((StatementCreator) object).accept((ListProviderVisitor) this),
@@ -219,14 +212,14 @@ public class Scope implements ListProviderVisitor {
 
 		final Class<? extends Object> klass = object.getClass();
 		if (((Class<?>) type).isAssignableFrom(klass)) {
-			return object;
+			return (T) object;
 		}
 
 		return null;
 	}
 
 	@Override
-	public Object apply(List<?> list) throws KasperException {
+	public Object apply(List<?> list) {
 		Object token = this.eval(list.get(0), true);
 		if (token instanceof Executable) {
 			return ((Executable) token).execute(this, list);

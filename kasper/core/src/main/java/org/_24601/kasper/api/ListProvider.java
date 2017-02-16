@@ -1,7 +1,5 @@
 package org._24601.kasper.api;
 
-import org._24601.kasper.error.KasperException;
-
 /**
  * Provides a visitor implementation.
  * 
@@ -9,5 +7,5 @@ import org._24601.kasper.error.KasperException;
  *
  */
 public interface ListProvider {
-	Object accept(ListProviderVisitor visitor) throws KasperException;
+	Object accept(ListProviderVisitor visitor);
 }

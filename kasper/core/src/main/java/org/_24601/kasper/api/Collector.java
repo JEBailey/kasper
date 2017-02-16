@@ -20,7 +20,7 @@ public interface Collector {
 	/**
 	 * Indicates whether the collector can continue to accept more tokens
 	 */
-	boolean finished();
+	boolean isCollectorFull();
 	
 	/**
 	 * return the last line number this collector references

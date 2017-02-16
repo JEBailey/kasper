@@ -52,9 +52,9 @@ public class EndOfLine implements Lexeme {
 		@Override
 		public Collector consume(Collector collector, Stack<Collector> collectors, Stack<Character> charStack) {
 			collector.addEol();
-			if (collector.finished()) {
+			if (collector.isCollectorFull()) {
 				collectors.add(collector);
-				collector = new StatementCreator(startPos, collector.getLineNumber());
+				collector = new StatementCreator(collector.getLineNumber());
 			}
 			return collector;
 		}

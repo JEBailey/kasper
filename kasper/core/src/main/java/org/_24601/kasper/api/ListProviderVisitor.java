@@ -6,6 +6,6 @@ import org._24601.kasper.error.KasperException;
 
 public interface ListProviderVisitor {
 
-	Object apply(List<? extends Object> list) throws KasperException;
+	Object apply(List<? extends Object> list);
 
 }

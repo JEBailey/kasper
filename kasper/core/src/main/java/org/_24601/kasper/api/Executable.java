@@ -15,6 +15,6 @@ import org._24601.kasper.error.KasperException;
  */
 public interface Executable {
 
-	Object execute(Scope context, List<? extends Object> statement) throws KasperException;
+	Object execute(Scope context, List<? extends Object> statement);
 
 }
