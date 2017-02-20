@@ -30,7 +30,7 @@ public class Parser {
 
 	private Stack<Collector> collectors = new Stack<Collector>();
 
-	private Collector collector;
+	private Collector collector = new StatementCreator(0);
 
 	private Stack<Character> charStack = new Stack<Character>();
 	
@@ -128,7 +128,8 @@ public class Parser {
 
 			}
 		});
-		return null;
+		collectors.push(collector);
+		return collectors;
 	}
 
 	public Statement next() {

@@ -1,6 +1,7 @@
 package org._24601.kasper.core;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
@@ -8,11 +9,11 @@ import java.util.Optional;
 import org._24601.kasper.Scope;
 import org._24601.kasper.type.Reference;
 
-public class Arguments {
+public class ArgumentProvider {
 
-	Iterator<Object> objects;
+	Iterator<?> objects;
 
-	public Arguments(List<Object> objects) {
+	public ArgumentProvider(List<?> objects) {
 		this.objects = objects.iterator();
 	}
 
@@ -30,17 +31,21 @@ public class Arguments {
 		return scope.eval(objects.next(), Boolean.class);
 	}
 
-	@SuppressWarnings("unchecked")
-	public <T> Optional<List<T>> nextAsOptionalListOf(Class<T> klass) {
-		return Optional.ofNullable(scope.eval(objects.next(), new ArrayList<T>().getClass()));
-	}
-
-	public <T> Optional<T> nextAsOptional(Class<T> klass) {
-		return Optional.ofNullable(scope.eval(objects.next(), klass));
-	}
 	
 	public <T> T nextAs(Class<T> klass) {
 		return scope.eval(objects.next(), klass);
 	}
+	
+	@SuppressWarnings("unchecked")
+	public <T> List<T> nextAsListOf(Class<T> klass) {
+		List<T> emptyList = Collections.emptyList();
+		return scope.eval(objects.next(), emptyList.getClass());
+	}
+	
+	public Reference nextAsResource() {
+		return new Reference(objects.next(),scope);
+	}
+	
+	
 
 }

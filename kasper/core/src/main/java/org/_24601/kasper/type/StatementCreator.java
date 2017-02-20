@@ -7,7 +7,6 @@ import java.util.List;
 import org._24601.kasper.api.Collector;
 import org._24601.kasper.api.ListProvider;
 import org._24601.kasper.api.ListProviderVisitor;
-import org._24601.kasper.error.KasperException;
 
 /**
  * Base unit of execution, a statement is a prefixed argument.

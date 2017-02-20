@@ -22,18 +22,16 @@ public class MethodProxy implements Executable {
 
 	private Object object;
 	
-	private Resolver resolver;	
 
 	public MethodProxy(Method method, Object object) {
 		this.method = method;
 		this.object = object;
-		this.resolver = new Resolver(method);
 	}
 
 	@Override
 	public Object execute(Scope scope, List<?> list) {
 		try {
-			return method.invoke(object, resolver.render(scope, list));
+			return method.invoke(object, scope, new ArgumentProvider(list));
 		} catch (InvocationTargetException|IllegalAccessException ite) {
 			throw new KasperRuntimeException(ite.getCause().toString());
 		}

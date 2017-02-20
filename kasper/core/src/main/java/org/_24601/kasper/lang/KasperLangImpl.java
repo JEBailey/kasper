@@ -10,7 +10,7 @@ import org._24601.fxc.Element;
 import org._24601.kasper.Scope;
 import org._24601.kasper.annotations.Command;
 import org._24601.kasper.annotations.Primitive;
-import org._24601.kasper.core.Arguments;
+import org._24601.kasper.core.ArgumentProvider;
 import org._24601.kasper.error.KasperException;
 import org._24601.kasper.fxc.elements.Comment;
 import org._24601.kasper.fxc.elements.DocType;
@@ -39,30 +39,26 @@ public class KasperLangImpl {
 	 * @throws KasperException
 	 */
 	@Command(value = "_default", numOptional = 2)
-	public String defaultCommand(Scope scope, Arguments args)
+	public String defaultCommand(Scope scope, ArgumentProvider args)
 			throws IOException, UnsupportedOperationException, KasperException {
 		Element element = new Element(args.name());
-		// force closing tag <foo></foo>
 		element.add("");
-		Optional<List<Object>> attributeList = args.nextAsOptionalListOf(Object.class);
-		Optional<Reference> reference = args.nextAsOptional(Reference.class);
-		if (attributeList.isPresent()) {
-			// add to element
-		}
-		if (reference.isPresent()) {
-			element.add(reference.get().evaluate().toString());
-		}
+		List<Object> attributeList = args.nextAsListOf(Object.class);
+		Reference reference = args.nextAs(Reference.class);
+
+		element.add(reference.evaluate().toString());
+
 		return element.toString();
 	}
 
 	@Command(value = "model", classes = { Reference.class })
-	public String model(Scope scope, Arguments args)
+	public String model(Scope scope, ArgumentProvider args)
 			throws IOException, UnsupportedOperationException, KasperException, ClassNotFoundException {
 		ScriptContext context = (ScriptContext) scope.get("_context");
 		SlingScriptHelper sling = (SlingScriptHelper) context.getAttribute("sling");
 
 		SlingHttpServletRequest request = (SlingHttpServletRequest) context.getAttribute("request");
-		String className = args.nextAsOptional(Reference.class).get().evaluate().toString();
+		String className = args.nextAs(Reference.class).evaluate().toString();
 
 		AdapterManager manager = sling.getService(AdapterManager.class);
 		DynamicClassLoaderManager classLoader = sling.getService(DynamicClassLoaderManager.class);
@@ -74,18 +70,16 @@ public class KasperLangImpl {
 
 	@Command({ "area", "base", "br", "col", "command", "embed", "hr", "img", "input", "keygen", "link", "meta", "param",
 			"source", "track", "wbr" })
-	public Object defaultVoid(Scope scope, Arguments args, List<Object> attributes)
+	public Object defaultVoid(Scope scope, ArgumentProvider args, List<Object> attributes)
 			throws IOException, UnsupportedOperationException, KasperException {
 		Element element = new VoidElement(args.name());
-		Optional<List<Object>> attr = args.nextAsOptionalListOf(Object.class);
-		if (attr.isPresent()) {
-			// Utils.listToAttributes(element, arg1);
-		}
+		List<Object> attr = args.nextAsListOf(Object.class);
+		// Utils.listToAttributes(element, arg1);
 		return element.toString();
 	}
 
 	@Command(value="var",classes={Reference.class,Atom.class,Reference.class})
-	public Object run(Scope scope, Arguments args)
+	public Object run(Scope scope, ArgumentProvider args)
 			throws IOException, UnsupportedOperationException, KasperException {
 		Reference varName = args.nextAs(Reference.class);
 		String assign = args.nextAs(String.class);

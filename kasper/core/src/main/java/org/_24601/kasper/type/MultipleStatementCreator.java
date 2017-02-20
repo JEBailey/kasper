@@ -6,7 +6,6 @@ import java.util.List;
 import org._24601.kasper.api.Collector;
 import org._24601.kasper.api.ListProvider;
 import org._24601.kasper.api.ListProviderVisitor;
-import org._24601.kasper.error.KasperException;
 
 /**
  * consume a series of Lists into a single List of those List items
