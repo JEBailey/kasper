@@ -95,7 +95,7 @@ public class Parser {
 
 			case RIGHT_BRACE:
 				if (!charStack.empty() && charStack.pop() == '}') {
-					collector.isCollectorFull();
+					collector.addEol();
 					Object temp = collector;
 					collector = collectors.pop();
 					collector.add(temp);
@@ -128,6 +128,7 @@ public class Parser {
 
 			}
 		});
+		collector.addEol();
 		collectors.push(collector);
 		return collectors;
 	}

@@ -10,27 +10,15 @@ import org._24601.kasper.Scope;
 import org._24601.kasper.api.Executable;
 import org._24601.kasper.api.ListProvider;
 import org._24601.kasper.api.ListProviderVisitor;
-import org.apache.commons.jexl3.JexlBuilder;
-import org.apache.commons.jexl3.JexlContext;
-import org.apache.commons.jexl3.JexlEngine;
-import org.apache.commons.jexl3.JexlExpression;
-import org.apache.commons.jexl3.MapContext;
-
 public class ExternalResolver implements Executable, ListProvider {
 
 	private String key = "";
 
-	private JexlExpression expression;
-
-	private JexlEngine jexl;
-
 	public ExternalResolver(String value) {
-		this.jexl = new JexlBuilder().create();
 		this.key = value;
 		int index = value.indexOf('.');
 		if (index > 0) {
 			this.key = value.substring(0, index);
-			this.expression = jexl.createExpression(value);
 
 		}
 
@@ -55,12 +43,6 @@ public class ExternalResolver implements Executable, ListProvider {
 			reply = cxt.getAttribute(key);
 		}
 
-		JexlContext jc = new MapContext();
-		jc.set(key, reply);
-
-		if (expression != null) {
-			reply = expression.evaluate(jc);
-		}
 
 		if (list.size() < 2) {
 			return reply;

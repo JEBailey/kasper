@@ -3,7 +3,7 @@ package org._24601.kasper.type;
 import java.util.LinkedList;
 import java.util.List;
 
-import org._24601.fxc.Element;
+import org._24601.fxc.Attribute;
 import org._24601.kasper.api.Collector;
 import org._24601.kasper.error.KasperRuntimeException;
 
@@ -14,18 +14,17 @@ import org._24601.kasper.error.KasperRuntimeException;
  */
 public class ListCreator implements Collector {
 
-	private List<Object> content;
+	private List<Attribute> content;
 
 	private state stateMachine = state.lookingForVar;
-	private Element element = new Element("");
-	Object key = null;
+	String key = null;
 
 	private enum state {
 		lookingForVar, lookingForAssignment, lookingForValue, lookingForSeperator
 	};
 
 	public ListCreator(int lineNumber) {
-		content = new LinkedList<Object>();
+		content = new LinkedList<Attribute>();
 	}
 
 	@Override
@@ -34,7 +33,7 @@ public class ListCreator implements Collector {
 		switch (stateMachine) {
 		case lookingForVar:
 			if (object instanceof Atom) {
-				key = object;
+				key = object.toString();
 				stateMachine = state.lookingForAssignment;
 				break;
 			}
@@ -46,7 +45,7 @@ public class ListCreator implements Collector {
 			}
 			if (object.toString().equals(",")) {
 				stateMachine = state.lookingForVar;
-				element.setAttribute(key.toString());
+				content.add(new Attribute(key.toString()));
 				key = null;
 				break;
 			}
@@ -54,7 +53,7 @@ public class ListCreator implements Collector {
 		case lookingForValue:
 			if (object instanceof String) {
 				stateMachine = state.lookingForSeperator;
-				element.setAttribute(key.toString(), (String) object);
+				content.add(new Attribute(key, (String) object));
 				key = null;
 				break;
 			}
@@ -66,14 +65,15 @@ public class ListCreator implements Collector {
 			}
 			throw new KasperRuntimeException("attribute assignment incorrect");
 		}
-		if (key != null) {
-			element.setAttribute(key.toString());
-		}
+
 		return true;
 	}
 
 	@Override
 	public void addEol() {
+		if (key != null) {
+			content.add(new Attribute(key.toString()));
+		}
 	}
 
 	@Override

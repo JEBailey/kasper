@@ -6,6 +6,8 @@
 
 package org._24601.kasper;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -197,7 +199,10 @@ public class Scope implements ListProviderVisitor {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> T eval(Object object, Class<T> type) {
+	public <T> T eval(Object object, Type type) {
+		if (type instanceof ParameterizedType) {
+			return eval(object, ((ParameterizedType) type).getRawType());
+		}
 		if (object instanceof StatementCreator) {
 			return eval(
 					((StatementCreator) object).accept((ListProviderVisitor) this),

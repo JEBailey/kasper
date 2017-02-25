@@ -11,41 +11,67 @@ import org._24601.kasper.type.Reference;
 
 public class ArgumentProvider {
 
-	Iterator<?> objects;
+	private List<?> objects;
 
-	public ArgumentProvider(List<?> objects) {
-		this.objects = objects.iterator();
+	private int index = 1;
+	
+	private Scope scope;
+	private String name;
+
+	public ArgumentProvider(Scope scope, List<?> objects) {
+		this.objects = objects;
+		this.scope = scope;
+		this.name = objects.get(0).toString();
 	}
 
-	private Scope scope;
-
 	public String name() {
-		return null;
+		return name;
 	}
 
 	public Number getNumber() {
-		return scope.eval(objects.next(), Number.class);
+		if (objects.size() > index) {
+			return scope.eval(objects.get(index), Number.class);
+		}
+		return null;
 	}
 
-	public boolean getBoolean() {
-		return scope.eval(objects.next(), Boolean.class);
+	public Boolean getBoolean() {
+		if (objects.size() > index) {
+			return scope.eval(objects.get(index), Boolean.class);
+		}
+		return null;
 	}
 
-	
 	public <T> T nextAs(Class<T> klass) {
-		return scope.eval(objects.next(), klass);
+		if (objects.size() > index) {
+			return scope.eval(objects.get(index), klass);
+		}
+		return null;
 	}
-	
-	@SuppressWarnings("unchecked")
-	public <T> List<T> nextAsListOf(Class<T> klass) {
-		List<T> emptyList = Collections.emptyList();
-		return scope.eval(objects.next(), emptyList.getClass());
+
+	public <T> Optional<T> nextAsOptionalOf(Class<T> klass) {
+		if (objects.size() > index) {
+			return Optional.ofNullable(scope.eval(objects.get(index), klass));
+		}
+		return Optional.empty();
 	}
-	
-	public Reference nextAsResource() {
-		return new Reference(objects.next(),scope);
+
+	public <T> List<T> nextAttributeList() {
+		List <T> response = null;
+		if (objects.size() > index) {
+			response = scope.eval(objects.get(index), List.class);
+			if (response != null){
+				++index;
+			}
+		}
+		return response;
 	}
-	
-	
+
+	public Reference nextReference() {
+		if (objects.size() > index) {
+			return new Reference(objects.get(index), scope);
+		}
+		return null;
+	}
 
 }
