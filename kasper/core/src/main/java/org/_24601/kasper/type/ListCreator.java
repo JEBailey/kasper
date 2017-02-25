@@ -70,10 +70,11 @@ public class ListCreator implements Collector {
 	}
 
 	@Override
-	public void addEol() {
+	public Collector addEol() {
 		if (key != null) {
 			content.add(new Attribute(key.toString()));
 		}
+		return this;
 	}
 
 	@Override

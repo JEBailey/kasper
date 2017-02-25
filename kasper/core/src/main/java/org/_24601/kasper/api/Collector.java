@@ -30,7 +30,7 @@ public interface Collector {
 	/**
 	 * Informs the collector that an end of line has been reached. 
 	 */
-	void addEol();
+	Collector addEol();
 
 	/**
 	 * Returns the object that the collector is collecting into. This could

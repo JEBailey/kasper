@@ -55,7 +55,8 @@ public class StatementCreator implements Collector, ListProvider {
 
 
 	@Override
-	public void addEol() {
+	public Collector addEol() {
+		return this;
 	}
 
 

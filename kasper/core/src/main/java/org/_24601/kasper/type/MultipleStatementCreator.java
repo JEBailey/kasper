@@ -50,11 +50,12 @@ public class MultipleStatementCreator implements ListProvider, Collector {
 	}
 
 	@Override
-	public void addEol() {
+	public Collector addEol() {
 		if (statement.notEmpty()) {
 			statements.add(statement);
 			this.statement = new StatementCreator(currentLineNumber);
 		}
+		return this;
 	}
 
 	@Override

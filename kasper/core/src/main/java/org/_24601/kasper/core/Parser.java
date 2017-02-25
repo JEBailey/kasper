@@ -84,6 +84,7 @@ public class Parser {
 				break;
 			case RIGHT_PAREN:
 				if (!charStack.empty() && charStack.pop() == ')') {
+					collector.addEol();
 					Collector temp = collector;
 					collector = collectors.pop();
 					collector.add(temp.get());

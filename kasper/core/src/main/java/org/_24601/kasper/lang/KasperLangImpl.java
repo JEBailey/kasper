@@ -74,21 +74,27 @@ public class KasperLangImpl {
 	}
 
 	@Command("doctype")
-	public Object doctype(List<Object> arg1) throws IOException, UnsupportedOperationException, KasperException {
+	public Object doctype(Scope scope, ArgumentProvider args) throws IOException, UnsupportedOperationException, KasperException {
 		Element element = new DocType();
-		if (arg1 != null) {
-			// Utils.listToAttributes(element, arg1);
+		Optional<List<Attribute>> attributeList = Optional.ofNullable(args.nextAttributeList());
+		if (attributeList.isPresent()) {
+			attributeList.get().forEach(attr -> element.setAttribute(attr));
 		}
 		return element.toString();
 	}
 
 	@Command("comment")
-	public Object comment(Reference arg1) throws IOException, UnsupportedOperationException, KasperException {
+	public Object comment(Scope scope, ArgumentProvider args) throws IOException, UnsupportedOperationException, KasperException {
 		Element element = new Comment();
-		if (arg1 != null) {
-			element.add((String) arg1.evaluate());
+		Optional<List<Attribute>> attributeList = Optional.ofNullable(args.nextAttributeList());
+		if (attributeList.isPresent()) {
+			attributeList.get().forEach(attr -> element.setAttribute(attr));
 		}
 		return element.toString();
+	}
+	
+	private String customElement(Element element, Optional<List<Attribute>>attrList, Optional<Reference>ref){
+		return null;
 	}
 
 	@Primitive("true")
