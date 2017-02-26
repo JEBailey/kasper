@@ -3,9 +3,9 @@ package org._24601.kasper.type;
 import java.util.LinkedList;
 import java.util.List;
 
-import org._24601.fxc.Attribute;
 import org._24601.kasper.api.Collector;
 import org._24601.kasper.error.KasperRuntimeException;
+import org._24601.kasper.fxc.Attribute;
 
 /**
  * Collects objects into a <code>LinkedList</code>

@@ -1,12 +1,10 @@
 package org._24601.kasper.core;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
 import org._24601.kasper.Scope;
+import org._24601.kasper.fxc.Attribute;
 import org._24601.kasper.type.Reference;
 
 public class ArgumentProvider {
@@ -56,15 +54,15 @@ public class ArgumentProvider {
 		return Optional.empty();
 	}
 
-	public <T> List<T> nextAttributeList() {
-		List <T> response = null;
+	public Optional<List<Attribute>> nextAttributeList() {
+		List <Attribute> response = null;
 		if (objects.size() > index) {
 			response = scope.eval(objects.get(index), List.class);
 			if (response != null){
 				++index;
 			}
 		}
-		return response;
+		return Optional.ofNullable(response);
 	}
 
 	public Reference nextReference() {

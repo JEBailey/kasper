@@ -1,4 +1,4 @@
-package org._24601.fxc;
+package org._24601.kasper.fxc;
 
 /*
  * Copyright 2015 Jason E Bailey
@@ -23,7 +23,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org._24601.fxc.xml.TextElement;
+import org._24601.kasper.fxc.elements.TextElement;
 
 /**
  * Basic element of an XML structure.
@@ -37,11 +37,11 @@ public class Element {
 
 	// String formatting where the first item is the tag value and the second is
 	// the set of attributes
-	protected String START_TAG = "<%s%s>";
+	protected String START_TAG = "<%s>";
 
 	// String formatting where the first item is the tag value and the second is
 	// the set of attributes
-	protected String EMPTY_TAG = "<%s%s/>";
+	protected String EMPTY_TAG = "<%s/>";
 
 	// String formatting where the replaced item is the tag value
 	protected String END_TAG = "</%s>";
@@ -65,14 +65,14 @@ public class Element {
 	 * identifier
 	 * 
 	 * @param label
-	 *            is the tag identifier
 	 */
 	public Element(String label) {
 		this.label = label;
 	}
 
 	/**
-	 * prints the content of this element to the provided writer
+	 * prints the content of this element to the provided writer,
+	 * 
 	 * 
 	 * @param writer
 	 *            writer to write this element to
@@ -81,7 +81,8 @@ public class Element {
 	 */
 	public void write(Writer writer) throws IOException {
 		String tag = elements.isEmpty() ? EMPTY_TAG : START_TAG;
-		writer.write(String.format(tag, label, getAttributes()));
+		
+		writer.write(String.format(tag, label.concat(getAttributes())));
 		if (!elements.isEmpty()) {
 			for (Element element : elements) {
 				element.write(writer);
@@ -103,7 +104,7 @@ public class Element {
 	 */
 	public void write(Writer writer, Formatter formatter) throws IOException {
 		String tag = elements.isEmpty() ? EMPTY_TAG : START_TAG;
-		writer.write(String.format(tag, label, getAttributes()));
+		writer.write(String.format(tag, label.concat(getAttributes())));
 		if (!elements.isEmpty()) {
 			// end of a tag with contents. if this element is is not inline then
 			// eol;

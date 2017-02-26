@@ -1,4 +1,4 @@
-package org._24601.fxc.xml;
+package org._24601.kasper.fxc.elements;
 
 /*
  * Copyright 2015 Jason E Bailey
@@ -18,8 +18,8 @@ package org._24601.fxc.xml;
 import java.io.IOException;
 import java.io.Writer;
 
-import org._24601.fxc.Element;
-import org._24601.fxc.Formatter;
+import org._24601.kasper.fxc.Element;
+import org._24601.kasper.fxc.Formatter;
 
 /**
  * Element of text with no encapsulating structure. In the node structure this
@@ -39,7 +39,7 @@ public class TextElement extends Element {
 		super(label);
 		START_TAG = VOID;
 		END_TAG = VOID;
-		EMPTY_TAG = "%s%s";
+		EMPTY_TAG = "%s";
 		setAllowAttributes(false);
 		setAllowChildren(false);
 	}

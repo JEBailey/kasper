@@ -4,13 +4,15 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 
-import org._24601.fxc.Attribute;
-import org._24601.fxc.Element;
+import javax.servlet.ServletRequest;
+
 import org._24601.kasper.Scope;
 import org._24601.kasper.annotations.Command;
 import org._24601.kasper.annotations.Primitive;
 import org._24601.kasper.core.ArgumentProvider;
 import org._24601.kasper.error.KasperException;
+import org._24601.kasper.fxc.Attribute;
+import org._24601.kasper.fxc.Element;
 import org._24601.kasper.fxc.elements.Comment;
 import org._24601.kasper.fxc.elements.DocType;
 import org._24601.kasper.fxc.elements.VoidElement;
@@ -38,7 +40,7 @@ public class KasperLangImpl {
 			throws IOException, UnsupportedOperationException, KasperException {
 		Element element = new Element(args.name());
 		element.add("");
-		Optional<List<Attribute>> attributeList = Optional.ofNullable(args.nextAttributeList());
+		Optional<List<Attribute>> attributeList = args.nextAttributeList();
 		Optional<Reference> reference = Optional.ofNullable(args.nextReference());
 		if (attributeList.isPresent()) {
 			attributeList.get().forEach(attr -> element.setAttribute(attr));
@@ -46,7 +48,6 @@ public class KasperLangImpl {
 		if (reference.isPresent()) {
 			element.add(reference.get().evaluate().toString());
 		}
-
 		return element.toString();
 	}
 
@@ -54,10 +55,7 @@ public class KasperLangImpl {
 			"source", "track", "wbr" })
 	public Object defaultVoid(Scope scope, ArgumentProvider args, List<Object> attributes)
 			throws IOException, UnsupportedOperationException, KasperException {
-		Element element = new VoidElement(args.name());
-		List<Object> attr = args.nextAttributeList();
-		// Utils.listToAttributes(element, arg1);
-		return element.toString();
+		return genericElement(new VoidElement(args.name()), args);
 	}
 
 	@Command(value = "var", classes = { Reference.class, Atom.class, Reference.class })
@@ -72,29 +70,37 @@ public class KasperLangImpl {
 		varName.setValue(value.evaluate());
 		return varName.getKey();
 	}
+	
+	@Command("forward")
+	public Object forward(Scope scope, ArgumentProvider args)
+			throws IOException, UnsupportedOperationException, KasperException {
+		Optional<List<Attribute>> attributes = args.nextAttributeList();
+		ServletRequest request = scope.eval("request",ServletRequest.class);
+		request.getRequestDispatcher("");
+		return null;
+	}
+	
 
 	@Command("doctype")
-	public Object doctype(Scope scope, ArgumentProvider args) throws IOException, UnsupportedOperationException, KasperException {
-		Element element = new DocType();
-		Optional<List<Attribute>> attributeList = Optional.ofNullable(args.nextAttributeList());
-		if (attributeList.isPresent()) {
-			attributeList.get().forEach(attr -> element.setAttribute(attr));
-		}
-		return element.toString();
+	public String doctype(Scope scope, ArgumentProvider args) throws IOException, UnsupportedOperationException, KasperException {
+		return genericElement(new DocType(), args);
 	}
 
 	@Command("comment")
 	public Object comment(Scope scope, ArgumentProvider args) throws IOException, UnsupportedOperationException, KasperException {
-		Element element = new Comment();
-		Optional<List<Attribute>> attributeList = Optional.ofNullable(args.nextAttributeList());
+		return genericElement(new Comment(), args);
+	}
+	
+	private String genericElement(Element element, ArgumentProvider args) throws KasperException {
+		Optional<List<Attribute>> attributeList = args.nextAttributeList();
+		Optional<Reference> reference = Optional.ofNullable(args.nextReference());
 		if (attributeList.isPresent()) {
 			attributeList.get().forEach(attr -> element.setAttribute(attr));
 		}
+		if (reference.isPresent()) {
+			element.add(reference.get().evaluate().toString());
+		}
 		return element.toString();
-	}
-	
-	private String customElement(Element element, Optional<List<Attribute>>attrList, Optional<Reference>ref){
-		return null;
 	}
 
 	@Primitive("true")
