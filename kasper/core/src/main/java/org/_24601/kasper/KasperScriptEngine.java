@@ -1,4 +1,4 @@
-package org._24601.kasper.scripting;
+package org._24601.kasper;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
@@ -11,9 +11,6 @@ import javax.script.ScriptEngineFactory;
 import javax.script.ScriptException;
 import javax.script.SimpleBindings;
 import javax.script.SimpleScriptContext;
-
-import org._24601.kasper.Kasper;
-import org._24601.kasper.Scope;
 
 public class KasperScriptEngine  implements ScriptEngine {
 

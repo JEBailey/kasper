@@ -23,7 +23,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
-import org._24601.kasper.fxc.elements.TextElement;
+import org._24601.kasper.fxc.elements.Text;
 
 /**
  * Basic element of an XML structure.
@@ -38,10 +38,6 @@ public class Element {
 	// String formatting where the first item is the tag value and the second is
 	// the set of attributes
 	protected String START_TAG = "<%s>";
-
-	// String formatting where the first item is the tag value and the second is
-	// the set of attributes
-	protected String EMPTY_TAG = "<%s/>";
 
 	// String formatting where the replaced item is the tag value
 	protected String END_TAG = "</%s>";
@@ -80,9 +76,8 @@ public class Element {
 	 *             on an incorrect formatting
 	 */
 	public void write(Writer writer) throws IOException {
-		String tag = elements.isEmpty() ? EMPTY_TAG : START_TAG;
 		
-		writer.write(String.format(tag, label.concat(getAttributes())));
+		writer.write(String.format(START_TAG, label.concat(getAttributes())));
 		if (!elements.isEmpty()) {
 			for (Element element : elements) {
 				element.write(writer);
@@ -103,8 +98,7 @@ public class Element {
 	 *             on an incorrect formatting
 	 */
 	public void write(Writer writer, Formatter formatter) throws IOException {
-		String tag = elements.isEmpty() ? EMPTY_TAG : START_TAG;
-		writer.write(String.format(tag, label.concat(getAttributes())));
+		writer.write(String.format(START_TAG, label.concat(getAttributes())));
 		if (!elements.isEmpty()) {
 			// end of a tag with contents. if this element is is not inline then
 			// eol;
@@ -159,7 +153,7 @@ public class Element {
 	 *             functionality
 	 */
 	public Element add(String text) throws UnsupportedOperationException {
-		elements.add(new TextElement(text));
+		elements.add(new Text(text));
 		return this;
 	}
 
@@ -323,9 +317,6 @@ public class Element {
 		}
 		Element other = (Element) obj;
 		if (!END_TAG.equals(other.END_TAG)) {
-			return false;
-		}
-		if (!EMPTY_TAG.equals(other.EMPTY_TAG)) {
 			return false;
 		}
 		if (!START_TAG.equals(other.START_TAG)) {

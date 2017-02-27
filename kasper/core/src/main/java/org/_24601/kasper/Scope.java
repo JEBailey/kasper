@@ -17,10 +17,8 @@ import org._24601.kasper.api.ListProvider;
 import org._24601.kasper.api.ListProviderVisitor;
 import org._24601.kasper.core.Util;
 import org._24601.kasper.error.KasperException;
-import org._24601.kasper.lang.KasperLangImpl;
 import org._24601.kasper.type.Atom;
 import org._24601.kasper.type.StatementCreator;
-import org._24601.kasper.type.Undefined;
 
 /**
  * Provides a wrapper around an enclosed Map which represents the items
@@ -175,9 +173,6 @@ public class Scope implements ListProviderVisitor {
 		if (response instanceof ListProvider) {
 			response = ((ListProvider) response)
 					.accept((ListProviderVisitor) this);
-		}
-		if (response == null) {
-			return Undefined.getInstance();
 		}
 		return response;
 	}

@@ -7,7 +7,6 @@ public class Comment extends Element {
 	public Comment() {
 		super("");
 		START_TAG = "<!--";
-		EMPTY_TAG = "<!-- -->";
 		END_TAG = "-->";
 	}
 

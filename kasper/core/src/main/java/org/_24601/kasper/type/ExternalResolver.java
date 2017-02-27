@@ -39,10 +39,6 @@ public class ExternalResolver implements Executable, ListProvider {
 		ScriptContext cxt = (ScriptContext) scope.get("_context");
 		Object reply = scope.eval(key);
 
-		if (reply instanceof Undefined) {
-			reply = cxt.getAttribute(key);
-		}
-
 
 		if (list.size() < 2) {
 			return reply;

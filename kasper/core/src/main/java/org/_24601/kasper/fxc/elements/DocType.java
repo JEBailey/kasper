@@ -6,9 +6,8 @@ public class DocType extends Element {
 
 	public DocType() {
 		super("doctype");
-		START_TAG = "<!%s>";
-		EMPTY_TAG = START_TAG;
-		END_TAG = VOID;
+		START_TAG = "<!%s";
+		END_TAG = ">";
 	}
 
 	

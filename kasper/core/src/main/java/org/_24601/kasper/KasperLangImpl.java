@@ -1,12 +1,16 @@
-package org._24601.kasper.lang;
+package org._24601.kasper;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
+import javax.servlet.ServletResponse;
 
-import org._24601.kasper.Scope;
 import org._24601.kasper.annotations.Command;
 import org._24601.kasper.annotations.Primitive;
 import org._24601.kasper.core.ArgumentProvider;
@@ -15,7 +19,7 @@ import org._24601.kasper.fxc.Attribute;
 import org._24601.kasper.fxc.Element;
 import org._24601.kasper.fxc.elements.Comment;
 import org._24601.kasper.fxc.elements.DocType;
-import org._24601.kasper.fxc.elements.VoidElement;
+import org._24601.kasper.fxc.elements.Void;
 import org._24601.kasper.type.Atom;
 import org._24601.kasper.type.Reference;
 
@@ -53,12 +57,12 @@ public class KasperLangImpl {
 
 	@Command({ "area", "base", "br", "col", "command", "embed", "hr", "img", "input", "keygen", "link", "meta", "param",
 			"source", "track", "wbr" })
-	public Object defaultVoid(Scope scope, ArgumentProvider args, List<Object> attributes)
+	public Object defaultVoid(Scope scope, ArgumentProvider args)
 			throws IOException, UnsupportedOperationException, KasperException {
-		return genericElement(new VoidElement(args.name()), args);
+		return genericElement(new Void(args.name()), args);
 	}
 
-	@Command(value = "var", classes = { Reference.class, Atom.class, Reference.class })
+	@Command(value = "@var", classes = { Reference.class, Atom.class, Reference.class })
 	public Object run(Scope scope, ArgumentProvider args)
 			throws IOException, UnsupportedOperationException, KasperException {
 		Reference varName = args.nextAs(Reference.class);
@@ -72,11 +76,28 @@ public class KasperLangImpl {
 	}
 	
 	@Command("forward")
-	public Object forward(Scope scope, ArgumentProvider args)
-			throws IOException, UnsupportedOperationException, KasperException {
+	public Object forward(Scope scope, ArgumentProvider args) throws ServletException, IOException {
 		Optional<List<Attribute>> attributes = args.nextAttributeList();
-		ServletRequest request = scope.eval("request",ServletRequest.class);
-		request.getRequestDispatcher("");
+		if (attributes.isPresent()){
+			List<Attribute> attrs = attributes.get();
+			String path = "/";
+			if (attrs.size() == 1){
+				if (attrs.get(0).getValue() == null){
+					path = attrs.get(0).getKey();
+				}
+			} else {
+				throw new IOException("incorrect arguments");
+			}
+			Map<String,String> params = attrToMap(attributes.get());
+			if (path == null && params.size() == 1){
+				params.entrySet();
+			}
+			ServletRequest request = scope.eval("request",ServletRequest.class);
+			ServletResponse response = scope.eval("response",ServletResponse.class);
+			RequestDispatcher rd = request.getRequestDispatcher("");
+			rd.forward(request, response);
+		}
+
 		return null;
 	}
 	
@@ -111,6 +132,12 @@ public class KasperLangImpl {
 	@Primitive("false")
 	public boolean boolFalse() {
 		return false;
+	}
+	
+	private Map<String,String> attrToMap(List<Attribute> attrs) {
+		Map<String, String> innerMap = new HashMap<>();
+		attrs.forEach(a -> innerMap.put(a.getKey(), a.getValue()));
+		return innerMap;
 	}
 
 }

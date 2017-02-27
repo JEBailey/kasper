@@ -1,4 +1,4 @@
-package org._24601.kasper.scripting;
+package org._24601.kasper;
 
 import java.util.Arrays;
 import java.util.List;

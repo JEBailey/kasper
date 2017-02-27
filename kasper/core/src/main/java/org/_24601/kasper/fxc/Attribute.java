@@ -52,6 +52,14 @@ public class Attribute {
 		this.value = other.value;
 		return true;
 	}
+	
+	public String getKey(){
+		return key;
+	}
+	
+	public String getValue(){
+		return value;
+	}
 
 	@Override
 	public int hashCode() {
@@ -84,7 +92,7 @@ public class Attribute {
 	}
 
 	public String toString() {
-		return (paired) ? String.format("%s='%s'", key, value) : key;
+		return paired ? String.format("%s='%s'", key, value) : key;
 	}
 
 }

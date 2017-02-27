@@ -33,13 +33,12 @@ import org._24601.kasper.fxc.Formatter;
  * 
  * @author Jason E Bailey
  */
-public class TextElement extends Element {
+public class Text extends Element {
 
-	public TextElement(String label) {
+	public Text(String label) {
 		super(label);
-		START_TAG = VOID;
+		START_TAG = "%s";
 		END_TAG = VOID;
-		EMPTY_TAG = "%s";
 		setAllowAttributes(false);
 		setAllowChildren(false);
 	}
