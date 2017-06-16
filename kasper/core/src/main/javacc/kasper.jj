@@ -1,0 +1,279 @@
+/*
+ * The MIT License
+ *
+ * Copyright 2013-2016 Jakub Jirutka <jakub@jirutka.cz>.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+options
+{
+  LOOKAHEAD= 1;
+
+  CHOICE_AMBIGUITY_CHECK = 3;
+  OTHER_AMBIGUITY_CHECK = 2;
+  STATIC = false;
+  DEBUG_PARSER = false;
+  DEBUG_LOOKAHEAD = false;
+  DEBUG_TOKEN_MANAGER = false;
+  UNICODE_INPUT = true;
+  SUPPORT_CLASS_VISIBILITY_PUBLIC = false;
+}
+
+PARSER_BEGIN(Parser)
+package org._24601.kasper.parser;
+import org._24601.kasper.parser.*;
+import org._24601.kasper.parser.ast.node.*;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
+public final class Parser
+{
+  private NodesFactory factory;
+
+  public Parser(InputStream stream, String encoding, NodesFactory factory)
+  {
+    this (stream, encoding);
+    this.factory = factory;
+  }
+
+  private String unescape(String s)
+  {
+    if (s.indexOf('\\') < 0)
+    {
+      return s;
+    }
+
+    final StringBuilder sb = new StringBuilder(s.length());
+    for (int i = 0; i < s.length(); i++)
+    {
+      if (s.charAt(i) == '\\')
+      {
+        i++;
+      }
+      if (i < s.length())
+      {
+        sb.append(s.charAt(i));
+      }
+    }
+    return sb.toString();
+  }
+}
+
+PARSER_END(Parser)
+
+<* >
+SKIP :
+{
+  " "
+| "\t"
+| "\r"
+| "\n"
+}
+
+TOKEN :
+{
+  < #ALPHA : [ "a"-"z", "A"-"Z" ] >
+| < #ESCAPED_CHAR : "\\" ~[ ] >
+| < #NUMERIC : [ "0"-"9" ] >
+}
+
+TOKEN :
+{
+  < TAG :
+    (
+      < ALPHA >
+    | < NUMERIC >
+    )
+    (
+      < ALPHA >
+    | < NUMERIC >
+    | "-"
+    )* >
+}
+
+<* >
+TOKEN :
+{
+  < SINGLE_QUOTED_STR :
+    (
+      "'"
+      (
+        < ESCAPED_CHAR >
+      | ~[ "'", "\\" ]
+      )*
+      "'"
+    ) >
+| < DOUBLE_QUOTED_STR :
+    (
+      "\""
+      (
+        < ESCAPED_CHAR >
+      | ~[ "\"", "\\" ]
+      )*
+      "\""
+    ) >
+}
+
+TOKEN :
+{
+  < LBRACE : "{" >
+| < RBRACE : "}" >
+}
+
+TOKEN :
+{
+  < LPAREN : "(" > : IN_LIST
+}
+
+< IN_LIST >
+TOKEN :
+{
+  < EQUALS : "=" >
+| < COMMA : "," >
+| < ATTRIBUTE : (~[ "\t", "\r", "\n", " ", "/", ">", "\"", "'", "=", "(", "{", "}", ")" ])+ >
+}
+
+< IN_LIST >
+TOKEN :
+{
+  < RPAREN : ")" > : DEFAULT
+}
+
+Node Input() :
+{
+  final Node node;
+}
+{
+  node = StatementBlock() < EOF >
+  {
+    return node;
+  }
+}
+
+Node StatementBlock() :
+{
+  final Node node = factory.createStatementBlock();
+}
+{
+  (
+    LOOKAHEAD(< TAG >)
+    Statement(node)
+  | 
+    String(node)
+  )*
+  {
+    return node;
+  }
+}
+
+void Statement(Node node) :
+{
+  String tagName;
+  Node attrList = null;
+  Node body = null;
+}
+{
+  < TAG >
+  {
+    tagName = token.image;
+  }
+  [ attrList = List() ] [ body = Body() ]
+  {
+    node.add(factory.createStatement(tagName, attrList, body));
+  }
+}
+
+void String(Node node) :
+{
+}
+{
+  (
+    token = < DOUBLE_QUOTED_STR >
+  | token = < SINGLE_QUOTED_STR >
+  )
+  {
+    node.add(factory.createLiteral(token.image));
+  }
+}
+
+Node List() :
+{
+  final Node node = factory.createList();
+}
+{
+  < LPAREN > [ CommaSepAssignments(node) ] < RPAREN >
+  {
+    return node;
+  }
+}
+
+Node Body() :
+{
+  final Node node;
+}
+{
+  (
+    < LBRACE > node = StatementBlock() < RBRACE >
+    {
+      return node;
+    }
+  )
+}
+
+void CommaSepAssignments(Node node) :
+{
+  Node arg;
+}
+{
+  arg = Assignment()
+  {
+    node.add(arg);
+  }
+  (
+    < COMMA > 
+    arg = Assignment()
+    {
+      node.add(arg);
+    }
+  )*
+}
+
+Node Assignment() :
+{
+  String attr;
+}
+{
+  token = < ATTRIBUTE >
+  {
+    attr = token.image;
+  }
+  [
+    < EQUALS >
+    (
+      token = < DOUBLE_QUOTED_STR >
+    | token = < SINGLE_QUOTED_STR >
+    )
+  ]
+  {
+    return factory.createAssignment(attr, token.image);
+  }
+}

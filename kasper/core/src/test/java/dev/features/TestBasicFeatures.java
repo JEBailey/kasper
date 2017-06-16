@@ -14,7 +14,7 @@ import org._24601.kasper.scripting.KasperScriptEngine;
 import org.junit.Before;
 import org.junit.Test;
 
-public class BasicFeatures {
+public class TestBasicFeatures {
 
     @Before
     public void setUp() {
@@ -43,7 +43,7 @@ public class BasicFeatures {
 	
 	@Test
 	public void testLink() {
-		assertEquals("<a href='./foo' src='http://gotohere'></a>", eval("a(href = \"./foo\", src=\"http://gotohere\")"));
+		assertEquals("<a href='./foo' src='http://gotohere'></a>", eval("a (href='./foo', src='http://gotohere') "));
 	}
 	
 	@Test
@@ -66,12 +66,12 @@ public class BasicFeatures {
 		StringWriter sw = new StringWriter();
 		context.setWriter(sw);
 		try {
-			engine.eval(expression, context);
+			 return engine.eval(expression, context);
 		} catch (ScriptException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-        return sw.toString();
+        return "";
     }
 
 }

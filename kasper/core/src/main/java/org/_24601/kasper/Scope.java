@@ -11,14 +11,11 @@ import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org._24601.kasper.api.Executable;
 import org._24601.kasper.api.ListProvider;
 import org._24601.kasper.api.ListProviderVisitor;
-import org._24601.kasper.core.Util;
 import org._24601.kasper.error.KasperException;
-import org._24601.kasper.lang.KasperLangImpl;
 import org._24601.kasper.type.Atom;
 import org._24601.kasper.type.StatementCreator;
 import org._24601.kasper.type.Undefined;
@@ -44,7 +41,6 @@ public class Scope implements ListProviderVisitor {
 	 */
 	public Scope() {
 		this(null);
-		Util.load(this, new KasperLangImpl());
 
 	}
 
