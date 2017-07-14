@@ -175,10 +175,7 @@ Node StatementBlock() :
 }
 {
   (
-    LOOKAHEAD(< TAG >)
     Statement(node)
-  | 
-    String(node)
   )*
   {
     return node;
@@ -186,6 +183,22 @@ Node StatementBlock() :
 }
 
 void Statement(Node node) :
+{
+  Node temp = null;
+}
+{
+  (
+    LOOKAHEAD(< TAG >)
+    temp = Tag()
+  | 
+    temp = Literal()
+  )
+  {
+    node.add(temp);
+  }
+}
+
+Node Tag() :
 {
   String tagName;
   Node attrList = null;
@@ -196,13 +209,13 @@ void Statement(Node node) :
   {
     tagName = token.image;
   }
-  [ attrList = List() ] [ body = Body() ]
+  [ attrList = List() ] [LOOKAHEAD(2)(body = Literal() | body = Body()) ]
   {
-    node.add(factory.createStatement(tagName, attrList, body));
+    return factory.createStatement(tagName, attrList, body);
   }
 }
 
-void String(Node node) :
+Node Literal() :
 {
 }
 {
@@ -211,7 +224,7 @@ void String(Node node) :
   | token = < SINGLE_QUOTED_STR >
   )
   {
-    node.add(factory.createLiteral(token.image));
+    return factory.createLiteral(token.image);
   }
 }
 

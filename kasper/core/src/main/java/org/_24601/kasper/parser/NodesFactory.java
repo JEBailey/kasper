@@ -22,7 +22,7 @@ public class NodesFactory {
 	}
 
 	public Node createLiteral(String image) {
-		return new Node(image);
+		return new Node(image.substring(1, image.length() -1));
 	}
 	
 	public Node createList() {

@@ -9,7 +9,6 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 import javax.script.SimpleScriptContext;
 
-import org._24601.kasper.error.KasperException;
 import org._24601.kasper.scripting.KasperScriptEngine;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,7 +17,6 @@ public class TestBasicFeatures {
 
     @Before
     public void setUp() {
-
     }
 
 	@Test
