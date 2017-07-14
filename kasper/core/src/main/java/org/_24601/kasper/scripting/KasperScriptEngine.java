@@ -18,7 +18,7 @@ import org._24601.kasper.fxc.Element;
 import org._24601.kasper.parser.Node;
 import org._24601.kasper.parser.NodesFactory;
 import org._24601.kasper.parser.Parser;
-import org._24601.kasper.parser.ast.node.Visitor;
+import org._24601.kasper.parser.node.Visitor;
 
 public class KasperScriptEngine implements ScriptEngine {
 

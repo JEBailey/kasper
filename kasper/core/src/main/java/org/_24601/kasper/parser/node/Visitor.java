@@ -1,4 +1,4 @@
-package org._24601.kasper.parser.ast.node;
+package org._24601.kasper.parser.node;
 
 import java.util.List;
 

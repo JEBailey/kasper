@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org._24601.kasper.fxc.Element;
-import org._24601.kasper.parser.ast.node.Visitor;
+import org._24601.kasper.parser.node.Visitor;
 
 public class Node {
 
