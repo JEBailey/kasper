@@ -39,7 +39,7 @@ options
 PARSER_BEGIN(Parser)
 package org._24601.kasper.parser;
 import org._24601.kasper.parser.*;
-import org._24601.kasper.parser.ast.node.*;
+import org._24601.kasper.parser.node.*;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -273,6 +273,7 @@ void CommaSepAssignments(Node node) :
 Node Assignment() :
 {
   String attr;
+  String literal = null;
 }
 {
   token = < ATTRIBUTE >
@@ -285,8 +286,11 @@ Node Assignment() :
       token = < DOUBLE_QUOTED_STR >
     | token = < SINGLE_QUOTED_STR >
     )
+    {
+      literal = token.image;
+    }
   ]
   {
-    return factory.createAssignment(attr, token.image);
+    return factory.createAssignment(attr, literal);
   }
 }

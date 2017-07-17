@@ -8,7 +8,7 @@ import org._24601.kasper.parser.Node;
 
 public class Visitor {
 
-	Element root = new Void();
+	Element root = new Void("");
 
 	public String visit(Node node, Element element) {
 		switch (node.getType()) {
@@ -27,14 +27,17 @@ public class Visitor {
 			node.getChildren().forEach(attr -> attr.accept(this, element));
 			break;
 		case ASSIGNMENT:
+			// should be two
 			List<Node> children = node.getChildren();
 			if (children.size() > 0){
 				String attribute = children.get(0).accept(this, null);
 				String value = null;
 				if (children.size() == 2) {
 					value = children.get(1).accept(this, null);
+					element.setAttribute(attribute, value);
+				} else {
+					element.setAttribute(attribute);
 				}
-				element.setAttribute(attribute, value);
 			}
 			break;
 		case LITERAL:
